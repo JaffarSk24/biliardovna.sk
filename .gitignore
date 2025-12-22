@@ -1,0 +1,8 @@
+vendor/
+.env
+storage/
+logs/
+.DS_Store
+.idea/
+.vscode/
+public/storage

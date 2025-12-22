@@ -1,0 +1,336 @@
+{% extends "base.twig" %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/pricing.css">
+{% endblock %}
+
+{% block content %}
+<section class="pricing-hero">
+  <div class="container">
+    <h1>{{ translations.pricing_title|default('Cenník') }}</h1>
+    <p class="pricing-subtitle">{{ translations.pricing_subtitle|default('Transparentné ceny pre všetky naše služby') }}</p>
+  </div>
+</section>
+
+<section class="pricing-tables">
+  <div class="container">
+    <div class="pricing-tabs">
+      <button class="pricing-tab active" data-service="1">
+        {{ translations.games_piramida_title|default('Pyramída') }}
+      </button>
+      <button class="pricing-tab" data-service="2">
+        {{ translations.games_pool_title|default('Pool') }}
+      </button>
+      <button class="pricing-tab" data-service="3">
+        {{ translations.games_darts_title|default('Šípky') }}
+      </button>
+      {# <button class="pricing-tab" data-service="4">
+        {{ translations.games_foosball_title|default('Stolný futbal') }}
+      </button> #}
+    </div>
+
+    <div class="pricing-content">
+      <!-- Pyramída -->
+      <div class="pricing-table-wrapper active" data-service="1">
+        <div class="pricing-table-scroll">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th>{{ translations.pricing_time|default('Čas') }}</th>
+                <th>{{ translations.pricing_monday|default('Pondelok') }}</th>
+                <th>{{ translations.pricing_tuesday|default('Utorok') }}</th>
+                <th>{{ translations.pricing_wednesday|default('Streda') }}</th>
+                <th>{{ translations.pricing_thursday|default('Štvrtok') }}</th>
+                <th>{{ translations.pricing_friday|default('Piatok') }}</th>
+                <th>{{ translations.pricing_saturday|default('Sobota') }}</th>
+                <th>{{ translations.pricing_sunday|default('Nedeľa') }}</th>
+                <th class="holiday-col">{{ translations.pricing_holiday|default('Sviatky') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="time-col">16:00 - 17:00</td>
+                <td>8 €</td><td>9 €</td><td>10 €</td><td>11 €</td><td>12 €</td><td>14 €</td><td>13 €</td>
+                <td class="holiday-price">14 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">17:00 - 18:00</td>
+                <td>8 €</td><td>9 €</td><td>10 €</td><td>11 €</td><td>12 €</td><td>14 €</td><td>13 €</td>
+                <td class="holiday-price">14 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">18:00 - 19:00</td>
+                <td>8 €</td><td>9 €</td><td>10 €</td><td>11 €</td><td>12 €</td><td>14 €</td><td>13 €</td>
+                <td class="holiday-price">14 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">19:00 - 20:00</td>
+                <td>9.6 €</td><td>10.8 €</td><td>12 €</td><td>13.2 €</td><td>14.4 €</td><td>16.8 €</td><td>15.6 €</td>
+                <td class="holiday-price">16.8 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">20:00 - 21:00</td>
+                <td>9.6 €</td><td>10.8 €</td><td>12 €</td><td>13.2 €</td><td>14.4 €</td><td>16.8 €</td><td>15.6 €</td>
+                <td class="holiday-price">16.8 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">21:00 - 22:00</td>
+                <td>9.6 €</td><td>10.8 €</td><td>12 €</td><td>13.2 €</td><td>14.4 €</td><td>16.8 €</td><td>15.6 €</td>
+                <td class="holiday-price">16.8 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">22:00 - 23:00</td>
+                <td>9.6 €</td><td>10.8 €</td><td>12 €</td><td>13.2 €</td><td>14.4 €</td><td>16.8 €</td><td>15.6 €</td>
+                <td class="holiday-price">16.8 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">23:00 - 00:00</td>
+                <td>9.6 €</td><td>10.8 €</td><td>12 €</td><td>13.2 €</td><td>14.4 €</td><td>16.8 €</td><td>15.6 €</td>
+                <td class="holiday-price">16.8 €</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pricing-action">
+          <button class="btn-primary btn-book-service"
+                  data-service-id="1"
+                  data-trigger='{"service":1}'>
+            {{ translations.btn_book|default('Rezervovať') }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Pool -->
+      <div class="pricing-table-wrapper" data-service="2">
+        <div class="pricing-table-scroll">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th>{{ translations.pricing_time|default('Čas') }}</th>
+                <th>{{ translations.pricing_monday|default('Pondelok') }}</th>
+                <th>{{ translations.pricing_tuesday|default('Utorok') }}</th>
+                <th>{{ translations.pricing_wednesday|default('Streda') }}</th>
+                <th>{{ translations.pricing_thursday|default('Štvrtok') }}</th>
+                <th>{{ translations.pricing_friday|default('Piatok') }}</th>
+                <th>{{ translations.pricing_saturday|default('Sobota') }}</th>
+                <th>{{ translations.pricing_sunday|default('Nedeľa') }}</th>
+                <th class="holiday-col">{{ translations.pricing_holiday|default('Sviatky') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="time-col">16:00 - 17:00</td>
+                <td>6.4 €</td><td>7.2 €</td><td>8 €</td><td>8.8 €</td><td>9.6 €</td><td>11.2 €</td><td>10.4 €</td>
+                <td class="holiday-price">11.2 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">17:00 - 18:00</td>
+                <td>6.4 €</td><td>7.2 €</td><td>8 €</td><td>8.8 €</td><td>9.6 €</td><td>11.2 €</td><td>10.4 €</td>
+                <td class="holiday-price">11.2 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">18:00 - 19:00</td>
+                <td>6.4 €</td><td>7.2 €</td><td>8 €</td><td>8.8 €</td><td>9.6 €</td><td>11.2 €</td><td>10.4 €</td>
+                <td class="holiday-price">11.2 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">19:00 - 20:00</td>
+                <td>8 €</td><td>9 €</td><td>10 €</td><td>11 €</td><td>12 €</td><td>14 €</td><td>13 €</td>
+                <td class="holiday-price">14 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">20:00 - 21:00</td>
+                <td>8 €</td><td>9 €</td><td>10 €</td><td>11 €</td><td>12 €</td><td>14 €</td><td>13 €</td>
+                <td class="holiday-price">14 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">21:00 - 22:00</td>
+                <td>8 €</td><td>9 €</td><td>10 €</td><td>11 €</td><td>12 €</td><td>14 €</td><td>13 €</td>
+                <td class="holiday-price">14 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">22:00 - 23:00</td>
+                <td>8 €</td><td>9 €</td><td>10 €</td><td>11 €</td><td>12 €</td><td>14 €</td><td>13 €</td>
+                <td class="holiday-price">14 €</td>
+              </tr>
+              <tr class="prime-time">
+                <td class="time-col">23:00 - 00:00</td>
+                <td>8 €</td><td>9 €</td><td>10 €</td><td>11 €</td><td>12 €</td><td>14 €</td><td>13 €</td>
+                <td class="holiday-price">14 €</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pricing-action">
+          <button class="btn-primary btn-book-service"
+                  data-service-id="2"
+                  data-trigger='{"service":2}'>
+            {{ translations.btn_book|default('Rezervovať') }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Darts -->
+      <div class="pricing-table-wrapper" data-service="3">
+        <div class="pricing-table-scroll">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th>{{ translations.pricing_time|default('Čas') }}</th>
+                <th>{{ translations.pricing_monday|default('Pondelok') }}</th>
+                <th>{{ translations.pricing_tuesday|default('Utorok') }}</th>
+                <th>{{ translations.pricing_wednesday|default('Streda') }}</th>
+                <th>{{ translations.pricing_thursday|default('Štvrtok') }}</th>
+                <th>{{ translations.pricing_friday|default('Piatok') }}</th>
+                <th>{{ translations.pricing_saturday|default('Sobota') }}</th>
+                <th>{{ translations.pricing_sunday|default('Nedeľa') }}</th>
+                <th class="holiday-col">{{ translations.pricing_holiday|default('Sviatky') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="time-col">16:00 - 17:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">17:00 - 18:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">18:00 - 19:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">19:00 - 20:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">20:00 - 21:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">21:00 - 22:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">22:00 - 23:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">23:00 - 00:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pricing-action">
+          <button class="btn-primary btn-book-service"
+                  data-service-id="3"
+                  data-trigger='{"service":3}'>
+            {{ translations.btn_book|default('Rezervovať') }}
+          </button>
+        </div>
+      </div>
+
+      {# <!-- Table Football -->
+      <div class="pricing-table-wrapper" data-service="4">
+        <div class="pricing-table-scroll">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th>{{ translations.pricing_time|default('Čas') }}</th>
+                <th>{{ translations.pricing_monday|default('Pondelok') }}</th>
+                <th>{{ translations.pricing_tuesday|default('Utorok') }}</th>
+                <th>{{ translations.pricing_wednesday|default('Streda') }}</th>
+                <th>{{ translations.pricing_thursday|default('Štvrtok') }}</th>
+                <th>{{ translations.pricing_friday|default('Piatok') }}</th>
+                <th>{{ translations.pricing_saturday|default('Sobota') }}</th>
+                <th>{{ translations.pricing_sunday|default('Nedeľa') }}</th>
+                <th class="holiday-col">{{ translations.pricing_holiday|default('Sviatky') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="time-col">16:00 - 17:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">17:00 - 18:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">18:00 - 19:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">19:00 - 20:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">20:00 - 21:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">21:00 - 22:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">22:00 - 23:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">23:00 - 00:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pricing-action">
+          <button class="btn-primary btn-book-service"
+                  data-service-id="4"
+                  data-trigger='{"service":4}'>
+            {{ translations.btn_book|default('Rezervovať') }}
+          </button>
+        </div>
+      </div> #}
+    </div>
+  </div>
+</section>
+
+{% include 'booking_popup.twig' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Переключение вкладок (без вмешательства в попап)
+  const tabs = document.querySelectorAll('.pricing-tab');
+  const tables = document.querySelectorAll('.pricing-table-wrapper');
+
+  function activate(serviceId) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.service === serviceId));
+    tables.forEach(w => w.classList.toggle('active', w.dataset.service === serviceId));
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => activate(tab.dataset.service));
+  });
+});
+</script>
+
+<script src="/public/js/pricing.js"></script>
+{% endblock %}

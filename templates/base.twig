@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/public/images/favicon.ico">
+    <title>{{ page_title|default('Biliardovna.sk') }}</title>
+    <meta name="description" content="{{ meta_description|default('Biliardový klub v Bratislave') }}">
+
+    {# Базовые стили и токены #}
+    <link rel="stylesheet" href="/public/css/variables.css">
+    <link rel="stylesheet" href="/public/css/base.css">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/utilities.css">
+    <link rel="stylesheet" href="/public/css/booking-popup.css">
+
+    {# Страничные стили (дети могут добавить свои через {{ parent() }}) #}
+    {% block styles %}{% endblock %}
+
+    {# Доп. head-вставки (мета, скрипты и т.д.) #}
+    {% block head %}{% endblock %}
+
+    {# Необязательный include, не ломает, если файла нет #}
+    {% include 'header-extra.twig' ignore missing %}
+
+    {# Адаптив — всегда последним #}
+    <link rel="stylesheet" href="/public/css/responsive.css">
+
+    <!-- reCAPTCHA v3 Invisible -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz"></script>
+    <script>
+      window.getRecaptchaToken = function(action = 'general') {
+        return new Promise((resolve, reject) => {
+          if (!window.grecaptcha) return reject(new Error('grecaptcha not loaded'));
+          grecaptcha.ready(function() {
+            grecaptcha.execute('6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz', { action })
+              .then(resolve).catch(reject);
+          });
+        });
+      };
+    </script>
+
+</head>
+<body>
+
+    {% include 'body-extra.twig' %}
+    {% include 'header.twig' %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'footer.twig' %}
+
+    <script>
+        // Translations for booking form
+        window.bookingTranslations = {
+            'select_time': '{{ 'select_time'|trans }}',
+            'no_slots_available': '{{ 'no_slots_available'|trans }}',
+            'occupied': '{{ 'occupied'|trans }}',
+            'base_price': '{{ 'base_price'|trans }}',
+            'time_multiplier': '{{ 'time_multiplier'|trans }}',
+            'total': '{{ 'total'|trans }}',
+            'loading': '{{ 'loading'|trans }}',
+            'multi_slot_hint': '{{ 'multi_slot_hint'|trans }}',
+            'submit_booking': '{{ 'submit_booking'|trans }}',
+            'error_loading_slots': '{{ 'error_loading_slots'|trans }}',
+            'error_calculating_price': '{{ 'error_calculating_price'|trans }}',
+            'error_submitting': '{{ 'error_submitting'|trans }}',
+            'error_service_required': '{{ 'error_service_required'|trans }}',
+            'error_date_required': '{{ 'error_date_required'|trans }}',
+            'error_time_required': '{{ 'error_time_required'|trans }}',
+            'error_name_required': '{{ 'error_name_required'|trans }}',
+            'error_phone_required': '{{ 'error_phone_required'|trans }}',
+            'error_email_invalid': '{{ 'error_email_invalid'|trans }}',
+            'duration_1': '{{ 'duration_1'|trans }}',
+            'duration_2': '{{ 'duration_2'|trans }}',
+            'duration_3': '{{ 'duration_3'|trans }}',
+            'duration_4': '{{ 'duration_4'|trans }}',
+            'duration_5': '{{ 'duration_5'|trans }}',
+            'duration_6': '{{ 'duration_6'|trans }}',
+            'duration_7': '{{ 'duration_7'|trans }}',
+            'duration_8': '{{ 'duration_8'|trans }}',
+            'success_wait_confirmation': '{{ 'success_wait_confirmation'|trans }}',
+            'selection_hint': '{{ 'selection_hint'|trans }}',
+            'select_consecutive': '{{ 'select_consecutive'|trans }}',
+            'select_table_time': '{{ 'select_table_time'|trans }}',
+            'booking_error': '{{ 'booking_error'|trans }}',
+            'loading_error': '{{ 'loading_error'|trans }}',
+            'no_tables': '{{ 'no_tables'|trans }}',
+            'no_slots': '{{ 'no_slots'|trans }}'
+        };
+    </script>
+
+    <script src="/public/js/app.js"></script>
+    <script src="/public/js/booking.js"></script>
+    <script src="/public/js/events.js"></script>
+    <script src="/public/js/booking-popup.js"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

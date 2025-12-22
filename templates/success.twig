@@ -1,0 +1,30 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<section class="section section-success">
+  <div class="container">
+    <div class="success-message">
+      <h1 class="success-title">✓ {{ t.booking_success|default('booking_success_title'|trans) }}</h1>
+
+      <p class="success-text">
+        {{ t.booking_success_message|default('booking_success_message'|trans) }}
+      </p>
+
+      <p class="success-text">
+        {{ t.booking_success_contact|default('booking_success_contact'|trans) }}
+      </p>
+
+      {% if booking_id %}
+        <p class="success-number">
+          <strong>{{ t.booking_id_label|default('booking_id_label'|trans) }}:</strong>
+          № {{ booking_id }}
+        </p>
+      {% endif %}
+
+      <a href="{{ language == 'sk' ? '/' : '/' ~ language }}" class="btn btn-primary">
+        {{ t.back_to_home|default('back_to_home'|trans) }}
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

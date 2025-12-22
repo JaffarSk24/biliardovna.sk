@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Biliardovna.sk</title>
+    <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-box">
+            <h1>Admin Login</h1>
+
+            {% if session.login_error %}
+            <div class="alert alert-error">
+                {{ session.login_error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="/admin/login">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

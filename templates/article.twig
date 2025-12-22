@@ -1,0 +1,44 @@
+{% extends "base.twig" %}
+
+{% block title %}{{ article.title }} - Biliardovňa{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="/public/css/blog.css?v=20251117">
+{% endblock %}
+
+{% block content %}
+<section class="article-hero" style="--article-bg-image: url('{{ article.image }}');">
+    <div class="container">
+        <div class="article-breadcrumb">
+            <a href="{{ url('/') }}">{{ translations.nav_home|default('Domov') }}</a>
+            <span>/</span>
+            <a href="{{ url('/blog') }}">{{ translations.blog_title|default('Blog') }}</a>
+            <span>/</span>
+            <span>{{ article.title }}</span>
+        </div>
+        <h1 class="article-title">{{ article.title }}</h1>
+        {% if article.excerpt %}
+        <p class="article-excerpt">{{ article.excerpt }}</p>
+        {% endif %}
+        <div class="article-meta">
+            {% if article.category %}
+            <span class="article-category">{{ article.category }}</span>
+            {% endif %}
+            <span class="article-date">{{ article.date }}</span>
+        </div>
+    </div>
+</section>
+
+<section class="article-section">
+    <div class="container">
+        <div class="article-body">
+            {{ article.content|raw }}
+        </div>
+        <div class="article-footer">
+            <a href="{{ url('/blog') }}" class="article-back-button">
+                ← {{ translations.back_to_blog|default('Späť na blog') }}
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

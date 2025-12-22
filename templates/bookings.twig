@@ -1,0 +1,95 @@
+
+{% extends "admin/base_admin.twig" %}
+
+{% block content %}
+<div class="filter-bar">
+    <form method="GET" action="/admin/bookings">
+        <input type="date" name="date_from" value="{{ app.request.get('date_from')|default('now'|date('Y-m-d')) }}">
+        <input type="date" name="date_to" value="{{ app.request.get('date_to')|default('+30 days'|date('Y-m-d')) }}">
+        <select name="status">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="completed">Completed</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Duration</th>
+            <th>Service</th>
+            <th>Resource</th>
+            <th>Customer</th>
+            <th>Phone</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>#{{ booking.id }}</td>
+            <td>{{ booking.booking_date }}</td>
+            <td>{{ booking.start_time }} - {{ booking.end_time }}</td>
+            <td>{{ booking.duration_minutes }} min</td>
+            <td>{{ booking.service_name }}</td>
+            <td>{{ booking.resource_name }}</td>
+            <td>{{ booking.customer_name }}</td>
+            <td>{{ booking.customer_phone }}</td>
+            <td>€{{ booking.price }}</td>
+            <td><span class="badge badge-{{ booking.status }}">{{ booking.status }}</span></td>
+            <td>
+                {% if booking.status == 'pending' %}
+                <button onclick="updateStatus({{ booking.id }}, 'confirmed')" class="btn btn-sm btn-success">Confirm</button>
+                <button onclick="updateStatus({{ booking.id }}, 'cancelled')" class="btn btn-sm btn-danger">Cancel</button>
+                {% elseif booking.status == 'confirmed' %}
+                <button onclick="updateStatus({{ booking.id }}, 'completed')" class="btn btn-sm">Complete</button>
+                <button onclick="updateStatus({{ booking.id }}, 'cancelled')" class="btn btn-sm btn-danger">Cancel</button>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="11" style="text-align: center;">No bookings found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateStatus(bookingId, status) {
+    if (!confirm('Are you sure you want to update the booking status?')) return;
+
+    const formData = new FormData();
+    formData.append('booking_id', bookingId);
+    formData.append('status', status);
+
+    fetch('/admin/bookings/update', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating booking');
+    });
+}
+</script>
+{% endblock %}

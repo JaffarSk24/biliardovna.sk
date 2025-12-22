@@ -1,0 +1,343 @@
+{% extends "base.twig" %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/games.css">
+{% endblock %}
+
+{% block content %}
+<section class="games-hero">
+    <div class="games-hero-background">
+        <div class="equipment-slider">
+            <div class="slider-track">
+                <img src="/public/images/piramide.webp" alt="Pyramída">
+                <img src="/public/images/pull.webp" alt="Pool">
+                <img src="/public/images/darts.webp" alt="Darts">
+                {# <img src="/public/images/football.webp" alt="Stolný futbal"> #}
+            </div>
+        </div>
+    </div>
+    <div class="games-hero-overlay"></div>
+    <div class="games-hero-content">
+        <h1>{{ translations.pages_games_title|default('Biliard a hry') }}</h1>
+        <p class="games-hero-subtitle">{{ translations.pages_games_subtitle|default('Objavte našu ponuku hier a zábavy') }}</p>
+        <div class="games-intro-text">
+            <h2>{{ translations.games_intro_title|default('Profesionálne vybavenie pre vašu zábavu') }}</h2>
+            <p>{{ translations.games_intro_text|default('V našom klube nájdete profesionálne biliardové stoly, elektronické šípky a stolný futbal. Všetko vybavenie je pravidelne udržiavané a v perfektnom stave.') }}</p>
+        </div>
+    </div>
+</section>
+
+<section class="game-detail">
+    <div class="container">
+        <div class="game-content">
+            <div class="game-top">
+                <div class="game-image">
+                    <img src="/public/images/piramide.webp" alt="Pyramída" loading="lazy">
+                </div>
+                <div class="game-text">
+                    <h2>{{ translations.games_piramida_title|default('Pyramída') }}</h2>
+                    
+                    <div class="game-description">
+                        <h3>{{ translations.games_piramida_history_title|default('História a podstata hry') }}</h3>
+                        <p>{{ translations.games_piramida_history|default('Pyramída vznikla v 18. storočí...') }}</p>
+                        
+                        <h3>{{ translations.games_piramida_variations_title|default('Varianty hry') }}</h3>
+                        <p>{{ translations.games_piramida_variations|default('Existuje niekoľko populárnych variácií...') }}</p>
+                        
+                        <h3>{{ translations.games_piramida_equipment_title|default('Naše vybavenie') }}</h3>
+                        <p>{{ translations.games_piramida_equipment|default('V našom klube máme 6 profesionálnych stolov...') }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="game-features">
+                <li>{{ translations.games_piramida_feature1|default('6 profesionálnych stolov 12ft') }}</li>
+                <li>{{ translations.games_piramida_feature2|default('Kvalitné kože a gule') }}</li>
+                <li>{{ translations.games_piramida_feature3|default('Vhodné pre začiatočníkov aj profesionálov') }}</li>
+            </ul>
+            
+            <div class="game-actions">
+                <a href="/cennik" class="btn-secondary">{{ translations.btn_view_pricing|default('Zobraziť cenník') }}</a>
+                <button class="btn-primary btn-book-service" data-service-id="1">{{ translations.btn_book|default('Rezervovať') }}</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="game-detail">
+    <div class="container">
+        <div class="game-content">
+            <div class="game-top">
+                <div class="game-image">
+                    <img src="/public/images/pull.webp" alt="Pool" loading="lazy">
+                </div>
+                <div class="game-text">
+                    <h2>{{ translations.games_pool_title|default('Pool') }}</h2>
+                    
+                    <div class="game-description">
+                        <h3>{{ translations.games_pool_history_title|default('História a podstata hry') }}</h3>
+                        <p>{{ translations.games_pool_history|default('Americký pool vznikol v 19. storočí...') }}</p>
+                        
+                        <h3>{{ translations.games_pool_variations_title|default('Varianty hry') }}</h3>
+                        <p>{{ translations.games_pool_variations|default('Pool ponúka množstvo variácií...') }}</p>
+                        
+                        <h3>{{ translations.games_pool_equipment_title|default('Naše vybavenie') }}</h3>
+                        <p>{{ translations.games_pool_equipment|default('V našom klube máme 4 profesionálne stoly...') }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="game-features">
+                <li>{{ translations.games_pool_feature1|default('4 profesionálne stoly 9ft') }}</li>
+                <li>{{ translations.games_pool_feature2|default('Certifikované gule a kože') }}</li>
+                <li>{{ translations.games_pool_feature3|default('Ideálne pre turnaje a zábavu') }}</li>
+            </ul>
+            
+            <div class="game-actions">
+                <a href="/cennik" class="btn-secondary">{{ translations.btn_view_pricing|default('Zobraziť cenník') }}</a>
+                <button class="btn-primary btn-book-service" data-service-id="2">{{ translations.btn_book|default('Rezervovať') }}</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="game-detail">
+    <div class="container">
+        <div class="game-content">
+            <div class="game-top">
+                <div class="game-image">
+                    <img src="/public/images/darts.webp" alt="Darts" loading="lazy">
+                </div>
+                <div class="game-text">
+                    <h2>{{ translations.games_darts_title|default('Darts') }}</h2>
+                    
+                    <div class="game-description">
+                        <h3>{{ translations.games_darts_history_title|default('História a podstata hry') }}</h3>
+                        <p>{{ translations.games_darts_history|default('Darts má svoje korene v stredovekej Anglicku...') }}</p>
+                        
+                        <h3>{{ translations.games_darts_variations_title|default('Varianty hry') }}</h3>
+                        <p>{{ translations.games_darts_variations|default('Existuje množstvo variácií dartsu...') }}</p>
+                        
+                        <h3>{{ translations.games_darts_equipment_title|default('Naše vybavenie') }}</h3>
+                        <p>{{ translations.games_darts_equipment|default('V našom klube máme 5 profesionálnych terčov...') }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="game-features">
+                <li>{{ translations.games_darts_feature1|default('5 klasických terčov') }}</li>
+                <li>{{ translations.games_darts_feature2|default('Profesionálne šípky na prenájom') }}</li>
+                <li>{{ translations.games_darts_feature3|default('Vhodné pre všetky úrovne hráčov') }}</li>
+            </ul>
+            
+            <div class="game-actions">
+                <a href="/cennik" class="btn-secondary">{{ translations.btn_view_pricing|default('Zobraziť cenník') }}</a>
+                <button class="btn-primary btn-book-service" data-service-id="3">{{ translations.btn_book|default('Rezervovať') }}</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{#<section class="game-detail">
+    <div class="container">
+        <div class="game-content">
+            <div class="game-top">
+                <div class="game-image">
+                    <img src="/public/images/football.webp" alt="Foosball" loading="lazy">
+                </div>
+                <div class="game-text">
+                    <h2>{{ translations.games_foosball_title|default('Stolný futbal') }}</h2>
+                    
+                    <div class="game-description">
+                        <h3>{{ translations.games_foosball_history_title|default('História a podstata hry') }}</h3>
+                        <p>{{ translations.games_foosball_history|default('Stolný futbal vznikol v 20. storočí...') }}</p>
+                        
+                        <h3>{{ translations.games_foosball_variations_title|default('Varianty hry') }}</h3>
+                        <p>{{ translations.games_foosball_variations|default('Stolný futbal ponúka rôzne herné režimy...') }}</p>
+                        
+                        <h3>{{ translations.games_foosball_equipment_title|default('Naše vybavenie') }}</h3>
+                        <p>{{ translations.games_foosball_equipment|default('V našom klube máme 2 profesionálne stoly...') }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="game-features">
+                <li>{{ translations.games_foosball_feature1|default('2 profesionálne stoly') }}</li>
+                <li>{{ translations.games_foosball_feature2|default('Kvalitné figúrky a hladký povrch') }}</li>
+                <li>{{ translations.games_foosball_feature3|default('Zábava pre priateľov a rodinu') }}</li>
+            </ul>
+            
+            <div class="game-actions">
+                <a href="/cennik" class="btn-secondary">{{ translations.btn_view_pricing|default('Zobraziť cenník') }}</a>
+                <button class="btn-primary btn-book-service" data-service-id="4">{{ translations.btn_book|default('Rezervovať') }}</button>
+            </div>
+        </div>
+    </div>
+</section>#}
+
+<section class="games-rules">
+    <div class="container">
+        <h2>{{ translations.games_rules_title|default('Pravidlá a etiketa') }}</h2>
+        <div class="rules-grid">
+            <div class="rule-card">
+                <div class="rule-icon">
+                    <svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                    </svg>
+                </div>
+                <h3>{{ translations.games_rules_respect_title|default('Rešpektujte ostatných') }}</h3>
+                <p>{{ translations.games_rules_respect_desc|default('Neobťažujte hráčov pri hre, zachovajte ticho počas úderu.') }}</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-icon">
+                    <svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                    </svg>
+                </div>
+                <h3>{{ translations.games_rules_equipment_title|default('Starostlivosť o vybavenie') }}</h3>
+                <p>{{ translations.games_rules_equipment_desc|default('Zaobchádzajte s vybavením opatrne, nepoužívajte nadmernú silu.') }}</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-icon">
+                    <svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                    </svg>
+                </div>
+                <h3>{{ translations.games_rules_cleanliness_title|default('Čistota') }}</h3>
+                <p>{{ translations.games_rules_cleanliness_desc|default('Udržujte priestor čistý, používajte popolníky a odpadkové koše.') }}</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-icon">
+                    <svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                    </svg>
+                </div>
+                <h3>{{ translations.games_rules_help_title|default('Pomoc personálu') }}</h3>
+                <p>{{ translations.games_rules_help_desc|default('V prípade problémov alebo otázok sa obráťte na personál.') }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="games-cta">
+    <div class="container">
+        <h2>{{ translations.games_cta_title|default('Pripravení na hru?') }}</h2>
+        <p>{{ translations.games_cta_text|default('Rezervujte si stôl online a príďte si užiť skvelú zábavu!') }}</p>
+        <a href="{{ language == 'sk' ? '/' : '/' ~ language }}#services" class="btn-primary btn-large">{{ translations.btn_book_now|default('Rezervovať teraz') }}</a>
+    </div>
+</section>
+
+<!-- Success Popup -->
+<div class="success-popup" id="successPopup">
+    <div class="success-popup-content">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">{{ translations.booking_success_title|default('Бронирование успешно!') }}</h2>
+        <p class="success-message">
+            {{ translations.booking_success_message|default('Ваше бронирование принято. Мы свяжемся с вами в ближайшее время.') }}<br>
+            <span id="successWaitMessage"></span>
+        </p>
+        <p class="success-booking-number">№: <span id="bookingNumber"></span></p>
+        <button class="btn-success-close" id="successClose">{{ translations.close|default('Закрыть') }}</button>
+    </div>
+</div>
+
+{% include 'booking_popup.twig' %}
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('.game-actions .btn-book-service').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+            const serviceId=btn.dataset.serviceId;
+            const popup=document.getElementById('bookingPopup');
+            const serviceIdInput=document.getElementById('popup-service-id');
+            const serviceNameEl=document.getElementById('popup-service-name');
+            const iconEl=document.getElementById('popup-service-icon');
+
+            // Set service ID
+            if(serviceIdInput)serviceIdInput.value=serviceId||'';
+
+            // Set service name from block title
+            const container=btn.closest('.game-detail');
+            const h2=container?container.querySelector('.game-text h2'):null;
+            if(serviceNameEl)serviceNameEl.textContent=h2?h2.textContent.trim():'';
+
+            // Set icon data attribute
+            if(iconEl)iconEl.setAttribute('data-service',serviceId);
+
+            // Reset popup state
+            const form=document.getElementById('bookingPopupForm');
+            if(form)form.reset();
+
+            const resGrid=document.getElementById('resources-grid');
+            const resSection=document.getElementById('resources-section');
+            const detSection=document.getElementById('details-section');
+            const couponMsg=document.getElementById('coupon-message');
+
+            const hidRes=document.getElementById('popup-resource-id');
+            const hidStart=document.getElementById('popup-start-time');
+            const hidEnd=document.getElementById('popup-end-time');
+
+            if(hidRes)hidRes.value='';
+            if(hidStart)hidStart.value='';
+            if(hidEnd)hidEnd.value='';
+
+            if(resGrid)resGrid.innerHTML='';
+            if(resSection)resSection.style.display='none';
+            if(detSection)detSection.style.display='none';
+            if(couponMsg){couponMsg.textContent='';couponMsg.className='coupon-message';}
+
+            // Open popup
+            if(popup)popup.classList.add('active');
+
+            // Focus date
+            const dateInput=document.getElementById('popup-date');
+            if(dateInput)dateInput.focus();
+        },{passive:true});
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const track = document.querySelector('.slider-track');
+    const images = track.querySelectorAll('img');
+    let currentIndex = 0;
+    const totalImages = images.length;
+    
+    function slideNext() {
+        currentIndex = (currentIndex + 1) % totalImages;
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+    
+    setInterval(slideNext, 5000);
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    });
+
+    document.querySelectorAll('.game-detail, .games-rules, .games-cta').forEach(section => {
+        observer.observe(section);
+    });
+});
+</script>
+
+{% endblock %}

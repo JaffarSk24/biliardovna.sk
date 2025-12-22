@@ -1,0 +1,17 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="container cancel-container">
+    {% if already_cancelled %}
+        <h1 class="cancel-error-title">{{ translations.cancel_already_cancelled }}</h1>
+        <p class="cancel-text">{{ translations.cancel_already_cancelled_text }}</p>
+    {% else %}
+        <h1 class="cancel-success-title">{{ translations.cancel_success }}</h1>
+        <p class="cancel-text-with-margin">{{ translations.cancel_success_text }}</p>
+        <p class="cancel-text">
+            {{ translations.cancel_welcome_back }} 
+            <a href="{{ '/' ~ (language != 'sk' ? language : '') }}" class="cancel-link">Biliardovna.sk</a>
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

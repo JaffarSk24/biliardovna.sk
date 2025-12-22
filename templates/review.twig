@@ -1,0 +1,20 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="container review-redirect">
+    <h1 class="review-title">{{ t.review_redirect_title }}</h1>
+    <p class="review-text">{{ t.review_redirect_text }}</p>
+
+    <script>
+        setTimeout(function() {
+            window.location.href = '{{ google_review_url|e('js') }}';
+        }, 2000);
+    </script>
+
+    <p class="mt-3">
+        <a href="{{ google_review_url|e('html_attr') }}" class="btn btn-lg btn-google">
+            ⭐ {{ t.review_leave_google }}
+        </a>
+    </p>
+</div>
+{% endblock %}

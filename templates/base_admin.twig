@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="{{ language|default('sk') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title|default('Admin Panel') }} - Biliardovna.sk</title>
+    <link rel="stylesheet" href="/public/css/admin.css">
+    {% block head %}{% endblock %}
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="logo">
+                <h2>Admin Panel</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/admin">Dashboard</a></li>
+                    <li><a href="/admin/bookings">Bookings</a></li>
+                    <li><a href="/admin/holidays">Holidays</a></li>
+                    <li><a href="/admin/logout">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>{{ page_title }}</h1>
+                <div class="admin-user">
+                    Welcome, {{ session.admin_username|default('Admin') }}
+                </div>
+            </header>
+
+            <div class="admin-content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script src="/public/js/admin.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

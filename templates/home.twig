@@ -1,0 +1,198 @@
+{% extends "base.twig" %}
+
+{% block head %}
+<link rel="stylesheet" href="/public/css/home.css">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-background">
+        <picture>
+            <source srcset="/public/images/1000x1000_web.webp" media="(max-width: 768px)">
+            <img src="/public/images/1920x1080.webp" alt="Biliardovna Bratislava">
+        </picture>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>{{ 'hero_title'|trans }}</h1>
+        <p>{{ 'hero_subtitle'|trans }}</p>
+    </div>
+    <a href="#services" class="hero-cta">{{ 'hero_cta'|trans }}</a>
+</section>
+
+<section id="services" class="services-section">
+    <div class="container">
+        <h2 class="section-title">{{ 'services_title'|trans }}</h2>
+        <div class="services-list">
+            {% for service in services %}
+            <div class="service-item" data-service-id="{{ service.id }}">
+                <div class="service-image-horizontal">
+                    <img src="{{ service.image|default('/public/images/service-placeholder.jpg') }}" alt="{{ service.name }}">
+                </div>
+                <div class="service-content">
+                    <h3>{{ service.name }}</h3>
+                    <p class="short-desc">{{ service.short_description }}</p>
+                    <p class="full-desc">{{ service.full_description }}</p>
+                    <div class="service-pricing-horizontal">
+                        {% if service.id == 1 %}
+                            <div class="pricing-row">
+                                <span>16:00 - 19:00</span>
+                                <span>8,00 - 12,00  €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>19:00 - 20:00</span>
+                                <span>9,60 - 15,60 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>20:00 - 00:00</span>
+                                <span>9,60 - 15,60 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row highlight">
+                                <span>{{ 'holidays'|trans }}</span>
+                                <span>13,00 - 16,80 €/{{ 'hour'|trans }}</span>
+                            </div>
+                        {% elseif service.id == 2 %}
+                            <div class="pricing-row">
+                                <span>16:00 - 19:00</span>
+                                <span>6,40 - 9,60 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>19:00 - 20:00</span>
+                                <span>8,00 - 12,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>20:00 - 00:00</span>
+                                <span>8,00 - 12,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row highlight">
+                                <span>{{ 'holidays'|trans }}</span>
+                                <span>10,40 - 14,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                        {% elseif service.id == 3 %}
+                            <div class="pricing-row">
+                                <span>16:00 - 19:00</span>
+                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>19:00 - 20:00</span>
+                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>20:00 - 00:00</span>
+                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row highlight">
+                                <span>{{ 'holidays'|trans }}</span>
+                                <span>6,50 - 7,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                        {# {% elseif service.id == 4 %}
+                            <div class="pricing-row">
+                                <span>16:00 - 19:00</span>
+                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>19:00 - 20:00</span>
+                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>20:00 - 00:00</span>
+                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row highlight">
+                                <span>{{ 'holidays'|trans }}</span>
+                                <span>6,50 - 7,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                        #}
+                        {% endif %}
+                    </div>
+                    <div class="service-footer-horizontal">
+                        <div class="tables-count">{{ service.tables_count }} {{ service.id == 3 ? 'targets'|trans : 'tables'|trans }}</div>
+                        <button class="btn-book-service">{{ 'book_now'|trans }}</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        window.servicesData = {{ services|json_encode|raw }};
+    </script>
+
+    {% include 'booking_popup.twig' %}
+
+</section>
+
+<section class="quality-section">
+    <div class="container">
+        <div class="quality-grid">
+            <div class="quality-text">
+                <h2>{{ 'quality_title'|trans }}</h2>
+                <p>{{ 'quality_description'|trans }}</p>
+            </div>
+            <div class="quality-image">
+                <img src="/public/images/quality.png" alt="{{ 'quality_title'|trans }}">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="gallery-section">
+    <div class="container">
+        <h2 class="section-title">{{ 'gallery_title'|trans }}</h2>
+        <div class="gallery-grid">
+            {% for i in 1..8 %}
+            <div class="gallery-item">
+                <img src="/public/images/gallery/{{ i }}.webp" alt="Gallery {{ i }}" loading="lazy">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="events-section">
+    <div class="container">
+        <h2 class="section-title">{{ 'events_title'|trans }}</h2>
+        <div class="events-carousel">
+            <button class="carousel-btn carousel-prev" aria-label="Previous">‹</button>
+            <div class="events-wrapper">
+                <div class="events-grid">
+                    {% for event in events %}
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="{{ event.image }}" alt="{{ event.title }}">
+                        </div>
+                        <div class="event-content">
+                            <h3>{{ event.title }}</h3>
+                            <p>{{ event.short_description }}</p>
+                            <a href="{{ event.url }}" class="btn-event-details">{{ 'event_details'|trans }}</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <button class="carousel-btn carousel-next" aria-label="Next">›</button>
+        </div>
+    </div>
+</section>
+
+<section class="map-section">
+    <div class="map-container">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2661.5!2d17.1377!3d48.1586!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f8!3m3!1m2!1s0x476c8942f1b8c8a7%3A0x0!2sOpavsk%C3%A1%201%2C%20831%2001%20Bratislava!5e0!3m2!1sen!2ssk!4v1234567890" 
+            width="100%" 
+            height="450" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy">
+        </iframe>
+    </div>
+    <div class="map-info">
+        <div class="container">
+            <h3>{{ 'visit_us'|trans }}</h3>
+            <p><a href="https://maps.app.goo.gl/Jt8qBVmTdppakwpQ9" target="_blank" style="color: var(--text-color); text-decoration: none;">Opavská 1, 831 01 Bratislava</a></p>
+            <a href="https://maps.app.goo.gl/Jt8qBVmTdppakwpQ9" target="_blank" class="btn-directions">{{ 'get_directions'|trans }}</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

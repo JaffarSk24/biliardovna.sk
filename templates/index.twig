@@ -1,0 +1,81 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="booking-container">
+    <div class="container">
+        <h1>{{ 'book_now'|trans }}</h1>
+
+        <div id="booking-errors" class="booking-errors" style="display:none;"></div>
+
+        <form id="booking-form" method="POST" action="/booking/submit">
+            <!-- Step 1: Select Service -->
+            <div class="form-section">
+                <h2>{{ 'select_service'|trans }}</h2>
+                <div class="services-grid">
+                    {% for service in services %}
+                    <div class="service-card">
+                        <input type="radio" name="service_id" id="service_{{ service.id }}" value="{{ service.id }}" required>
+                        <label for="service_{{ service.id }}">
+                            <h3>{{ service.name }}</h3>
+                            <p>{{ service.description }}</p>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Step 2: Select Date & Time -->
+            <div class="form-section">
+                <h2>{{ 'select_date'|trans }}</h2>
+
+                <div class="date-wrapper">
+                    <input type="date" name="booking_date" id="booking_date" required>
+                    <div class="mobile-date-helper" aria-hidden="true">{{ 'select_date'|trans }}</div>
+                </div>
+
+                <h2>{{ 'select_time'|trans }}</h2>
+                <select name="start_time" id="start_time" required disabled>
+                    <option value="">{{ 'select_time'|trans }}</option>
+                </select>
+
+                <h2>{{ 'duration'|trans }}</h2>
+                <select name="duration_minutes" id="duration_minutes" required>
+                    <option value="60">{{ 'duration_1'|trans }}</option>
+                    <option value="120">{{ 'duration_2'|trans }}</option>
+                    <option value="180">{{ 'duration_3'|trans }}</option>
+                    <option value="240">{{ 'duration_4'|trans }}</option>
+                    <option value="300">{{ 'duration_5'|trans }}</option>
+                    <option value="360">{{ 'duration_6'|trans }}</option>
+                    <option value="420">{{ 'duration_7'|trans }}</option>
+                    <option value="480">{{ 'duration_8'|trans }}</option>
+                </select>
+
+                <div id="total-price" class="price-display" style="display:none;"></div>
+            </div>
+
+            <!-- Step 3: Customer Details -->
+            <div class="form-section">
+                <h2>{{ 'your_details'|trans }}</h2>
+                <div class="form-group">
+                    <label for="customer_name">{{ 'name'|trans }}*</label>
+                    <input type="text" name="customer_name" id="customer_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="customer_phone">{{ 'phone'|trans }}*</label>
+                    <input type="tel" name="customer_phone" id="customer_phone" required placeholder="+421">
+                </div>
+                <div class="form-group">
+                    <label for="customer_email">{{ 'email'|trans }}</label>
+                    <input type="email" name="customer_email" id="customer_email">
+                </div>
+                <div class="form-group">
+                    <label for="notes">{{ 'notes'|trans }}</label>
+                    <textarea name="notes" id="notes" rows="3"></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">{{ 'submit_booking'|trans }}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

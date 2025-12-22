@@ -1,0 +1,816 @@
+<!-- Booking Popup -->
+<div class="booking-popup" id="bookingPopup">
+  <div class="booking-popup-content">
+    <button class="popup-close" id="popupClose">&times;</button>
+    <h2 class="popup-title"><span id="popup-title-prefix">{{ 'booking_title_prefix'|trans }}</span> <span id="popup-service-name"></span></h2>
+
+    <div class="popup-services-tabs">
+      <button type="button" class="service-tab" data-service="1" data-icon="icon-ball">
+        <svg class="service-icon"><use href="#icon-ball"></use></svg>
+        <span>{{ t.service_piramida_name|default('Pyramída') }}</span>
+      </button>
+      <button type="button" class="service-tab" data-service="2" data-icon="icon-billiard">
+        <svg class="service-icon"><use href="#icon-billiard"></use></svg>
+        <span>{{ t.service_pool_name|default('Pool') }}</span>
+      </button>
+      <button type="button" class="service-tab" data-service="3" data-icon="icon-darts">
+        <svg class="service-icon"><use href="#icon-darts"></use></svg>
+        <span>{{ t.service_darts_name|default('Šípky') }}</span>
+      </button>
+      {# <button type="button" class="service-tab" data-service="4" data-icon="icon-football">
+        <svg class="service-icon"><use href="#icon-football"></use></svg>
+        <span>{{ t.games_foosball_title|default('Stolný futbal') }}</span>
+      </button> #}
+    </div>
+
+    <!-- Hidden select used to synchronize with booking-popup.js -->
+    <select id="popup-service" style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;">
+      <option value="">{{ t.select_service|default('Выберите услугу') }}</option>
+      {% for service in services %}
+        {% if service.id != 4 %}
+          <option value="{{ service.id }}">{{ service.name }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+
+    <form id="bookingPopupForm">
+      <!-- Date Selection with Icon -->
+      <div class="popup-section-with-icon">
+        <div class="popup-service-icon-left" id="popup-service-icon-left"></div>
+        <div class="popup-date-block">
+          <h2>{{ 'date_label'|trans }}</h2>
+          <div class="popup-form-group">
+            <label for="popup-date">{{ 'select_date'|trans }}*</label>
+            <input type="date" id="popup-date" name="date" required>
+          </div>
+        </div>
+        <div class="popup-service-icon-right" id="popup-service-icon-right"></div>
+      </div>
+
+      <!-- Resources & Slots Selection -->
+      <div class="popup-section" id="resources-section" style="display: none;">
+        <h3 class="popup-section-title">{{ 'select_table_and_time'|trans }}</h3>
+        <div id="resources-grid" class="resources-grid"></div>
+      </div>
+
+      <!-- Personal Details -->
+      <div class="popup-section" id="details-section" style="display: none;">
+        <h3 class="popup-section-title">{{ 'your_details'|trans }}</h3>
+        <div class="popup-form-row">
+          <div class="popup-form-group">
+            <label for="popup-name">{{ 'name'|trans }}*</label>
+            <input type="text" id="popup-name" name="name" placeholder="{{ 'name_placeholder'|trans }}" required>
+          </div>
+          <div class="popup-form-group">
+            <label for="popup-phone">{{ 'phone'|trans }}*</label>
+            <input type="tel" id="popup-phone" name="phone" placeholder="{{ 'phone_placeholder'|trans }}" required>
+          </div>
+          <div class="popup-form-group">
+            <label for="popup-email">{{ 'email'|trans }}*</label>
+            <input type="email" id="popup-email" name="email" placeholder="{{ 'email_placeholder'|trans }}" required>
+          </div>
+        </div>
+        <div class="popup-form-row promo-row">
+          <div class="popup-form-group">
+            <label for="popup-notes">{{ 'notes'|trans }}</label>
+            <textarea id="popup-notes" name="notes" placeholder="{{ 'notes_placeholder'|trans }}" rows="3"></textarea>
+          </div>
+          <div class="popup-form-group">
+            <label for="popup-coupon">{{ 'coupon'|trans }}</label>
+            <div class="coupon-input-wrapper">
+              <input type="text" id="popup-coupon" name="coupon" placeholder="{{ 'coupon_placeholder'|trans }}" maxlength="50">
+              <button type="button" id="coupon-check-btn" class="coupon-check-btn" title="{{ 'coupon_check'|trans }}">→</button>
+            </div>
+            <span
+              class="coupon-message"
+              id="coupon-message"
+              data-msg-valid="{{ 'coupon_valid'|trans|e('html_attr') }}"
+              data-msg-invalid="{{ 'coupon_invalid'|trans|e('html_attr') }}"
+              data-msg-error="{{ 'coupon_error'|trans|e('html_attr') }}"
+            ></span>
+          </div>
+
+          <div id="booking-i18n"
+            data-deal-weekdays-only="{{ 'deal_weekdays_only'|trans|e('html_attr') }}"
+            data-loading="{{ 'loading'|trans|e('html_attr') }}"
+            data-no-tables="{{ 'no_tables'|trans|e('html_attr') }}"
+            data-loading-error="{{ 'loading_error'|trans|e('html_attr') }}"
+            data-no-slots="{{ 'no_slots'|trans|e('html_attr') }}"
+            data-select-consecutive="{{ 'select_consecutive'|trans|e('html_attr') }}"
+            data-multi-slot-hint="{{ 'multi_slot_hint'|trans|e('html_attr') }}"
+            data-ok="{{ 'ok'|trans|e('html_attr') }}"
+            data-total="{{ 'total'|trans|e('html_attr') }}"
+            data-success-wait-confirmation="{{ 'success_wait_confirmation'|trans|e('html_attr') }}"
+            data-select-table-time="{{ 'select_table_time'|trans|e('html_attr') }}"
+            data-selection-hint="{{ 'selection_hint'|trans|e('html_attr') }}"
+            data-booking-error="{{ 'booking_error'|trans|e('html_attr') }}"
+            data-date-label="{{ 'date_label'|trans|e('html_attr') }}"
+            data-select-date="{{ 'select_date'|trans|e('html_attr') }}"
+          ></div>
+          
+        </div>
+        <hr class="popup-divider">
+        <div class="popup-checkbox">
+          <input type="checkbox" id="popup-terms" name="terms" required>
+          <label for="popup-terms">
+            {{ 'booking_terms_agree'|trans }}
+            <a href="{{ language == 'sk' ? '/ochrana-osobnych-udajov' : '/' ~ language ~ '/privacy' }}" target="_blank">{{ 'footer_privacy'|trans }}</a>
+            {{ 'and'|trans }}
+            <a href="{{ language == 'sk' ? '/vop' : '/' ~ language ~ '/terms' }}" target="_blank">{{ 'footer_terms'|trans }}</a>*
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="popup-actions" style="display: none;">
+        <button type="submit" class="btn-submit-popup">{{ 'submit_booking'|trans }}</button>
+      </div>
+
+      <input type="hidden" id="popup-service-id" name="service_id">
+      <input type="hidden" id="popup-resource-id" name="resource_id">
+      <input type="hidden" id="popup-start-time" name="start_time">
+      <input type="hidden" id="popup-end-time" name="end_time">
+      <input type="hidden" id="popup-language" name="language" value="{{ language }}">
+      <input type="hidden" id="popup-slots-restriction" name="slotsRestriction" value="">
+      <input type="hidden" id="popup-slot-count" name="slot_count" value="0">
+      <input type="hidden" id="recaptcha-action" name="recaptcha_action" value="booking_submit">
+      <input type="hidden" id="recaptcha-token" name="recaptcha_token">
+    </form>
+  </div>
+</div>
+
+<!-- Success Popup -->
+<div class="success-popup" id="successPopup">
+  <div class="success-popup-content">
+    <div class="success-icon">✓</div>
+    <h2 class="success-title">{{ 'booking_success_title'|trans }}</h2>
+    <p class="success-message">
+      {{ 'booking_success_message'|trans }}<br>
+      <span id="successWaitMessage"></span>
+    </p>
+    <p class="success-booking-number">№: <span id="bookingNumber"></span></p>
+    <button class="btn-success-close" id="successClose">{{ 'close'|trans }}</button>
+  </div>
+</div>
+
+<!-- Icons -->
+<svg style="display: none;">
+  <defs>
+    <symbol id="icon-ball" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="currentColor"/>
+      <circle cx="50" cy="50" r="15" fill="none" stroke="currentColor" stroke-width="3" opacity="0.3"/>
+    </symbol>
+    <symbol id="icon-billiard" viewBox="0 0 24 24">
+      <rect x="2" y="6" width="20" height="12" rx="1" fill="currentColor" opacity="0.2"/>
+      <rect x="3" y="7" width="18" height="10" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="4" cy="8" r="0.8" fill="currentColor"/>
+      <circle cx="20" cy="8" r="0.8" fill="currentColor"/>
+      <circle cx="4" cy="16" r="0.8" fill="currentColor"/>
+      <circle cx="20" cy="16" r="0.8" fill="currentColor"/>
+      <circle cx="12" cy="8" r="0.8" fill="currentColor"/>
+      <circle cx="12" cy="16" r="0.8" fill="currentColor"/>
+    </symbol>
+    <symbol id="icon-darts" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1"/>
+      <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1"/>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+      <line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
+      <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
+    </symbol>
+    <symbol id="icon-football" viewBox="0 0 24 24">
+      <rect x="2" y="7" width="20" height="10" rx="1" fill="currentColor" opacity="0.2"/>
+      <rect x="3" y="8" width="18" height="8" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="7" y1="6" x2="7" y2="18" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="17" y1="6" x2="17" y2="18" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="7" cy="12" r="1.2" fill="currentColor"/>
+      <circle cx="12" cy="12" r="1.2" fill="currentColor"/>
+      <circle cx="17" cy="12" r="1.2" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- Hidden trigger -->
+<button id="hidden-book-btn" class="btn-book-service" style="display: none !important; position: absolute; pointer-events: none;" data-service-id="1"></button>
+
+<!-- Adapter script -->
+<script>
+(function () {
+  if (window.__booking_popup_adapter_installed) return;
+  window.__booking_popup_adapter_installed = true;
+
+  var I18N_HINT_DEFAULT = "{{ 'booking_multi_hours_hint'|trans|e('js') }}";
+  var I18N_HINT_DISCOUNT = "{{ 'booking_discount_min_consecutive'|trans|e('js') }}";
+  var I18N_HINT_IMG_MIN4 = "{{ '/public/images/many-slots-4.webp'|e('js') }}";
+
+  var hiddenBtn = document.getElementById('hidden-book-btn');
+  if (!hiddenBtn) {
+    hiddenBtn = document.createElement('button');
+    hiddenBtn.type = 'button';
+    hiddenBtn.id = 'hidden-book-btn';
+    hiddenBtn.className = 'btn-book-service';
+    hiddenBtn.style.display = 'none';
+    document.body.appendChild(hiddenBtn);
+  }
+
+  (function ensureHiddenInputs() {
+    var form = document.getElementById('bookingPopupForm');
+    if (!form) return;
+    var sr = document.getElementById('popup-slots-restriction');
+    if (!sr) { sr = document.createElement('input'); sr.type = 'hidden'; sr.id = 'popup-slots-restriction'; sr.name = 'slotsRestriction'; form.appendChild(sr); }
+    var sc = document.getElementById('popup-slot-count');
+    if (!sc) { sc = document.createElement('input'); sc.type = 'hidden'; sc.id = 'popup-slot-count'; sc.name = 'slot_count'; sc.value = '0'; form.appendChild(sc); }
+  })();
+
+  function syncPopupFields(serviceId) {
+    var sid = String(serviceId || '');
+    var sidInput = document.getElementById('popup-service-id');
+    var svcSelect = document.getElementById('popup-service');
+    if (sidInput) sidInput.value = sid;
+    if (svcSelect) { try { svcSelect.value = sid; } catch (e) {} svcSelect.dispatchEvent(new Event('change', { bubbles: true })); }
+    if (hiddenBtn) hiddenBtn.dataset.serviceId = sid;
+  }
+
+  function setSlotsRestriction(sr) {
+    window.dealSlotsRestriction = sr || null;
+    var el = document.getElementById('popup-slots-restriction');
+    if (el) el.value = window.dealSlotsRestriction ? JSON.stringify(window.dealSlotsRestriction) : '';
+  }
+
+  function getSelectedSlotCount() {
+    return document.querySelectorAll('.time-slot.selected, .time-slot.active, .time-slot.is-selected').length;
+  }
+
+  function getSlotsEligibility() {
+    var sr = window.dealSlotsRestriction || null;
+    if (!sr) return { eligible: true, min: 0, max: null, count: getSelectedSlotCount() };
+    // поддерживаем {min/max} и {start/end}
+    var min = (sr.min != null) ? parseInt(sr.min, 10) : (sr.start != null ? parseInt(sr.start, 10) : 0);
+    var max = (sr.max != null) ? parseInt(sr.max, 10) : (sr.end != null ? parseInt(sr.end, 10) : null);
+    var count = getSelectedSlotCount();
+    var eligible = (min === 0 || count >= min) && (max == null || count <= max);
+    return { eligible: eligible, min: min, max: max, count: count };
+  }
+
+  function toggleDetailsVisibilityBySlots() {
+    var guard = window.dealSlotsRestriction || null;
+    var details = document.getElementById('details-section');
+    var actions = document.querySelector('.popup-actions');
+    if (!details || !actions) return;
+
+    if (!guard) {
+      if (details.__forcedHidden) { details.style.display = ''; details.__forcedHidden = false; }
+      if (actions.__forcedHidden) { actions.style.display = ''; actions.__forcedHidden = false; }
+      return;
+    }
+
+    var state = getSlotsEligibility();
+    if (state.eligible) {
+      if (details.__forcedHidden) { details.style.display = ''; details.__forcedHidden = false; }
+      if (actions.__forcedHidden) { actions.style.display = ''; actions.__forcedHidden = false; }
+    } else {
+      details.style.display = 'none';
+      actions.style.display = 'none';
+      details.__forcedHidden = true;
+      actions.__forcedHidden = true;
+    }
+  }
+
+  function scanAndPatchHintText() {
+    var hasRestriction = !!window.dealSlotsRestriction;
+    var containers = Array.from(document.querySelectorAll('.swal2-popup, [role="dialog"], .modal, .popup, .dialog, #bookingPopup, body'));
+    containers.forEach(function (container) {
+      if (!container || container.nodeType !== 1) return;
+      var img = container.querySelector('img[src*="many-slots"]');
+      var bgEl = img ? null : Array.from(container.querySelectorAll('*')).find(function (el) {
+        var bg = getComputedStyle(el).backgroundImage || '';
+        return bg.indexOf('many-slots') !== -1;
+      });
+      var msg = container.querySelector('.multi-slot-hint-text, .swal2-html-container');
+
+      if (hasRestriction) {
+        if (msg && !msg.dataset.hintPatched) { msg.dataset.hintPatched = '1'; msg.dataset.hintOrig = msg.textContent; msg.textContent = I18N_HINT_DISCOUNT; }
+        if (img) {
+          if (!img.dataset.hintImgOrig) img.dataset.hintImgOrig = img.getAttribute('src') || '';
+          if (img.getAttribute('src') !== I18N_HINT_IMG_MIN4) img.setAttribute('src', I18N_HINT_IMG_MIN4);
+        } else if (bgEl) {
+          if (!bgEl.dataset.hintBgOrig) bgEl.dataset.hintBgOrig = bgEl.style.backgroundImage || '';
+          var url = 'url("' + I18N_HINT_IMG_MIN4 + '")';
+          if (bgEl.style.backgroundImage !== url) bgEl.style.backgroundImage = url;
+        }
+      } else {
+        var msgRevert = container.querySelector('.multi-slot-hint-text[data-hint-patched], .swal2-html-container[data-hint-patched]');
+        if (msgRevert) { if (msgRevert.dataset.hintOrig) msgRevert.textContent = msgRevert.dataset.hintOrig; delete msgRevert.dataset.hintPatched; delete msgRevert.dataset.hintOrig; }
+        if (img && img.dataset.hintImgOrig != null) img.setAttribute('src', img.dataset.hintImgOrig);
+        if (bgEl && bgEl.dataset.hintBgOrig != null) bgEl.style.backgroundImage = bgEl.dataset.hintBgOrig;
+      }
+    });
+  }
+
+  function installHintObserver() {
+    if (window.__hintObserverInstalled) return;
+    var obs = new MutationObserver(function () {
+      clearTimeout(window.__hintPatchDebounce);
+      window.__hintPatchDebounce = setTimeout(scanAndPatchHintText, 50);
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+    window.__hintObserverInstalled = true;
+  }
+
+  // Tabs activation and icon mirroring
+  function activateServiceTab(tab) {
+    if (!tab) return;
+    Array.from(document.querySelectorAll('.service-tab')).forEach(function (t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+
+    var sid = tab.dataset.service || tab.dataset.serviceId || '';
+    syncPopupFields(sid);
+
+    var nameEl = document.getElementById('popup-service-name');
+    var nameSpan = tab.querySelector('span');
+    if (nameEl && nameSpan) nameEl.textContent = nameSpan.textContent;
+
+    var iconId = tab.dataset.icon;
+    var svg = iconId ? '<svg class="service-icon-large"><use href="#' + iconId + '"></use></svg>' : '';
+    var left = document.getElementById('popup-service-icon-left');
+    var right = document.getElementById('popup-service-icon-right');
+    if (left) left.innerHTML = svg;
+    if (right) right.innerHTML = svg;
+  }
+
+  // Wire tab clicks
+  Array.from(document.querySelectorAll('.service-tab')).forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var sid = tab.dataset.service || tab.dataset.serviceId;
+      if (!sid) return;
+      activateServiceTab(tab);
+      setTimeout(function () { if (hiddenBtn) { try { hiddenBtn.click(); } catch (e) { hiddenBtn.dispatchEvent(new MouseEvent('click', { bubbles: true })); } } }, 50);
+    });
+  });
+
+  // Open popup from CTA
+  Array.from(document.querySelectorAll('.deal-cta-button, [data-trigger]')).forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var trigger = (function(){ try { return JSON.parse(btn.dataset.trigger || '{}'); } catch(e){ return {}; } })();
+      var popup = document.getElementById('bookingPopup');
+      if (!popup) return;
+
+      popup.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      if (hiddenBtn) {
+        if (trigger.service) hiddenBtn.dataset.serviceId = String(trigger.service);
+        try { hiddenBtn.click(); } catch (err) { hiddenBtn.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+      }
+
+      if (trigger.service) {
+        var tab = document.querySelector('.service-tab[data-service="' + trigger.service + '"]');
+        activateServiceTab(tab);
+      }
+
+      window.dealCoupon = trigger.coupon || null;
+      window.dealTimeRestriction = trigger.timeRestriction || null;
+      window.dealDateRestriction = trigger.dateRestriction || null;
+      setSlotsRestriction(trigger.slotsRestriction || null);
+
+      installHintObserver();
+      scanAndPatchHintText();
+
+      var grid = document.getElementById('resources-grid');
+      if (grid && !grid.__slotObserverInstalled) {
+        var obs = new MutationObserver(function () {
+          scanAndPatchHintText();
+          toggleDetailsVisibilityBySlots();
+        });
+        obs.observe(grid, { attributes: true, subtree: true, attributeFilter: ['class'] });
+        grid.__slotObserverInstalled = true;
+      }
+
+      setTimeout(function () { scanAndPatchHintText(); toggleDetailsVisibilityBySlots(); }, 150);
+    });
+  });
+
+  if (window.__autoCouponListenerFn) document.removeEventListener('click', window.__autoCouponListenerFn, true);
+  window.__autoCouponListenerFn = function (ev) {
+    var slot = ev.target.closest && ev.target.closest('.time-slot');
+    if (!slot || (slot.classList && slot.classList.contains('disabled'))) return;
+    setTimeout(function () { scanAndPatchHintText(); toggleDetailsVisibilityBySlots(); }, 80);
+  };
+  document.addEventListener('click', window.__autoCouponListenerFn, true);
+
+  var close = document.getElementById('popupClose');
+  if (close) close.addEventListener('click', function () { setSlotsRestriction(null); scanAndPatchHintText(); });
+
+  var successClose = document.getElementById('successClose');
+  if (successClose) successClose.addEventListener('click', function () { setSlotsRestriction(null); scanAndPatchHintText(); });
+
+  installHintObserver();
+  scanAndPatchHintText();
+  toggleDetailsVisibilityBySlots();
+})();
+</script>
+
+<script>
+/* Mobile-only isolation: click-driven, no MutationObserver */
+(function(){
+  'use strict';
+
+  var mq = window.matchMedia ? window.matchMedia('(hover: none), (pointer: coarse), (max-width: 768px)') : null;
+  function isMobile(){ return mq ? mq.matches : (window.innerWidth <= 768); }
+  function getPopup(){ return document.getElementById('bookingPopup') || document.querySelector('.booking-popup'); }
+  function getGrid(){ return document.getElementById('resources-grid'); }
+
+  function reset(){
+    var grid = getGrid(); if(!grid) return;
+    var cards = grid.getElementsByClassName('resource-card');
+    for (var i = 0; i < cards.length; i++) cards[i].hidden = false;
+    grid.removeAttribute('data-isolated');
+  }
+
+  function update(){
+    if(!isMobile()){ reset(); return; }
+    var grid = getGrid(); if(!grid) return;
+
+    var sel = grid.querySelector('.time-slot.selected, .time-slot.active, .time-slot.chosen, .time-slot.is-selected');
+    if(!sel){ reset(); return; }
+
+    var card = sel.closest ? sel.closest('.resource-card') : null;
+    if(!card){ reset(); return; }
+
+    var cards = grid.getElementsByClassName('resource-card');
+    for (var i = 0; i < cards.length; i++) cards[i].hidden = (cards[i] !== card);
+    grid.setAttribute('data-isolated', '1');
+  }
+
+  function install(){
+    var popup = getPopup();
+    var grid = getGrid();
+    if(!popup || !grid || grid.__isoInstalled) return;
+    grid.__isoInstalled = true;
+
+    // React only on slot clicks; defer to let booking script toggle classes
+    grid.addEventListener('click', function(e){
+      var t = e.target && (e.target.closest ? e.target.closest('.time-slot') : null);
+      if(t) setTimeout(update, 60);
+    }, true);
+
+    // Reset on popup close/backdrop
+    var close = document.getElementById('popupClose');
+    if(close) close.addEventListener('click', reset);
+    popup.addEventListener('click', function(e){ if(e.target === popup) reset(); });
+
+    // Re-evaluate when mobile state flips
+    if (mq){
+      if (mq.addEventListener) mq.addEventListener('change', function(){ setTimeout(update, 0); });
+      else if (mq.addListener) mq.addListener(function(){ setTimeout(update, 0); });
+    }
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install);
+  else install();
+})();
+</script>
+
+<style>
+/* ... (оставил как у тебя; без изменений) ... */
+.popup-services-tabs{
+  display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:16px!important;margin:24px 0!important;padding:0 20px!important;
+}
+.service-tab{
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:12px!important;
+  padding:20px 12px!important;background:rgba(255,255,255,.05)!important;border:2px solid rgba(255,255,255,.1)!important;border-radius:12px!important;
+  cursor:pointer!important;transition:all .3s ease!important;color:var(--text-color)!important;min-height:120px!important;
+}
+.service-tab:hover{background:rgba(255,255,255,.08)!important;border-color:rgba(212,175,55,.4)!important;transform:translateY(-2px)!important;}
+.service-tab.active{background:rgba(212,175,55,.2)!important;border-color:#D4AF37!important;}
+.service-tab .service-icon{width:48px!important;height:48px!important;color:#D4AF37!important;}
+.service-tab span{font-size:1rem!important;font-weight:500!important;text-align:center!important;}
+@media (max-width:768px){
+  .popup-services-tabs{grid-template-columns:repeat(2,1fr)!important;gap:12px!important;}
+  .service-tab{min-height:100px!important;padding:16px 8px!important;}
+  .service-tab .service-icon{width:36px!important;height:36px!important;}
+  .service-tab span{font-size:.9rem!important;}
+}
+.popup-section-with-icon{display:flex!important;align-items:center!important;gap:20px!important;padding:0 20px!important;}
+.popup-service-icon-left,.popup-service-icon-right{
+  flex-shrink:0!important;width:120px!important;height:120px!important;display:flex!important;align-items:center!important;justify-content:center!important;opacity:.3!important;
+}
+.popup-service-icon-left svg,.popup-service-icon-right svg{width:100%!important;height:100%!important;color:var(--accent-color)!important;}
+.popup-date-block{flex:1!important;}
+.coupon-input-wrapper{display:flex!important;gap:8px!important;}
+.coupon-check-btn{
+  flex-shrink:0!important;width:44px!important;height:44px!important;background:var(--accent-color)!important;color:var(--color-espresso)!important;border:none!important;border-radius:var(--radius-sm)!important;
+  font-size:1.2rem!important;font-weight:600!important;cursor:pointer!important;transition:all var(--transition-fast)!important;display:flex!important;align-items:center!important;justify-content:center!important;
+}
+.coupon-check-btn:hover{background:var(--accent-hover)!important;transform:translateY(-2px)!important;}
+.coupon-check-btn:disabled{opacity:.6!important;cursor:not-allowed!important;}
+.coupon-message{display:block!important;margin-top:6px!important;font-size:.85rem!important;}
+.coupon-message.valid{color:#4caf50!important;}
+.coupon-message.invalid{color:#f44336!important;}
+
+/* Date row (mobile): icons hidden, date centered without pixel offsets */
+@media (max-width:768px){
+  #bookingPopup .popup-section-with-icon{
+    display:flex !important;
+    justify-content:center !important;
+    align-items:center !important;
+    gap: 0 !important;
+    padding: 0 20px !important;
+  }
+
+  /* hide side icons */
+  #bookingPopup .popup-service-icon-left,
+  #bookingPopup .popup-service-icon-right{
+    display:none !important;
+  }
+
+  /* center date block */
+  #bookingPopup .popup-date-block{
+    flex: 0 1 auto !important;
+    width: min(88vw, 460px) !important;
+    margin-inline: auto !important;
+  }
+  #bookingPopup .popup-date-block .popup-form-group{
+    width: 100% !important;
+    max-width: none !important;
+  }
+  #bookingPopup .popup-date-block input[type="date"]{
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
+</style>
+
+<script src="https://www.google.com/recaptcha/api.js?render=6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz"></script>
+<script>
+/* reCAPTCHA v3 + надёжная инъекция токена в /api/booking/create (fetch & XHR).
+   Фикс дублей: первый submit перехватываем с stopImmediatePropagation, после получения токена запускаем submit ОДИН раз. */
+(function(){
+  'use strict';
+
+  var SITE_KEY = '6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz';
+  var TTL_MS = 30000; // свежесть токена 30с
+  window.__recaptchaSiteKey = SITE_KEY;
+
+  // ——— Получение токена на submit формы, без дублей ———
+  (function installFormHook(){
+    var form = document.getElementById('bookingPopupForm');
+    if(!form || form.__rcInstalled) return;
+    form.__rcInstalled = true;
+
+    var actionEl = document.getElementById('recaptcha-action');
+    var tokenEl  = document.getElementById('recaptcha-token');
+
+    function getAction(){ return (actionEl && actionEl.value) ? actionEl.value : 'booking_submit'; }
+
+    function resumeOnce(){
+      form.__rcDone = true;
+      // Запускаем ваши submit-хендлеры ровно один раз
+      if (typeof form.requestSubmit === 'function') {
+        form.requestSubmit();
+      } else {
+        var evt = new Event('submit', { bubbles: true, cancelable: true });
+        var allowed = form.dispatchEvent(evt);
+        if (allowed && HTMLFormElement.prototype.submit) {
+          HTMLFormElement.prototype.submit.call(form);
+        }
+      }
+    }
+
+    form.addEventListener('submit', function(e){
+      if (form.__rcDone) return; // повторный submit — пропускаем к исходным хендлерам
+      e.preventDefault();
+      e.stopImmediatePropagation(); // ключевой момент: не даём исходным хендлерам выполниться сейчас
+
+      if (!window.grecaptcha || !grecaptcha.execute){
+        if (tokenEl) tokenEl.value = '';
+        window.__rc3 = { token: '', action: getAction(), ts: Date.now() };
+        resumeOnce();
+        return;
+      }
+
+      grecaptcha.ready(function(){
+        grecaptcha.execute(SITE_KEY, {action: getAction()})
+          .then(function(token){
+            if (tokenEl) tokenEl.value = token;
+            window.__rc3 = { token: token, action: getAction(), ts: Date.now() };
+          }, function(){
+            if (tokenEl) tokenEl.value = '';
+            window.__rc3 = { token: '', action: getAction(), ts: Date.now() };
+          })
+          .then(resumeOnce);
+      });
+    }, true);
+  })();
+
+  // ——— Вспомогательные ———
+  function matchesCreate(url){ try{ url = String(url||''); }catch(_){ url=''; } return url.indexOf('/api/booking/create') !== -1; }
+  function now(){ return Date.now ? Date.now() : +new Date(); }
+  function getHidden(id){ var el = document.getElementById(id); return el ? el.value : ''; }
+  function currentAction(){ return getHidden('recaptcha-action') || (window.__rc3 && window.__rc3.action) || 'booking_submit'; }
+  function isFresh(rc){ return rc && rc.token && (now() - (rc.ts||0) < TTL_MS); }
+  function setTokenToHidden(tok, act){
+    try {
+      var tEl = document.getElementById('recaptcha-token'); if (tEl) tEl.value = tok || '';
+      var aEl = document.getElementById('recaptcha-action'); if (aEl && act) aEl.value = act;
+    } catch(_){}
+  }
+  function findSiteKey(){
+    var ss = document.getElementsByTagName('script');
+    for (var i=0;i<ss.length;i++){
+      var src = ss[i].getAttribute('src') || '';
+      var m = src.match(/recaptcha\/api\.js\?render=([^&]+)/);
+      if (m){ try { return decodeURIComponent(m[1]); } catch(_){ return m[1]; } }
+    }
+    return SITE_KEY || null;
+  }
+
+  async function ensureToken(){
+    var act = currentAction();
+
+    if (isFresh(window.__rc3))
+      return { token: window.__rc3.token, action: window.__rc3.action || act };
+
+    var hiddenTok = getHidden('recaptcha-token');
+    if (hiddenTok)
+      return { token: hiddenTok, action: act };
+
+    if (window.grecaptcha && typeof grecaptcha.execute === 'function'){
+      var key = window.__recaptchaSiteKey || findSiteKey();
+      if (key){
+        try{
+          await new Promise(function(res){ if (grecaptcha.ready) grecaptcha.ready(res); else res(); });
+          var tok = await grecaptcha.execute(key, { action: act });
+          window.__rc3 = { token: tok, action: act, ts: now() };
+          setTokenToHidden(tok, act);
+          return { token: tok, action: act };
+        }catch(_){}
+      }
+    }
+    return { token: '', action: act };
+  }
+
+  function patchBodyAndHeaders(body, headers, tok){
+    if (body instanceof FormData){
+      body.set('recaptcha_token', tok.token);
+      body.set('recaptcha_action', tok.action);
+      return { body: body, headers: headers };
+    }
+    if (body instanceof URLSearchParams){
+      body.set('recaptcha_token', tok.token);
+      body.set('recaptcha_action', tok.action);
+      headers.set('content-type','application/x-www-form-urlencoded;charset=UTF-8');
+      return { body: body, headers: headers };
+    }
+    if (typeof body === 'string'){
+      var s = body.trim();
+      var ct = (headers.get('content-type') || '').toLowerCase();
+      if (/\bjson\b/.test(ct) || s.startsWith('{') || s.startsWith('[')){
+        var obj = {}; try { obj = JSON.parse(s || '{}'); } catch(_){}
+        obj.recaptcha_token = tok.token;
+        obj.recaptcha_action = tok.action;
+        headers.set('content-type','application/json');
+        return { body: JSON.stringify(obj), headers: headers };
+      } else {
+        var params = new URLSearchParams(s);
+        params.set('recaptcha_token', tok.token);
+        params.set('recaptcha_action', tok.action);
+        headers.set('content-type','application/x-www-form-urlencoded;charset=UTF-8');
+        return { body: params.toString(), headers: headers };
+      }
+    }
+    var fd = new FormData();
+    fd.set('recaptcha_token', tok.token);
+    fd.set('recaptcha_action', tok.action);
+    return { body: fd, headers: headers };
+  }
+
+  // ——— fetch: поддержка Request-объектов и автоинъекция токена ———
+  if (window.fetch && !window.__rc3FetchPatched){
+    window.__rc3FetchPatched = true;
+    var origFetch = window.fetch;
+
+    window.fetch = async function(input, init){
+      try{
+        var isReq = input && typeof input === 'object' && 'url' in input;
+        var url = isReq ? input.url : String(input || '');
+        if (!matchesCreate(url)) return origFetch.apply(this, arguments);
+
+        var method = (isReq ? (input.method || 'GET') : ((init && init.method) || 'GET')).toUpperCase();
+        if (method === 'GET' || method === 'HEAD') return origFetch.apply(this, arguments);
+
+        var tok = await ensureToken();
+        if (!tok.token) return origFetch.apply(this, arguments);
+
+        var headers = new Headers(isReq ? (input.headers || {}) : ((init && init.headers) || {}));
+        if (init && init.headers){ var h2 = new Headers(init.headers); h2.forEach(function(v,k){ headers.set(k,v); }); }
+
+        var body;
+        if (isReq){
+          if (init && 'body' in init){
+            body = init.body;
+          } else {
+            try {
+              if (typeof input.clone().formData === 'function'){
+                body = await input.clone().formData();
+              } else {
+                body = await input.clone().text();
+              }
+            } catch(_){
+              try { body = await input.clone().text(); } catch(__){}
+            }
+          }
+        } else {
+          body = init && init.body;
+        }
+
+        var patched = patchBodyAndHeaders(body, headers, tok);
+        var reqInit = {
+          method: method,
+          headers: patched.headers,
+          body: patched.body,
+          mode:  isReq ? input.mode : (init && init.mode),
+          credentials: isReq ? input.credentials : (init && init.credentials),
+          cache: isReq ? input.cache : (init && init.cache),
+          redirect: isReq ? input.redirect : (init && init.redirect),
+          referrer: isReq ? input.referrer : (init && init.referrer),
+          referrerPolicy: isReq ? input.referrerPolicy : (init && init.referrerPolicy),
+          integrity: isReq ? input.integrity : (init && init.integrity),
+          keepalive: isReq ? input.keepalive : (init && init.keepalive),
+          signal: isReq ? input.signal : (init && init.signal)
+        };
+
+        var newReq = new Request(url, reqInit);
+        return origFetch.call(this, newReq);
+      } catch(_){
+        return origFetch.apply(this, arguments);
+      }
+    };
+  }
+
+  // ——— XHR: асинхронная инъекция токена перед отправкой ———
+  if (window.XMLHttpRequest && !window.__rc3XHRPatched){
+    window.__rc3XHRPatched = true;
+    var _open = XMLHttpRequest.prototype.open;
+    var _send = XMLHttpRequest.prototype.send;
+
+    XMLHttpRequest.prototype.open = function(method, url){
+      this.__rc_url = url;
+      this.__rc_method = (method || 'GET').toUpperCase();
+      return _open.apply(this, arguments);
+    };
+
+    XMLHttpRequest.prototype.send = function(body){
+      var xhr = this;
+      try{
+        if (matchesCreate(xhr.__rc_url || '') && xhr.__rc_method !== 'GET' && xhr.__rc_method !== 'HEAD'){
+          ensureToken().then(function(tok){
+            if (tok && tok.token){
+              if (body instanceof FormData){
+                body.set('recaptcha_token', tok.token);
+                body.set('recaptcha_action', tok.action);
+              } else if (body instanceof URLSearchParams){
+                body.set('recaptcha_token', tok.token);
+                body.set('recaptcha_action', tok.action);
+                try { xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded;charset=UTF-8'); } catch(_){}
+              } else if (typeof body === 'string'){
+                var s = body.trim(), patched = false;
+                if (s.startsWith('{') || s.startsWith('[')){
+                  try {
+                    var obj = JSON.parse(s);
+                    obj.recaptcha_token = tok.token;
+                    obj.recaptcha_action = tok.action;
+                    body = JSON.stringify(obj);
+                    try { xhr.setRequestHeader('Content-Type','application/json'); } catch(_){}
+                    patched = true;
+                  } catch(_){}
+                }
+                if (!patched){
+                  var params = new URLSearchParams(s);
+                  params.set('recaptcha_token', tok.token);
+                  params.set('recaptcha_action', tok.action);
+                  body = params.toString();
+                  try { xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded;charset=UTF-8'); } catch(_){}
+                }
+              } else if (body == null){
+                var fd = new FormData();
+                fd.set('recaptcha_token', tok.token);
+                fd.set('recaptcha_action', tok.action);
+                body = fd;
+              }
+            }
+            _send.call(xhr, body);
+          }).catch(function(){
+            _send.call(xhr, body);
+          });
+          return;
+        }
+      } catch(_){}
+      return _send.call(xhr, body);
+    };
+  }
+
+})();
+</script>
