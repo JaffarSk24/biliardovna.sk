@@ -36,6 +36,48 @@ class PageController extends Controller
         }
     }
 
+    private $metadata = [];
+
+    public function __construct(string $language = 'sk')
+    {
+        parent::__construct($language);
+        $this->metadata = require __DIR__ . '/../../config/metadata.php';
+    }
+
+    private function renderWithSeo(string $template, string $pageKey, array $data = [])
+    {
+        $meta = $this->metadata[$pageKey][$this->language] ?? $this->metadata[$pageKey]['sk'] ?? [];
+        
+        // Base canonical
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $domain = $_SERVER['HTTP_HOST'];
+        $baseUri = $protocol . $domain;
+        
+        $currentUri = $_SERVER['REQUEST_URI'] ?? '/';
+        $canonical = $baseUri . strtok($currentUri, '?');
+        
+        // Add lang param if not default (simple approach, or rely on clean URLs if router supports them)
+        // If our router uses /en/page style, it's already in URI.
+        // If we want detailed canonical logic, we might need a helper from Router.
+        // For now, let's use the current clean URL as canonical.
+        
+        $data = array_merge($data, [
+            'page_title' => $meta['title'] ?? '',
+            'meta_description' => $meta['description'] ?? '',
+            'meta_keywords' => $meta['keywords'] ?? '',
+            'og_title' => $meta['og:title'] ?? ($meta['title'] ?? ''),
+            'og_description' => $meta['og:description'] ?? ($meta['description'] ?? ''),
+            'og_type' => $meta['og:type'] ?? 'website',
+            'og_image' => $baseUri . ($meta['og:image'] ?? '/public/images/og/default.jpg'),
+            'og_url' => $canonical,
+            'canonical' => $canonical,
+            'current_language' => $this->language,
+            'alternates' => [] // Could be calculated if we map pages to routes
+        ]);
+
+        $this->render($template, $data);
+    }
+    
     public function home()
     {
         $translations = $this->translationService->getUITranslations($this->language);
@@ -92,9 +134,22 @@ class PageController extends Controller
             ]*/
         ];
         
+        $services[] = [
+            'id' => 5,
+            'name' => $translations['service_shuffleboard_name'] ?? 'Shuffleboard',
+            'short_description' => $translations['service_shuffleboard_short'] ?? 'Shuffleboard',
+            'full_description' => $translations['service_shuffleboard_full'] ?? '',
+            'image' => '/public/images/shuffleboard.webp',
+            'price_morning' => '5',
+            'price_afternoon' => '6',
+            'price_evening' => '8',
+            'price_holiday' => '10',
+            'tables_count' => 1
+        ];
+        
         $events = $this->getEvents();
         
-        return $this->render('home.twig', [
+        return $this->renderWithSeo('home.twig', 'home', [
             'services' => $services,
             'events' => $events,
             'current_page' => 'home'
@@ -103,14 +158,14 @@ class PageController extends Controller
 
     public function games()
     {
-        return $this->render('games.twig', [
+        return $this->renderWithSeo('games.twig', 'games', [
             'current_page' => 'games'
         ]);
     }
 
     public function pricing()
     {
-        return $this->render('pricing.twig', [
+        return $this->renderWithSeo('pricing.twig', 'pricing', [
             'current_page' => 'pricing'
         ]);
     }
@@ -123,20 +178,47 @@ class PageController extends Controller
         $data = $dealsController->index();
         $data['current_page'] = 'deals';
         
-        echo $this->twig->render('deals.twig', $data);
+        // Manually render with SEO since we are capturing data from another controller
+        // Or refactor helper. For now let's use renderWithSeo
+        return $this->renderWithSeo('deals.twig', 'deals', $data);
     }
 
     public function cafe()
     {
-        return $this->render('cafe.twig', [
+        return $this->renderWithSeo('cafe.twig', 'cafe', [
             'current_page' => 'cafe'
         ]);
     }
 
     public function contact()
     {
-        return $this->render('contact.twig', [
+        return $this->renderWithSeo('contact.twig', 'contact', [
             'current_page' => 'contact'
+        ]);
+    }
+
+    public function privacy()
+    {
+        return $this->renderWithSeo('privacy.twig', 'privacy', [
+            'current_page' => 'privacy'
+        ]);
+    }
+
+    public function terms()
+    {
+        return $this->renderWithSeo('terms.twig', 'terms', [
+            'current_page' => 'terms'
+        ]);
+    }
+
+    public function cookies()
+    {
+        // Re-using privacy template but scrolling to cookies section could be an option, 
+        // or just render the same privacy page for now as cookies info is there.
+        // Or better: pass a variable to highlight/scroll to cookies.
+        return $this->renderWithSeo('privacy.twig', 'privacy', [
+            'current_page' => 'cookies',
+            'scroll_to' => 'cookies' // logic to be handled in js or manually
         ]);
     }
 

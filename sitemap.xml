@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <!-- Homepage -->
+    <url>
+        <loc>https://biliardovna.sk/</loc>
+        <lastmod>2025-12-24</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="sk" href="https://biliardovna.sk/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://biliardovna.sk/en/" />
+        <xhtml:link rel="alternate" hreflang="ru" href="https://biliardovna.sk/ru/" />
+        <xhtml:link rel="alternate" hreflang="uk" href="https://biliardovna.sk/uk/" />
+        <xhtml:link rel="alternate" hreflang="de" href="https://biliardovna.sk/de/" />
+    </url>
+
+    <!-- Games -->
+    <url>
+        <loc>https://biliardovna.sk/biliard-a-hry</loc>
+        <lastmod>2025-12-24</lastmod>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="sk" href="https://biliardovna.sk/biliard-a-hry" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://biliardovna.sk/en/games" />
+        <xhtml:link rel="alternate" hreflang="ru" href="https://biliardovna.sk/ru/games" />
+        <xhtml:link rel="alternate" hreflang="uk" href="https://biliardovna.sk/uk/games" />
+        <xhtml:link rel="alternate" hreflang="de" href="https://biliardovna.sk/de/games" />
+    </url>
+
+    <!-- Pricing -->
+    <url>
+        <loc>https://biliardovna.sk/cennik</loc>
+        <lastmod>2025-12-24</lastmod>
+        <priority>0.9</priority>
+        <xhtml:link rel="alternate" hreflang="sk" href="https://biliardovna.sk/cennik" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://biliardovna.sk/en/pricing" />
+        <xhtml:link rel="alternate" hreflang="ru" href="https://biliardovna.sk/ru/pricing" />
+        <xhtml:link rel="alternate" hreflang="uk" href="https://biliardovna.sk/uk/pricing" />
+        <xhtml:link rel="alternate" hreflang="de" href="https://biliardovna.sk/de/pricing" />
+    </url>
+
+    <!-- Deals -->
+    <url>
+        <loc>https://biliardovna.sk/akcie</loc>
+        <lastmod>2025-12-24</lastmod>
+        <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="sk" href="https://biliardovna.sk/akcie" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://biliardovna.sk/en/deals" />
+        <xhtml:link rel="alternate" hreflang="ru" href="https://biliardovna.sk/ru/deals" />
+        <xhtml:link rel="alternate" hreflang="uk" href="https://biliardovna.sk/uk/deals" />
+        <xhtml:link rel="alternate" hreflang="de" href="https://biliardovna.sk/de/deals" />
+    </url>
+
+    <!-- Cafe -->
+    <url>
+        <loc>https://biliardovna.sk/kaviaren</loc>
+        <lastmod>2025-12-24</lastmod>
+        <priority>0.6</priority>
+        <xhtml:link rel="alternate" hreflang="sk" href="https://biliardovna.sk/kaviaren" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://biliardovna.sk/en/cafe" />
+        <xhtml:link rel="alternate" hreflang="ru" href="https://biliardovna.sk/ru/cafe" />
+        <xhtml:link rel="alternate" hreflang="uk" href="https://biliardovna.sk/uk/cafe" />
+        <xhtml:link rel="alternate" hreflang="de" href="https://biliardovna.sk/de/cafe" />
+    </url>
+
+    <!-- Contact -->
+    <url>
+        <loc>https://biliardovna.sk/kontakt</loc>
+        <lastmod>2025-12-24</lastmod>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="sk" href="https://biliardovna.sk/kontakt" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://biliardovna.sk/en/contact" />
+        <xhtml:link rel="alternate" hreflang="ru" href="https://biliardovna.sk/ru/contact" />
+        <xhtml:link rel="alternate" hreflang="uk" href="https://biliardovna.sk/uk/contact" />
+        <xhtml:link rel="alternate" hreflang="de" href="https://biliardovna.sk/de/contact" />
+    </url>
+
+    <!-- Privacy Policy -->
+    <url>
+        <loc>https://biliardovna.sk/ochrana-osobnych-udajov</loc>
+        <lastmod>2025-12-24</lastmod>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="sk" href="https://biliardovna.sk/ochrana-osobnych-udajov" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://biliardovna.sk/en/privacy" />
+        <xhtml:link rel="alternate" hreflang="ru" href="https://biliardovna.sk/ru/privacy" />
+        <xhtml:link rel="alternate" hreflang="uk" href="https://biliardovna.sk/uk/privacy" />
+        <xhtml:link rel="alternate" hreflang="de" href="https://biliardovna.sk/de/privacy" />
+    </url>
+
+    <!-- Terms -->
+    <url>
+        <loc>https://biliardovna.sk/vop</loc>
+        <lastmod>2025-12-24</lastmod>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="sk" href="https://biliardovna.sk/vop" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://biliardovna.sk/en/terms" />
+        <xhtml:link rel="alternate" hreflang="ru" href="https://biliardovna.sk/ru/terms" />
+        <xhtml:link rel="alternate" hreflang="uk" href="https://biliardovna.sk/uk/terms" />
+        <xhtml:link rel="alternate" hreflang="de" href="https://biliardovna.sk/de/terms" />
+    </url>
+</urlset>

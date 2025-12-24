@@ -1,2 +1,10 @@
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /booking/confirm
+Disallow: /booking/cancel
+Disallow: /scripts
+Disallow: /vendor
+
+Sitemap: https://biliardovna.sk/sitemap.xml

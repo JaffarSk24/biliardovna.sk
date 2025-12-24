@@ -319,7 +319,12 @@ return [
     'service_darts_full' => 'Darts ist ein klassisches Spiel, das Präzision, Konzentration und Spaß kombiniert. Unsere 5 professionellen Dartscheiben bieten ein authentisches Spielerlebnis für Einzelspieler und Gruppen. Ideal für Firmenveranstaltungen, Feiern oder freundschaftliche Wettbewerbe mit Freunden.',
 
     'service_table-football_short' => 'Tischfußball',
-    'service_table-football_full' => 'Tischfußball ist ein schnelles und aufregendes Spiel für zwei oder vier Spieler. Es erfordert schnelle Reflexe, Koordination und Teamarbeit. Unsere 2 professionellen Automaten bieten ein reibungsloses Spiel und sind ideal für Turniere und Freizeitspiele mit Freunden.',
+    'service_table-football_full' => 'Tischfußball ist ein schnelles und spannendes Spiel für zwei oder vier Spieler. Es erfordert schnelle Reflexe, Koordination und Teamarbeit. Unsere 2 professionellen Automaten bieten ein flüssiges Spiel und sind ideal für Turniere oder Freizeitspiele mit Freunden.',
+
+    'service_shuffleboard_name' => 'Shuffleboard',
+    'service_shuffleboard_description' => 'Shuffleboard',
+    'service_shuffleboard_short' => 'Shuffleboard',
+    'service_shuffleboard_full' => 'Shuffleboard ist ein einzigartiges Gesellschaftsspiel, das Elemente von Curling und Bowling auf einem Tisch kombiniert. Ziel ist es, den Puck so weit wie möglich in die Wertungszone zu schieben, ohne dass er vom Tisch fällt. Es ist ein großer Spaß für Freundesgruppen, Paare und Teambuilding-Events. Das Spiel ist körperlich nicht anstrengend und macht süchtig.',
 
     // Booking form translations
     'no_slots_available' => 'Keine freien Slots',
@@ -348,6 +353,7 @@ return [
     'services_title' => 'Unsere Spiele',
     'hour' => 'Stunde',
     'holidays' => 'Feiertage und Wochenenden',
+    'table_singular' => 'Tisch',
     'tables' => 'Tische',
     'targets' => 'Dartscheiben',
     'football_tables' => 'Tische',
@@ -471,6 +477,18 @@ return [
     'games_foosball_feature2' => 'Hochwertige Figuren und glatte Oberfläche',
     'games_foosball_feature3' => 'Spaß für Freunde und Familie',
 
+    // Games page - Shuffleboard
+    'games_shuffleboard_title' => 'Shuffleboard',
+    'games_shuffleboard_history_title' => 'Geschichte und Wesen des Spiels',
+    'games_shuffleboard_history' => 'Shuffleboard hat seine Wurzeln im England des 15. Jahrhunderts. Es ist ein Spiel, das Gefühl, Strategie und eine ruhige Hand erfordert. Die Spieler schieben Pucks ("Steine") über einen langen glatten Tisch, um sie in die Wertungszonen am gegenüberliegenden Ende zu bringen und gleichzeitig gegnerische Pucks wegzustoßen.',
+    'games_shuffleboard_variations_title' => 'Spielvarianten',
+    'games_shuffleboard_variations' => 'Die bekannteste Version ist Knock Off, gespielt bis 15 Punkte. Andere beliebte Varianten sind Horse Collar (Spiel um die höchste Punktzahl) und Crazy Eight. Die Regeln sind einfach zu lernen, aber Meisterschaft erfordert Übung.',
+    'games_shuffleboard_equipment_title' => 'Unsere Ausstattung',
+    'games_shuffleboard_equipment' => 'Unser Club verfügt über einen einzigartigen professionellen 12-Fuß-Shuffleboard-Tisch. Die Spielfläche besteht aus massivem Ahorn mit einer Polymerbeschichtung für perfektes Gleiten. Professionelle Pucks und spezieller Sand (Wachs) stehen für optimale Spielgeschwindigkeit zur Verfügung.',
+    'games_shuffleboard_feature1' => 'Professioneller Massivholztisch',
+    'games_shuffleboard_feature2' => 'Perfektes Gleiten',
+    'games_shuffleboard_feature3' => 'Einzigartig in der Umgebung',
+
     // Pricing Section
     'pricing_title' => 'Preisliste',
     'pricing_subtitle' => 'Transparente Preise für alle unsere Dienstleistungen',
@@ -500,4 +518,104 @@ return [
     'blog_subtitle' => 'Folgen Sie unseren Neuigkeiten, Turnieren und Aktionen',
     'blog_read_button' => 'Weiterlesen',
     'back_to_blog' => 'Zurück zum Blog',
+    'back_to_blog' => 'Zurück zum Blog',
+
+    // Privacy Policy
+    'privacy_title' => 'Datenschutzrichtlinie',
+    'privacy_content' => '
+        <h2>1. Allgemeine Bestimmungen</h2>
+        <p>Der Verantwortliche für personenbezogene Daten im Sinne von Art. 4 Ziff. 7 der Verordnung (EU) 2016/679 des Europäischen Parlaments und des Rates zum Schutz natürlicher Personen bei der Verarbeitung personenbezogener Daten und zum freien Datenverkehr (nachfolgend: "DSGVO") ist <strong>Biliardovňa.sk</strong> (nachfolgend: "Verantwortlicher").</p>
+        
+        <h2>2. Quellen und Kategorien der verarbeiteten personenbezogenen Daten</h2>
+        <p>Der Verantwortliche verarbeitet personenbezogene Daten, die Sie ihm zur Verfügung gestellt haben, oder personenbezogene Daten, die der Verantwortliche aufgrund der Erfüllung Ihrer Bestellung erhalten hat:</p>
+        <ul>
+            <li>Name und Nachname</li>
+            <li>E-Mail-Adresse</li>
+            <li>Telefonnummer</li>
+        </ul>
+
+        <h2>3. Rechtsgrundlage und Zweck der Verarbeitung personenbezogener Daten</h2>
+        <p>Die Rechtsgrundlage für die Verarbeitung personenbezogener Daten ist:</p>
+        <ul>
+            <li>Erfüllung des Vertrags zwischen Ihnen und dem Verantwortlichen gemäß Art. 6 Abs. 1 lit. b) DSGVO (Tischreservierung).</li>
+            <li>Das berechtigte Interesse des Verantwortlichen an der Bereitstellung von Direktmarketing (insbesondere für den Versand von geschäftlichen Mitteilungen und Newslettern) gemäß Art. 6 Abs. 1 lit. f) DSGVO.</li>
+        </ul>
+        <p>Der Zweck der Verarbeitung personenbezogener Daten ist:</p>
+        <ul>
+            <li>Bearbeitung Ihrer Bestellung/Reservierung und Ausübung der Rechte und Pflichten aus dem Vertragsverhältnis zwischen Ihnen und dem Verantwortlichen.</li>
+            <li>Analyse des Website-Verkehrs über Tools von Drittanbietern (Google Analytics, Meta Pixel, Microsoft Clarity, Bing).</li>
+        </ul>
+
+        <h2>4. Datenspeicherfrist</h2>
+        <p>Der Verantwortliche speichert personenbezogene Daten:</p>
+        <ul>
+            <li>Für den Zeitraum, der zur Ausübung der Rechte und Pflichten aus dem Vertragsverhältnis zwischen Ihnen und dem Verantwortlichen erforderlich ist, und zur Geltendmachung von Ansprüchen aus diesen Vertragsverhältnissen (für einen Zeitraum von 10 Jahren ab Beendigung des Vertragsverhältnisses).</li>
+            <li>Bis zum Widerruf der Einwilligung zur Verarbeitung personenbezogener Daten für Marketingzwecke, maximal jedoch 5 Jahre, wenn die personenbezogenen Daten auf der Grundlage einer Einwilligung verarbeitet werden.</li>
+        </ul>
+
+        <h2>5. Empfänger personenbezogener Daten (Subunternehmer des Verantwortlichen)</h2>
+        <p>Empfänger personenbezogener Daten sind Personen:</p>
+        <ul>
+            <li>Die an der Lieferung von Waren / Dienstleistungen / Ausführung von Zahlungen aufgrund eines Vertrags beteiligt sind.</li>
+            <li>Die Dienstleistungen für den Betrieb der Website und andere Dienstleistungen im Zusammenhang mit dem Betrieb der Website erbringen.</li>
+            <li>Die Marketingdienstleistungen erbringen (Google, Meta, Microsoft).</li>
+        </ul>
+
+        <h2>6. Cookies und Analysetools</h2>
+        <p>Unsere Website verwendet Cookies und Analysetools:</p>
+        <ul>
+            <li><strong>Google Analytics:</strong> Dient zur Analyse des Verkehrs und des Benutzerverhaltens auf der Website.</li>
+            <li><strong>Meta Pixel:</strong> Dient zur Messung von Conversions und zur Ausrichtung von Werbung auf Facebook und Instagram.</li>
+            <li><strong>Microsoft Clarity:</strong> Zeichnet das Benutzerverhalten auf (Heatmaps, Aufzeichnungen), damit wir die Benutzererfahrung verbessern können.</li>
+            <li><strong>Bing Ads:</strong> Dient zur Verfolgung von Conversions aus der Suchmaschine Bing.</li>
+        </ul>
+
+        <h2>7. Ihre Rechte</h2>
+        <p>Unter den in der DSGVO festgelegten Bedingungen haben Sie:</p>
+        <ul>
+            <li>Das Recht auf Auskunft über Ihre personenbezogenen Daten gemäß Art. 15 DSGVO.</li>
+            <li>Das Recht auf Berichtigung personenbezogener Daten gemäß Art. 16 DSGVO oder Einschränkung der Verarbeitung gemäß Art. 18 DSGVO.</li>
+            <li>Das Recht auf Löschung personenbezogener Daten gemäß Art. 17 DSGVO.</li>
+            <li>Das Recht auf Widerspruch gegen die Verarbeitung gemäß Art. 21 DSGVO.</li>
+            <li>Das Recht auf Datenübertragbarkeit gemäß Art. 20 DSGVO.</li>
+            <li>Das Recht, die Einwilligung zur Verarbeitung schriftlich oder elektronisch an die Adresse oder E-Mail des Verantwortlichen zu widerrufen.</li>
+        </ul>
+    ',
+
+    // Terms & Conditions (VOP)
+    'terms_title' => 'Allgemeine Geschäftsbedingungen',
+    'terms_content' => '
+        <h2>1. Allgemeine Bestimmungen</h2>
+        <p>Diese Allgemeinen Geschäftsbedingungen (nachfolgend "AGB") regeln die Beziehungen zwischen dem Betreiber des Clubs Biliardovňa.sk (nachfolgend "Betreiber") und den Clubbesuchern (nachfolgend "Kunde"). Durch das Betreten der Clubräume oder das Vornehmen einer Reservierung erklärt der Kunde sein Einverständnis mit diesen AGB.</p>
+
+        <h2>2. Verhaltensregeln im Club</h2>
+        <p>Um eine angenehme und sichere Umgebung für alle Besucher zu gewährleisten, gelten in den Clubräumen folgende Regeln:</p>
+        <ul>
+            <li>Der Zutritt zum Club ist nur Personen gestattet, die nicht unter dem Einfluss von Rauschmitteln stehen.</li>
+            <li>Der Konsum von Drogen und Rauschmitteln ist in den Clubräumen <strong>strengstens verboten</strong>. Ein Verstoß gegen dieses Verbot führt zum sofortigen Verweis aus dem Club und zu einem weiteren Zutrittsverbot.</li>
+            <li>Der Verzehr von eigenen alkoholischen und alkoholfreien Getränken sowie Speisen ist in den Clubräumen <strong>verboten</strong>.</li>
+            <li>Besucher sind verpflichtet, sich rücksichtsvoll gegenüber anderen Gästen und dem Personal zu verhalten und das Spiel nicht durch lautes Verhalten oder unangemessenes Verhalten zu stören.</li>
+            <li>Es ist verboten, auf Billardtischen zu sitzen, Getränke oder Speisen darauf abzustellen und die Clubausrüstung in irgendeiner Weise zu beschädigen.</li>
+        </ul>
+
+        <h2>3. Leistungserbringung und Hausrecht</h2>
+        <p>Der Betreiber behält sich das Recht vor:</p>
+        <ul>
+            <li><strong>Bedienung oder Zutritt jeder Person ohne Angabe von Gründen zu verweigern</strong> und ohne Anspruch auf Rückerstattung, insbesondere wenn die Person gegen die AGB verstößt, unter dem Einfluss von Alkohol oder Drogen steht, sich aggressiv verhält oder andere Gäste stört.</li>
+            <li>Eine Person, die gegen Regeln oder die guten Sitten verstößt, aus dem Club zu verweisen.</li>
+        </ul>
+
+        <h2>4. Café und Konsum</h2>
+        <p><strong>Das Bestellsystem im Café ist an aktive Spieltische gebunden.</strong> Die Nutzung der Café-Dienstleistungen ist in erster Linie für spielende Kunden bestimmt. Der Betreiber behält sich das Recht vor, Personen, die kein Spiel reserviert haben, nicht zu bedienen, um Komfort und Verfügbarkeit der Dienstleistungen für Spieler zu gewährleisten.</p>
+
+        <h2>5. Reservierungen und Stornierungsbedingungen</h2>
+        <p>Reservierungen können online über die Website oder telefonisch vorgenommen werden.</p>
+        <ul>
+            <li>Die Reservierung ist nach Bestätigung durch den Betreiber gültig.</li>
+            <li>Bei einer Verspätung von mehr als 15 Minuten ohne vorherige Ankündigung behält sich der Betreiber das Recht vor, die Reservierung zu stornieren und den Tisch anderen Interessenten anzubieten.</li>
+        </ul>
+
+        <h2>6. Haftung für Schäden</h2>
+        <p>Der Kunde haftet für alle Schäden, die am Eigentum des Betreibers verursacht wurden (z. B. Beschädigung des Tuchs, Bruch eines Queues, Bruch von Inventar) und ist verpflichtet, diese vollständig vor Ort zu bezahlen.</p>
+    ',
 ];

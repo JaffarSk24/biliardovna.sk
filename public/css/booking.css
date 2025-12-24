@@ -574,3 +574,8 @@ select:disabled {
 #popup-service-icon[data-service="4"]::after {
   background-image: url("/public/images/table-football.png");
 }
+
+#popup-service-icon[data-service="5"]::before,
+#popup-service-icon[data-service="5"]::after {
+  background-image: url("/public/images/shuffleboard-icon.png");
+}

@@ -24,6 +24,9 @@
       <button class="pricing-tab" data-service="3">
         {{ translations.games_darts_title|default('Šípky') }}
       </button>
+      <button class="pricing-tab" data-service="5">
+        {{ translations.games_shuffleboard_title|default('Shuffleboard') }}
+      </button>
       {# <button class="pricing-tab" data-service="4">
         {{ translations.games_foosball_title|default('Stolný futbal') }}
       </button> #}
@@ -235,6 +238,76 @@
           <button class="btn-primary btn-book-service"
                   data-service-id="3"
                   data-trigger='{"service":3}'>
+            {{ translations.btn_book|default('Rezervovať') }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Shuffleboard -->
+      <div class="pricing-table-wrapper" data-service="5">
+        <div class="pricing-table-scroll">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th>{{ translations.pricing_time|default('Čas') }}</th>
+                <th>{{ translations.pricing_monday|default('Pondelok') }}</th>
+                <th>{{ translations.pricing_tuesday|default('Utorok') }}</th>
+                <th>{{ translations.pricing_wednesday|default('Streda') }}</th>
+                <th>{{ translations.pricing_thursday|default('Štvrtok') }}</th>
+                <th>{{ translations.pricing_friday|default('Piatok') }}</th>
+                <th>{{ translations.pricing_saturday|default('Sobota') }}</th>
+                <th>{{ translations.pricing_sunday|default('Nedeľa') }}</th>
+                <th class="holiday-col">{{ translations.pricing_holiday|default('Sviatky') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="time-col">16:00 - 17:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">17:00 - 18:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">18:00 - 19:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">19:00 - 20:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">20:00 - 21:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">21:00 - 22:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">22:00 - 23:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+              <tr>
+                <td class="time-col">23:00 - 00:00</td>
+                <td>4 €</td><td>4.5 €</td><td>5 €</td><td>5.5 €</td><td>6 €</td><td>7 €</td><td>6.5 €</td>
+                <td class="holiday-price">7 €</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pricing-action">
+          <button class="btn-primary btn-book-service"
+                  data-service-id="5"
+                  data-trigger='{"service":5}'>
             {{ translations.btn_book|default('Rezervovať') }}
           </button>
         </div>

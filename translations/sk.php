@@ -306,6 +306,8 @@ return [
     'service_table-football_name' => 'Stolný futbal',
     'service_tablefootball_name' => 'Stolný futbal',
     'service_table-football_description' => 'Stolný futbal',
+    'service_shuffleboard_name' => 'Shuffleboard',
+    'service_shuffleboard_description' => 'Shuffleboard',
 
     // Services detailed descriptions
     'service_piramida_short' => 'Európska pyramída',
@@ -319,6 +321,9 @@ return [
 
     'service_table-football_short' => 'Stolný futbal',
     'service_table-football_full' => 'Stolný futbal je rýchla a napínavá hra pre dvoch alebo štyroch hráčov. Vyžaduje rýchle reflexy, koordináciu a tímovú prácu. Naše 2 profesionálne automaty ponúkajú plynulú hru a sú ideálne pre turnaje aj voľnočasové hranie s priateľmi.',
+
+    'service_shuffleboard_short' => 'Shuffleboard',
+    'service_shuffleboard_full' => 'Shuffleboard je jedinečná spoločenská hra, ktorá kombinuje prvky curlingu a bowlingu na stole. Cieľom je posunúť puk čo najďalej do bodovanej zóny bez toho, aby spadol z konca stola. Je to skvelá zábava pre skupiny priateľov, páriky aj firemné teambuildingy. Hra je fyzicky nenáročná a veľmi návyková.',
 
     // Booking form translations
     'no_slots_available' => 'Žiadne voľné termíny',
@@ -347,6 +352,7 @@ return [
     'services_title' => 'Naše hry',
     'hour' => 'hodina',
     'holidays' => 'Sviatky a víkendy',
+    'table_singular' => 'stôl',
     'tables' => 'stoly',
     'targets' => 'terčov',
     'football_tables' => 'stoly',
@@ -470,6 +476,18 @@ return [
     'games_foosball_feature2' => 'Kvalitné figúrky a hladký povrch',
     'games_foosball_feature3' => 'Zábava pre priateľov a rodinu',
 
+    // Games page - Shuffleboard
+    'games_shuffleboard_title' => 'Shuffleboard',
+    'games_shuffleboard_history_title' => 'História a podstata hry',
+    'games_shuffleboard_history' => 'Shuffleboard má svoje korene v Anglicku 15. storočia. Je to hra, ktorá vyžaduje cit, stratégiu a pevnú ruku. Hráči posúvajú puky ("kamene") po dlhom hladkom stole s cieľom dosiahnuť bodované zóny na opačnom konci a zároveň vyradiť súperove puky.',
+    'games_shuffleboard_variations_title' => 'Varianty hry',
+    'games_shuffleboard_variations' => 'Najznámejšia verzia je Knock Off, kde sa hrá do 15 bodov. Ďalšie populárne varianty sú Horse Collar (hrá sa na najvyššie skóre) a Crazy Eight. Pravidlá sú jednoduché na naučenie, ale majstrovstvo vyžaduje tréning.',
+    'games_shuffleboard_equipment_title' => 'Naše vybavenie',
+    'games_shuffleboard_equipment' => 'Náš klub disponuje unikátnym profesionálnym stolom pre Shuffleboard s dĺžkou 12 stôp. Hracia plocha je vyrobená z masívneho javorového dreva s polymérovým povrchom pre dokonalý sklz. K dispozícii sú profesionálne puky a špeciálny piesok (vosk) pre optimálnu rýchlosť hry.',
+    'games_shuffleboard_feature1' => 'Profesionálny stôl z masívu',
+    'games_shuffleboard_feature2' => 'Dokonalý sklz',
+    'games_shuffleboard_feature3' => 'Jediný stôl v okolí',
+
     // Pricing Section
     'pricing_title' => 'Cenník',
     'pricing_subtitle' => 'Transparentné ceny pre všetky naše služby',
@@ -499,4 +517,104 @@ return [
     'blog_subtitle' => 'Sledujte naše novinky, turnaje a akcie',
     'blog_read_button' => 'Čítať ďalej',
     'back_to_blog' => 'Späť na blog',
+    'back_to_blog' => 'Späť na blog',
+
+    // Privacy Policy
+    'privacy_title' => 'Ochrana osobných údajov',
+    'privacy_content' => '
+        <h2>1. Úvodné ustanovenia</h2>
+        <p>Prevádzkovateľom osobných údajov podľa čl. 4 bod 7 nariadenia Európskeho parlamentu a Rady (EÚ) 2016/679 o ochrane fyzických osôb pri spracúvaní osobných údajov a o voľnom pohybe takýchto údajov (ďalej len: "GDPR") je <strong>Biliardovňa.sk</strong> (ďalej len: "prevádzkovateľ").</p>
+        
+        <h2>2. Zdroje a kategórie spracúvaných osobných údajov</h2>
+        <p>Prevádzkovateľ spracúva osobné údaje, ktoré ste mu poskytli alebo osobné údaje, ktoré prevádzkovateľ získal na základe plnenia Vašej objednávky:</p>
+        <ul>
+            <li>Meno a priezvisko</li>
+            <li>E-mailová adresa</li>
+            <li>Telefónne číslo</li>
+        </ul>
+
+        <h2>3. Zákonný dôvod a účel spracúvania osobných údajov</h2>
+        <p>Zákonným dôvodom spracúvania osobných údajov je:</p>
+        <ul>
+            <li>Plnenie zmluvy medzi Vami a prevádzkovateľom podľa čl. 6 ods. 1 písm. b) GDPR (rezervácia stola).</li>
+            <li>Oprávnený záujem prevádzkovateľa na poskytovaní priameho marketingu (najmä pre zasielanie obchodných oznamov a newsletterov) podľa čl. 6 ods. 1 písm. f) GDPR.</li>
+        </ul>
+        <p>Účelom spracúvania osobných údajov je:</p>
+        <ul>
+            <li>Vybavenie Vašej objednávky/rezervácie a výkon práv a povinností vyplývajúcich zo zmluvného vzťahu medzi Vami a prevádzkovateľom.</li>
+            <li>Analytika návštevnosti webu prostredníctvom nástrojov tretích strán (Google Analytics, Meta Pixel, Microsoft Clarity, Bing).</li>
+        </ul>
+
+        <h2>4. Doba uchovávania údajov</h2>
+        <p>Prevádzkovateľ uchováva osobné údaje:</p>
+        <ul>
+            <li>Po dobu nevyhnutnú k výkonu práv a povinností vyplývajúcich zo zmluvného vzťahu medzi Vami a prevádzkovateľom a uplatňovanie nárokov z týchto zmluvných vzťahov (po dobu 10 rokov od ukončenia zmluvného vzťahu).</li>
+            <li>Po dobu, kým je odvolaný súhlas so spracúvaním osobných údajov pre účely marketingu, najdlhšie 5 rokov, ak sú osobné údaje spracúvané na základe súhlasu.</li>
+        </ul>
+
+        <h2>5. Príjemcovia osobných údajov (subdodávatelia prevádzkovateľa)</h2>
+        <p>Príjemcami osobných údajov sú osoby:</p>
+        <ul>
+            <li>Podieľajúce sa na dodávaní tovaru / služieb / realizácii platieb na základe zmluvy.</li>
+            <li>Zaisťujúce služby prevádzkovania webu a ďalšie služby v súvislosti s prevádzkovaním webu.</li>
+            <li>Zaisťujúce marketingové služby (Google, Meta, Microsoft).</li>
+        </ul>
+
+        <h2>6. Cookies a analytické nástroje</h2>
+        <p>Naša stránka používa súbory cookies a analytické nástroje:</p>
+        <ul>
+            <li><strong>Google Analytics:</strong> Slúži na analýzu návštevnosti a správania užívateľov na webe.</li>
+            <li><strong>Meta Pixel:</strong> Slúži na meranie konverzií a cielenie reklamy na Facebooku a Instagrame.</li>
+            <li><strong>Microsoft Clarity:</strong> Zaznamenáva správanie užívateľov (teplotné mapy, nahrávky), aby sme mohli zlepšovať užívateľskú skúsenosť.</li>
+            <li><strong>Bing Ads:</strong> Slúži na sledovanie konverzií z vyhľadávača Bing.</li>
+        </ul>
+
+        <h2>7. Vaše práva</h2>
+        <p>Za podmienok stanovených v GDPR máte:</p>
+        <ul>
+            <li>Právo na prístup k svojim osobným údajom podľa čl. 15 GDPR.</li>
+            <li>Právo na opravu osobných údajov podľa čl. 16 GDPR, poprípade obmedzenie spracúvania podľa čl. 18 GDPR.</li>
+            <li>Právo na výmaz osobných údajov podľa čl. 17 GDPR.</li>
+            <li>Právo vzniesť námietku proti spracúvaniu podľa čl. 21 GDPR.</li>
+            <li>Právo na prenosnosť údajov podľa čl. 20 GDPR.</li>
+            <li>Právo odvolať súhlas so spracúvaním písomne alebo elektronicky na adresu alebo email prevádzkovateľa.</li>
+        </ul>
+    ',
+
+    // Terms & Conditions (VOP)
+    'terms_title' => 'Všeobecné obchodné podmienky',
+    'terms_content' => '
+        <h2>1. Všeobecné ustanovenia</h2>
+        <p>Tieto Všeobecné obchodné podmienky (ďalej len "VOP") upravujú vzťahy medzi prevádzkovateľom klubu Biliardovňa.sk (ďalej len "prevádzkovateľ") a návštevníkmi klubu (ďalej len "klient"). Vstupom do priestorov klubu alebo vykonaním rezervácie klient vyjadruje súhlas s týmito VOP.</p>
+
+        <h2>2. Pravidlá správania sa v klube</h2>
+        <p>Na zabezpečenie príjemného a bezpečného prostredia pre všetkých návštevníkov platia v priestoroch klubu nasledujúce pravidlá:</p>
+        <ul>
+            <li>Vstup do klubu je povolený len osobám, ktoré nie sú pod vplyvom omamných látok.</li>
+            <li>V priestoroch klubu je <strong>prísne zakázané užívanie drog a omamných látok</strong>. Porušenie tohto zákazu vedie k okamžitému vykázaniu z klubu a zákazu ďalšieho vstupu.</li>
+            <li>V priestoroch klubu je <strong>zakázaná konzumácia vlastných alkoholických a nealkoholických nápojov a jedál</strong>.</li>
+            <li>Návštevníci sú povinní správať sa ohľaduplne k ostatným hosťom a personálu, nerušiť hru hlučným správaním alebo nevhodným vystupovaním.</li>
+            <li>Je zakázané sadať si na biliardové stoly, klásť na ne nápoje alebo jedlo a akýmkoľvek spôsobom poškodzovať vybavenie klubu.</li>
+        </ul>
+
+        <h2>3. Poskytovanie služieb a právo odmietnuť obsluhu</h2>
+        <p>Prevádzkovateľ si vyhradzuje právo:</p>
+        <ul>
+            <li><strong>Odmietnuť obsluhu alebo vstup akejkoľvek osobe bez udania dôvodu</strong> a bez nároku na vrátenie peňazí, najmä ak osoba porušuje VOP, je pod vplyvom alkoholu alebo drog, správa sa agresívne alebo obťažuje ostatných hostí.</li>
+            <li>Vykázať z klubu osobu, ktorá porušuje pravidlá alebo dobré mravy.</li>
+        </ul>
+
+        <h2>4. Kaviareň a konzumácia</h2>
+        <p><strong>Systém objednávok v kaviarni je viazaný na aktívne herné stoly.</strong> Využívanie služieb kaviarne je určené primárne pre hrajúcich zákazníkov. Prevádzkovateľ si vyhradzuje právo neobslúžiť osoby, ktoré nemajú rezervovanú hru, aby zabezpečil komfort a dostupnosť služieb pre hráčov.</p>
+
+        <h2>5. Rezervácie a storno podmienky</h2>
+        <p>Rezervácie je možné vytvoriť online cez webovú stránku alebo telefonicky.</p>
+        <ul>
+            <li>Rezervácia je platná po potvrdení zo strany prevádzkovateľa.</li>
+            <li>Pri meškaní viac ako 15 minút bez predchádzajúceho oznámenia si prevádzkovateľ vyhradzuje právo rezerváciu zrušiť a stôl ponúknuť iným záujemcom.</li>
+        </ul>
+
+        <h2>6. Zodpovednosť za škodu</h2>
+        <p>Klient zodpovedá za všetky škody spôsobené na majetku prevádzkovateľa (napr. poškodenie súkna, zlomenie tága, rozbitie inventáru) a je povinný ich uhradiť v plnej výške na mieste.</p>
+    ',
 ];

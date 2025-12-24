@@ -14,6 +14,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
+
+
 // Start session
 $config = require __DIR__ . '/../config/app.php';
 session_start([

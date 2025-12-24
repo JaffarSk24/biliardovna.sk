@@ -1,0 +1,12 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<section class="terms-section" style="padding: 120px 0 60px;">
+    <div class="container">
+        <h1>{{ t.terms_title|default(page_title) }}</h1>
+        <div class="content-block">
+            {{ t.terms_content|raw }}
+        </div>
+    </div>
+</section>
+{% endblock %}

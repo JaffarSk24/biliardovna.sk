@@ -12,6 +12,7 @@
                 <img src="/public/images/piramide.webp" alt="Pyramída">
                 <img src="/public/images/pull.webp" alt="Pool">
                 <img src="/public/images/darts.webp" alt="Darts">
+                <img src="/public/images/shuffleboard.webp" alt="Shuffleboard">
                 {# <img src="/public/images/football.webp" alt="Stolný futbal"> #}
             </div>
         </div>
@@ -133,6 +134,43 @@
             <div class="game-actions">
                 <a href="/cennik" class="btn-secondary">{{ translations.btn_view_pricing|default('Zobraziť cenník') }}</a>
                 <button class="btn-primary btn-book-service" data-service-id="3">{{ translations.btn_book|default('Rezervovať') }}</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="game-detail">
+    <div class="container">
+        <div class="game-content">
+            <div class="game-top">
+                <div class="game-image">
+                    <img src="/public/images/shuffleboard.webp" alt="Shuffleboard" loading="lazy">
+                </div>
+                <div class="game-text">
+                    <h2>{{ translations.games_shuffleboard_title|default('Shuffleboard') }}</h2>
+                    
+                    <div class="game-description">
+                        <h3>{{ translations.games_shuffleboard_history_title|default('História a podstata hry') }}</h3>
+                        <p>{{ translations.games_shuffleboard_history|default('Shuffleboard je hra s dlhou históriou, ktorá kombinuje stratégiu a cit pre hru...') }}</p>
+                        
+                        <h3>{{ translations.games_shuffleboard_variations_title|default('Varianty hry') }}</h3>
+                        <p>{{ translations.games_shuffleboard_variations|default('Hra ponúka rôzne varianty pre zábavu aj súťaženie...') }}</p>
+                        
+                        <h3>{{ translations.games_shuffleboard_equipment_title|default('Naše vybavenie') }}</h3>
+                        <p>{{ translations.games_shuffleboard_equipment|default('V našom klube nájdete profesionálny stôl pre najlepší zážitok...') }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="game-features">
+                <li>{{ translations.games_shuffleboard_feature1|default('Profesionálny stôl') }}</li>
+                <li>{{ translations.games_shuffleboard_feature2|default('Kvalitný povrch') }}</li>
+                <li>{{ translations.games_shuffleboard_feature3|default('Skvelá zábava pre skupiny') }}</li>
+            </ul>
+            
+            <div class="game-actions">
+                <a href="/cennik" class="btn-secondary">{{ translations.btn_view_pricing|default('Zobraziť cenník') }}</a>
+                <button class="btn-primary btn-book-service" data-service-id="5">{{ translations.btn_book|default('Rezervovať') }}</button>
             </div>
         </div>
     </div>

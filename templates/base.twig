@@ -4,8 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/public/images/favicon.ico">
-    <title>{{ page_title|default('Biliardovna.sk') }}</title>
+    <title>{{ page_title|default('Biliardovňa.sk') }}</title>
     <meta name="description" content="{{ meta_description|default('Biliardový klub v Bratislave') }}">
+    <meta name="keywords" content="{{ meta_keywords|default('') }}">
+    <link rel="canonical" href="{{ canonical|default('') }}">
+
+    <meta property="og:title" content="{{ og_title|default(page_title|default('Biliardovňa.sk')) }}">
+    <meta property="og:description" content="{{ og_description|default(meta_description|default('')) }}">
+    <meta property="og:type" content="{{ og_type|default('website') }}">
+    <meta property="og:url" content="{{ og_url|default('') }}">
+    <meta property="og:image" content="{{ og_image|default('/public/images/og/default.jpg') }}">
+    <meta property="og:site_name" content="Biliardovňa.sk">
+    <meta property="og:locale" content="{{ language }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ og_title|default(page_title|default('Biliardovňa.sk')) }}">
+    <meta name="twitter:description" content="{{ og_description|default(meta_description|default('')) }}">
+    <meta name="twitter:image" content="{{ og_image|default('/public/images/og/default.jpg') }}">
+
+    {% for lang_code, url in alternates %}
+    <link rel="alternate" hreflang="{{ lang_code }}" href="{{ url }}">
+    {% endfor %}
 
     {# Базовые стили и токены #}
     <link rel="stylesheet" href="/public/css/variables.css">

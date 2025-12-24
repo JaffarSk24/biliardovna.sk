@@ -17,6 +17,10 @@
         <svg class="service-icon"><use href="#icon-darts"></use></svg>
         <span>{{ t.service_darts_name|default('Šípky') }}</span>
       </button>
+      <button type="button" class="service-tab" data-service="5" data-icon="icon-shuffleboard">
+        <svg class="service-icon"><use href="#icon-shuffleboard"></use></svg>
+        <span>{{ t.service_shuffleboard_name|default('Shuffleboard') }}</span>
+      </button>
       {# <button type="button" class="service-tab" data-service="4" data-icon="icon-football">
         <svg class="service-icon"><use href="#icon-football"></use></svg>
         <span>{{ t.games_foosball_title|default('Stolný futbal') }}</span>
@@ -187,6 +191,14 @@
       <circle cx="7" cy="12" r="1.2" fill="currentColor"/>
       <circle cx="12" cy="12" r="1.2" fill="currentColor"/>
       <circle cx="17" cy="12" r="1.2" fill="currentColor"/>
+      <circle cx="17" cy="12" r="1.2" fill="currentColor"/>
+    </symbol>
+    <symbol id="icon-shuffleboard" viewBox="0 0 24 24">
+      <rect x="4" y="2" width="16" height="20" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="1"/>
+      <line x1="4" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="1"/>
+      <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
     </symbol>
   </defs>
 </svg>

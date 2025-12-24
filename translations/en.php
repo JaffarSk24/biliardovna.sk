@@ -319,7 +319,12 @@ return [
     'service_darts_full' => 'Darts is a classic game that combines precision, concentration and fun. Our 5 professional dartboards offer an authentic gaming experience for individuals and groups. Ideal for corporate events, celebrations or friendly competitions with friends.',
 
     'service_table-football_short' => 'Table Football',
-    'service_table-football_full' => 'Table football is a fast-paced and exciting game for two or four players. It requires quick reflexes, coordination and teamwork. Our 2 professional tables provide smooth gameplay and are ideal for tournaments and casual play with friends.',
+    'service_table-football_full' => 'Table football is a fast and exciting game for two or four players. It requires quick reflexes, coordination, and teamwork. Our 2 professional tables offer smooth gameplay and are perfect for tournaments or casual play with friends.',
+
+    'service_shuffleboard_name' => 'Shuffleboard',
+    'service_shuffleboard_description' => 'Shuffleboard',
+    'service_shuffleboard_short' => 'Shuffleboard',
+    'service_shuffleboard_full' => 'Shuffleboard is a unique social game combining elements of curling and bowling on a table. The goal is to slide the puck as far as possible into the scoring zone without it falling off the end. It is great fun for groups of friends, couples, and corporate teambuilding. The game is physically undemanding yet very addictive.',
 
     // Booking form translations
     'no_slots_available' => 'No available slots',
@@ -348,6 +353,7 @@ return [
     'services_title' => 'Our Games',
     'hour' => 'hour',
     'holidays' => 'Holidays and weekends',
+    'table_singular' => 'table',
     'tables' => 'tables',
     'targets' => 'dartboards',
     'football_tables' => 'tables',
@@ -468,8 +474,20 @@ return [
     'games_foosball_equipment_title' => 'Our Equipment',
     'games_foosball_equipment' => 'Our club has 2 professional foosball tables with robust constructions, precisely balanced rods, and quality playing surfaces. Tables are equipped with ergonomic handles and non-slip legs for stability during intense play. Figurines are made of durable material and regularly maintained. Perfect for friendly gatherings, corporate events, or family celebrations.',
     'games_foosball_feature1' => '2 professional tables',
-    'games_foosball_feature2' => 'Quality figurines and smooth surface',
+    'games_foosball_feature2' => 'Quality figures and smooth surface',
     'games_foosball_feature3' => 'Fun for friends and family',
+
+    // Games page - Shuffleboard
+    'games_shuffleboard_title' => 'Shuffleboard',
+    'games_shuffleboard_history_title' => 'History and Essence',
+    'games_shuffleboard_history' => 'Shuffleboard has its roots in 15th-century England. It requires touch, strategy, and a steady hand. Players slide pucks down a long smooth table aiming for scoring zones at the opposite end while knocking opponent pucks off.',
+    'games_shuffleboard_variations_title' => 'Game Variations',
+    'games_shuffleboard_variations' => 'The most famous version is Knock Off, played to 15 points. Other popular variants include Horse Collar and Crazy Eight. Rules are simple to learn, but mastery takes practice.',
+    'games_shuffleboard_equipment_title' => 'Our Equipment',
+    'games_shuffleboard_equipment' => 'Our club features a unique professional 12ft shuffleboard table. The playing surface is made of solid maple with a polymer coating for perfect glide. Professional pucks and special sand (wax) are available for optimal game speed.',
+    'games_shuffleboard_feature1' => 'Professional solid wood table',
+    'games_shuffleboard_feature2' => 'Perfect glide',
+    'games_shuffleboard_feature3' => 'Unique in the area',
 
     // Pricing Section
     'pricing_title' => 'Pricing',
@@ -500,4 +518,104 @@ return [
     'blog_subtitle' => 'Follow our news, tournaments and promotions',
     'blog_read_button' => 'Read more',
     'back_to_blog' => 'Back to blog',
+    'back_to_blog' => 'Back to blog',
+
+    // Privacy Policy
+    'privacy_title' => 'Privacy Policy',
+    'privacy_content' => '
+        <h2>1. General Provisions</h2>
+        <p>The controller of personal data pursuant to Art. 4 point 7 of Regulation (EU) 2016/679 of the European Parliament and of the Council on the protection of natural persons with regard to the processing of personal data and on the free movement of such data (hereinafter: "GDPR") is <strong>Biliardovňa.sk</strong> (hereinafter: "Controller").</p>
+        
+        <h2>2. Sources and Categories of Processed Personal Data</h2>
+        <p>The Controller processes personal data that you have provided or personal data that the Controller has obtained based on the fulfillment of your order:</p>
+        <ul>
+            <li>Name and surname</li>
+            <li>Email address</li>
+            <li>Phone number</li>
+        </ul>
+
+        <h2>3. Legal Reason and Purpose of Processing Personal Data</h2>
+        <p>The legal reason for processing personal data is:</p>
+        <ul>
+            <li>Performance of the contract between you and the Controller pursuant to Art. 6 para. 1 letter b) GDPR (table reservation).</li>
+            <li>The legitimate interest of the Controller in providing direct marketing (especially for sending commercial communications and newsletters) pursuant to Art. 6 para. 1 letter f) GDPR.</li>
+        </ul>
+        <p>The purpose of processing personal data is:</p>
+        <ul>
+            <li>Processing your order/reservation and exercising the rights and obligations arising from the contractual relationship between you and the Controller.</li>
+            <li>Website traffic analytics via third-party tools (Google Analytics, Meta Pixel, Microsoft Clarity, Bing).</li>
+        </ul>
+
+        <h2>4. Data Retention Period</h2>
+        <p>The Controller retains personal data:</p>
+        <ul>
+            <li>For the period necessary to exercise the rights and obligations arising from the contractual relationship between you and the Controller and to assert claims from these contractual relationships (for a period of 10 years from the termination of the contractual relationship).</li>
+            <li>Until the consent to the processing of personal data for marketing purposes is withdrawn, for a maximum of 5 years, if the personal data is processed based on consent.</li>
+        </ul>
+
+        <h2>5. Recipients of Personal Data (Subcontractors of the Controller)</h2>
+        <p>Recipients of personal data are persons:</p>
+        <ul>
+            <li>Participating in the delivery of goods / services / execution of payments based on a contract.</li>
+            <li>Providing website operation services and other services in connection with the operation of the website.</li>
+            <li>Providing marketing services (Google, Meta, Microsoft).</li>
+        </ul>
+
+        <h2>6. Cookies and Analytical Tools</h2>
+        <p>Our site uses cookies and analytical tools:</p>
+        <ul>
+            <li><strong>Google Analytics:</strong> Used for analyzing traffic and user behavior on the website.</li>
+            <li><strong>Meta Pixel:</strong> Used for measuring conversions and targeting ads on Facebook and Instagram.</li>
+            <li><strong>Microsoft Clarity:</strong> Records user behavior (heatmaps, recordings) so we can improve the user experience.</li>
+            <li><strong>Bing Ads:</strong> Used for tracking conversions from the Bing search engine.</li>
+        </ul>
+
+        <h2>7. Your Rights</h2>
+        <p>Under the conditions set out in the GDPR, you have:</p>
+        <ul>
+            <li>The right to access your personal data pursuant to Art. 15 GDPR.</li>
+            <li>The right to rectification of personal data pursuant to Art. 16 GDPR, or restriction of processing pursuant to Art. 18 GDPR.</li>
+            <li>The right to erasure of personal data pursuant to Art. 17 GDPR.</li>
+            <li>The right to object to processing pursuant to Art. 21 GDPR.</li>
+            <li>The right to data portability pursuant to Art. 20 GDPR.</li>
+            <li>The right to withdraw consent to processing in writing or electronically to the address or email of the Controller.</li>
+        </ul>
+    ',
+
+    // Terms & Conditions (VOP)
+    'terms_title' => 'Terms & Conditions',
+    'terms_content' => '
+        <h2>1. General Provisions</h2>
+        <p>These Terms and Conditions (hereinafter "T&C") govern the relationship between the operator of the club Biliardovňa.sk (hereinafter "Operator") and club visitors (hereinafter "Client"). By entering the club premises or making a reservation, the Client expresses agreement with these T&C.</p>
+
+        <h2>2. Rules of Conduct in the Club</h2>
+        <p>To ensure a pleasant and safe environment for all visitors, the following rules apply in the club premises:</p>
+        <ul>
+            <li>Entry to the club is allowed only to persons not under the influence of intoxicating substances.</li>
+            <li>Use of drugs and intoxicating substances is <strong>strictly prohibited</strong> in the club premises. Violation of this prohibition leads to immediate expulsion from the club and a ban on further entry.</li>
+            <li>Consumption of own alcoholic and non-alcoholic beverages and food is <strong>prohibited</strong> in the club premises.</li>
+            <li>Visitors are obliged to behave considerately towards other guests and staff, not to disturb the game with loud behavior or inappropriate conduct.</li>
+            <li>It is forbidden to sit on billiard tables, place drinks or food on them, and in any way damage the club equipment.</li>
+        </ul>
+
+        <h2>3. Provision of Services and Right to Refuse Service</h2>
+        <p>The Operator reserves the right to:</p>
+        <ul>
+            <li><strong>Refuse service or entry to any person without giving a reason</strong> and without the right to a refund, especially if the person violates the T&C, is under the influence of alcohol or drugs, behaves aggressively, or disturbs other guests.</li>
+            <li>Expel from the club a person who violates rules or good morals.</li>
+        </ul>
+
+        <h2>4. Cafe and Consumption</h2>
+        <p><strong>The ordering system in the cafe is linked to active game tables.</strong> The use of cafe services is intended primarily for playing customers. The Operator reserves the right not to serve persons who do not have a reserved game to ensure comfort and availability of services for players.</p>
+
+        <h2>5. Reservations and Cancellation Policy</h2>
+        <p>Reservations can be made online via the website or by phone.</p>
+        <ul>
+            <li>The reservation is valid after confirmation by the Operator.</li>
+            <li>In case of a delay of more than 15 minutes without prior notice, the Operator reserves the right to cancel the reservation and offer the table to other interested parties.</li>
+        </ul>
+
+        <h2>6. Liability for Damage</h2>
+        <p>The Client is liable for all damage caused to the Operator property (e.g., damage to cloth, breaking a cue, breaking inventory) and is obliged to pay for it in full on the spot.</p>
+    ',
 ];

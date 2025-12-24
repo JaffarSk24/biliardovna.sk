@@ -47,6 +47,41 @@ $router->get('/kontakt', function() use ($language) {
     (new PageController($language))->contact();
 });
 
+// SK Routes (Base)
+$router->get('/ochrana-osobnych-udajov', function() use ($language) {
+    (new PageController($language))->privacy();
+});
+
+$router->get('/vop', function() use ($language) {
+    (new PageController($language))->terms();
+});
+
+$router->get('/cookies', function() use ($language) {
+    (new PageController($language))->cookies();
+});
+
+// International Routes (Router auto-strips language prefix like /en/, /ru/)
+// So /en/privacy becomes /privacy here
+$router->get('/privacy', function() use ($language) { (new PageController($language))->privacy(); });
+$router->get('/terms', function() use ($language) { (new PageController($language))->terms(); });
+// Cookies route for international already covered by above if we map it, but let's be explicit
+// Actually, if I add $router->get('/cookies') above, it handles both /cookies (SK) and /en/cookies (EN)
+// because for SK language prefix is empty/default.
+// But wait, Router implementation details:
+// If request is /cookies, language is default (sk). Route /cookies matches.
+// If request is /en/cookies, Router strips /en, uri becomes /cookies. Route /cookies matches.
+// So one definition of /cookies is enough for ALL languages.
+
+// However, for Privacy and Terms, SK has UNIQUE URLs (/vop, /ochrana...), while others use shared keywords (/terms, /privacy).
+// So:
+// 1. /ochrana-osobnych-udajov -> SK only
+// 2. /vop -> SK only
+// 3. /privacy -> EN, RU, etc.
+// 4. /terms -> EN, RU, etc.
+// 5. /cookies -> ALL (SK + EN/RU/etc).
+
+// Redefining for clarity:
+
 // Blog routes
 $router->get('/blog', function() use ($router, $language) {
     // Note: BlogController seems to handle its own Twig setup in the original code. 

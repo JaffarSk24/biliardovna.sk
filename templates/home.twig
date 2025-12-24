@@ -103,10 +103,36 @@
                                 <span>6,50 - 7,00 €/{{ 'hour'|trans }}</span>
                             </div>
                         #}
+                        {% elseif service.id == 5 %}
+                            <div class="pricing-row">
+                                <span>16:00 - 19:00</span>
+                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>19:00 - 20:00</span>
+                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>20:00 - 00:00</span>
+                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                            </div>
+                            <div class="pricing-row highlight">
+                                <span>{{ 'holidays'|trans }}</span>
+                                <span>6,50 - 7,00 €/{{ 'hour'|trans }}</span>
+                            </div>
                         {% endif %}
                     </div>
                     <div class="service-footer-horizontal">
-                        <div class="tables-count">{{ service.tables_count }} {{ service.id == 3 ? 'targets'|trans : 'tables'|trans }}</div>
+                        <div class="tables-count">
+                            {{ service.tables_count }} 
+                            {% if service.id == 3 %}
+                                {{ 'targets'|trans }}
+                            {% elseif service.tables_count == 1 %}
+                                {{ 'table_singular'|trans|default('stôl') }}
+                            {% else %}
+                                {{ 'tables'|trans }}
+                            {% endif %}
+                        </div>
                         <button class="btn-book-service">{{ 'book_now'|trans }}</button>
                     </div>
                 </div>

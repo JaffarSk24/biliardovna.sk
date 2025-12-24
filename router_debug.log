@@ -1,0 +1,6 @@
+2025-12-24 13:12:18 Detect: URI=/en/privacy Segments[0]=en Supported=sk,en,ru,uk,de IsSupported=1
+2025-12-24 13:12:34 Detect: URI=/en/privacy Segments[0]=en Supported=sk,en,ru,uk,de IsSupported=1
+MATCHED: /privacy
+2025-12-24 13:13:18 Detect: URI=/en/privacy Segments[0]=en Supported=sk,en,ru,uk,de IsSupported=1
+MATCHED: /privacy
+PageController::privacy called for language en
