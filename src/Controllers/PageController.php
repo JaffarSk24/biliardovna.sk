@@ -8,7 +8,7 @@ class PageController extends Controller
     {
         try {
             $pdo = \App\Database\Database::getInstance();
-            
+
             $stmt = $pdo->prepare("
                 SELECT title, slug, excerpt, image
                 FROM articles 
@@ -19,7 +19,7 @@ class PageController extends Controller
             ");
             $stmt->execute(['language' => $this->language]);
             $articles = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             $events = [];
             foreach ($articles as $article) {
                 $events[] = [
@@ -29,7 +29,7 @@ class PageController extends Controller
                     'url' => '/' . $this->language . '/blog/' . $article['slug']
                 ];
             }
-            
+
             return $events;
         } catch (\Exception $e) {
             return [];
@@ -37,6 +37,45 @@ class PageController extends Controller
     }
 
     private $metadata = [];
+
+    private function getAlternates(string $pageKey, string $baseUri): array
+    {
+        $supported = ['sk', 'en', 'ru', 'uk', 'de'];
+
+        $paths = [
+            'home' => ['sk' => '/', 'base' => ''],
+            'games' => ['sk' => '/biliard-a-hry', 'base' => '/games'],
+            'pricing' => ['sk' => '/cennik', 'base' => '/pricing'],
+            'deals' => ['sk' => '/akcie', 'base' => '/deals'],
+            'blog' => ['sk' => '/blog', 'base' => '/blog'],
+            'contact' => ['sk' => '/kontakt', 'base' => '/contact'],
+            'privacy' => ['sk' => '/ochrana-osobnych-udajov', 'base' => '/privacy'],
+            'terms' => ['sk' => '/vop', 'base' => '/terms'],
+            'cookies' => ['sk' => '/ochrana-osobnych-udajov', 'base' => '/privacy'], // map to privacy
+        ];
+
+        if (!isset($paths[$pageKey])) {
+            return [];
+        }
+
+        $map = $paths[$pageKey];
+        $alternates = [];
+
+        foreach ($supported as $lang) {
+            if ($lang === 'sk') {
+                $alternates[$lang] = $baseUri . $map['sk'];
+            } else {
+                // For other languages: /lang + base
+                $suffix = $map['base'];
+                $alternates[$lang] = $baseUri . '/' . $lang . $suffix;
+            }
+        }
+
+        // Add x-default pointing to SK
+        $alternates['x-default'] = $alternates['sk'];
+
+        return $alternates;
+    }
 
     public function __construct(string $language = 'sk')
     {
@@ -47,20 +86,20 @@ class PageController extends Controller
     private function renderWithSeo(string $template, string $pageKey, array $data = [])
     {
         $meta = $this->metadata[$pageKey][$this->language] ?? $this->metadata[$pageKey]['sk'] ?? [];
-        
+
         // Base canonical
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
         $domain = $_SERVER['HTTP_HOST'];
         $baseUri = $protocol . $domain;
-        
+
         $currentUri = $_SERVER['REQUEST_URI'] ?? '/';
         $canonical = $baseUri . strtok($currentUri, '?');
-        
+
         // Add lang param if not default (simple approach, or rely on clean URLs if router supports them)
         // If our router uses /en/page style, it's already in URI.
         // If we want detailed canonical logic, we might need a helper from Router.
         // For now, let's use the current clean URL as canonical.
-        
+
         $data = array_merge($data, [
             'page_title' => $meta['title'] ?? '',
             'meta_description' => $meta['description'] ?? '',
@@ -72,16 +111,16 @@ class PageController extends Controller
             'og_url' => $canonical,
             'canonical' => $canonical,
             'current_language' => $this->language,
-            'alternates' => [] // Could be calculated if we map pages to routes
+            'alternates' => $this->getAlternates($pageKey, $baseUri)
         ]);
 
         $this->render($template, $data);
     }
-    
+
     public function home()
     {
         $translations = $this->translationService->getUITranslations($this->language);
-        
+
         // Load services from database or config
         $services = [
             [
@@ -118,7 +157,7 @@ class PageController extends Controller
                 'price_afternoon' => '6',
                 'price_evening' => '8',
                 'price_holiday' => '10',
-                'tables_count' => 5
+                'tables_count' => 6
             ]
             /*[
                 'id' => 4,
@@ -133,7 +172,7 @@ class PageController extends Controller
                 'tables_count' => 2
             ]*/
         ];
-        
+
         $services[] = [
             'id' => 5,
             'name' => $translations['service_shuffleboard_name'] ?? 'Shuffleboard',
@@ -146,9 +185,9 @@ class PageController extends Controller
             'price_holiday' => '10',
             'tables_count' => 1
         ];
-        
+
         $events = $this->getEvents();
-        
+
         return $this->renderWithSeo('home.twig', 'home', [
             'services' => $services,
             'events' => $events,
@@ -170,14 +209,15 @@ class PageController extends Controller
         ]);
     }
 
-    public function deals() {
+    public function deals()
+    {
         $db = \App\Database\Database::getInstance();
         $translations = $this->translationService->getUITranslations($this->language);
-        
+
         $dealsController = new \DealsController($db, $translations, $this->language);
         $data = $dealsController->index();
         $data['current_page'] = 'deals';
-        
+
         // Manually render with SEO since we are capturing data from another controller
         // Or refactor helper. For now let's use renderWithSeo
         return $this->renderWithSeo('deals.twig', 'deals', $data);
@@ -185,9 +225,15 @@ class PageController extends Controller
 
     public function cafe()
     {
+        header("HTTP/1.1 301 Moved Permanently");
+        $target = ($this->language === 'sk') ? '/' : "/{$this->language}";
+        header("Location: " . $target);
+        exit;
+        /*
         return $this->renderWithSeo('cafe.twig', 'cafe', [
             'current_page' => 'cafe'
         ]);
+        */
     }
 
     public function contact()
@@ -229,7 +275,7 @@ class PageController extends Controller
             'current_page' => 1,
             'total_pages' => 1
         ];
-        
+
         return $this->render('blog.twig', [
             'posts' => $posts,
             'pagination' => $pagination,
@@ -248,7 +294,7 @@ class PageController extends Controller
             'author' => null,
             'tags' => []
         ];
-        
+
         return $this->render('post.twig', [
             'post' => $post,
             'prev_post' => null,

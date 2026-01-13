@@ -218,7 +218,6 @@
 })();
 </script>
 
-<script src="https://www.google.com/recaptcha/api.js?render=6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz"></script>
 <script>
 (function(){
   'use strict';
@@ -250,6 +249,36 @@
       e.preventDefault();
       e.stopImmediatePropagation();
       if (!window.grecaptcha || !grecaptcha.execute){
+        // Try lazy load
+        if(window.loadRecaptcha) {
+             window.loadRecaptcha().then(function(){
+                 // Wait for library to be ready after script load
+                 if (window.grecaptcha && window.grecaptcha.ready) {
+                     window.grecaptcha.ready(function() {
+                        try {
+                            grecaptcha.execute(SITE_KEY, {action: getAction()}).then(function(token){
+                                if (tokenEl) tokenEl.value = token;
+                                window.__rc3 = { token: token, action: getAction(), ts: Date.now() };
+                                resumeOnce();
+                            }).catch(function(err){
+                                console.error(err);
+                                resumeOnce(); // Submit anyway on error
+                            });
+                        } catch(e) {
+                            console.error(e);
+                            resumeOnce();
+                        }
+                     });
+                 } else {
+                     resumeOnce(); // Failed to init
+                 }
+             }).catch(function(err){
+                 console.error(err);
+                 resumeOnce(); // Script load failed
+             });
+             return;
+        }
+
         if (tokenEl) tokenEl.value = '';
         window.__rc3 = { token: '', action: getAction(), ts: Date.now() };
         resumeOnce();
@@ -297,6 +326,12 @@
     var hiddenTok = getHidden('recaptcha-token');
     if (hiddenTok)
       return { token: hiddenTok, action: act };
+
+    // Lazy load if not present
+    if (!window.grecaptcha && window.loadRecaptcha) {
+      try { await window.loadRecaptcha(); } catch(e){}
+    }
+
     if (window.grecaptcha && typeof grecaptcha.execute === 'function'){
       var key = window.__recaptchaSiteKey || findSiteKey();
       if (key){

@@ -460,8 +460,8 @@ return [
     'games_darts_variations_title' => 'Game Variations',
     'games_darts_variations' => 'There are many variations of darts: 501 - the most popular version where players start with 501 points and must reduce the score to exactly zero. Cricket - a tactical game focused on specific numbers. Around the Clock - a game for accuracy training. Killer - a fun group version for multiple players.',
     'games_darts_equipment_title' => 'Our Equipment',
-    'games_darts_equipment' => 'Our club has 5 classic professional dartboards made of quality sisal fiber, ensuring long lifespan and optimal gaming experience. Boards are mounted at standard height of 1.73m with regulation distance of 2.37m. We offer rental of professional darts in various weights. Scores are counted manually, preserving the authentic experience of traditional darts.',
-    'games_darts_feature1' => '5 classic dartboards',
+    'games_darts_equipment' => 'Our club has 6 classic professional dartboards made of quality sisal fiber, ensuring long lifespan and optimal gaming experience. Boards are mounted at standard height of 1.73m with regulation distance of 2.37m. We offer rental of professional darts in various weights. Scores are counted manually, preserving the authentic experience of traditional darts.',
+    'games_darts_feature1' => '6 classic dartboards',
     'games_darts_feature2' => 'Professional darts for rent',
     'games_darts_feature3' => 'Suitable for all skill levels',
 

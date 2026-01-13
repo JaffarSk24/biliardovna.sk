@@ -460,8 +460,8 @@ return [
     'games_darts_variations_title' => 'Spielvarianten',
     'games_darts_variations' => 'Es gibt viele Varianten von Darts: 501 - die beliebteste Version, bei der Spieler mit 501 Punkten beginnen und die Punktzahl genau auf Null reduzieren müssen. Cricket - ein taktisches Spiel, das sich auf bestimmte Zahlen konzentriert. Around the Clock - ein Spiel für Genauigkeitstraining. Killer - eine lustige Gruppenversion für mehrere Spieler.',
     'games_darts_equipment_title' => 'Unsere Ausstattung',
-    'games_darts_equipment' => 'Unser Club verfügt über 5 klassische professionelle Dartscheiben aus hochwertigem Sisalfaser, die eine lange Lebensdauer und optimales Spielerlebnis gewährleisten. Die Scheiben sind in Standardhöhe von 1,73m mit regulärem Abstand von 2,37m montiert. Wir bieten Verleih von professionellen Darts in verschiedenen Gewichten. Punkte werden manuell gezählt, was das authentische Erlebnis des traditionellen Darts bewahrt.',
-    'games_darts_feature1' => '5 klassische Dartscheiben',
+    'games_darts_equipment' => 'Unser Club verfügt über 6 klassische professionelle Dartscheiben aus hochwertigem Sisalfaser, die eine lange Lebensdauer und optimales Spielerlebnis gewährleisten. Die Scheiben sind in Standardhöhe von 1,73m mit regulärem Abstand von 2,37m montiert. Wir bieten Verleih von professionellen Darts in verschiedenen Gewichten. Punkte werden manuell gezählt, was das authentische Erlebnis des traditionellen Darts bewahrt.',
+    'games_darts_feature1' => '6 klassische Dartscheiben',
     'games_darts_feature2' => 'Professionelle Darts zum Verleih',
     'games_darts_feature3' => 'Geeignet für alle Spielstärken',
 

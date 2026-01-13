@@ -5,7 +5,7 @@ namespace App\Services;
 class NotificationService
 {
     private array $translations = [];
-    
+
     /**
      * Load translations for given language
      */
@@ -19,7 +19,7 @@ class NotificationService
             $this->translations = require __DIR__ . '/../../lang/sk.php';
         }
     }
-    
+
     /**
      * Get translation by key
      */
@@ -27,7 +27,7 @@ class NotificationService
     {
         return $this->translations[$key] ?? $key;
     }
-    
+
     /**
      * Send notification via Telegram
      */
@@ -35,21 +35,21 @@ class NotificationService
     {
         $token = $_ENV['TELEGRAM_BOT_TOKEN'] ?? null;
         $chatId = $_ENV['TELEGRAM_CHAT_ID'] ?? null;
-        
+
         if (!$token || !$chatId) {
             error_log('Telegram credentials not configured');
             return false;
         }
-        
+
         $message = $this->formatTelegramMessage($booking, $type);
-        
+
         $url = "https://api.telegram.org/bot{$token}/sendMessage";
         $data = [
             'chat_id' => $chatId,
             'text' => $message,
             'parse_mode' => 'HTML'
         ];
-        
+
         if ($type === 'new') {
             $data['reply_markup'] = json_encode([
                 'inline_keyboard' => [[
@@ -58,34 +58,62 @@ class NotificationService
                 ]]
             ]);
         }
-        
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
         curl_close($ch);
-        
+
         return $result !== false;
     }
-    
+
+    /**
+     * Helper to get table number from resource name
+     */
+    private function getTableNumber(int $resourceId, ?string $resourceName = null): string
+    {
+        $tableNumber = (string)$resourceId;
+
+        try {
+            // If resource name is not provided, fetch it
+            if (empty($resourceName)) {
+                $db = \App\Database\Database::getInstance();
+                $stmt = $db->prepare('SELECT name FROM resources WHERE id = ?');
+                $stmt->execute([$resourceId]);
+                $resourceName = $stmt->fetchColumn();
+            }
+
+            // Extract number from name (e.g. "Pool - Stôl 1" -> "1")
+            if ($resourceName && preg_match('/(\d+)/u', (string)$resourceName, $m)) {
+                $tableNumber = $m[1];
+            }
+        } catch (\Throwable $e) {
+            // Fallback to resource ID
+        }
+
+        return $tableNumber;
+    }
+
     /**
      * Format message for Telegram
      */
     private function formatTelegramMessage(array $booking, string $type): string
     {
-        $language = $booking['language'] ?? 'sk';
-        $this->loadTranslations($language);
-        
+        $customerLanguage = $booking['language'] ?? 'sk';
+        // Force Slovak for admin notifications
+        $this->loadTranslations('sk');
+
         $icons = [
             'new' => '🔔',
             'confirmed' => '✅',
             'cancelled' => '❌',
             'completed' => '🎉'
         ];
-        
+
         $icon = $icons[$type] ?? '📋';
-        
+
         // Language flags
         $flags = [
             'sk' => '🇸🇰',
@@ -94,48 +122,55 @@ class NotificationService
             'uk' => '🇺🇦',
             'de' => '🇩🇪'
         ];
-        $flag = $flags[$language] ?? '🌐';
-        
-        $title = $type === 'new' 
-            ? $this->trans('notification_new_booking') 
+        $flag = $flags[$customerLanguage] ?? '🌐';
+
+        $title = $type === 'new'
+            ? $this->trans('notification_new_booking')
             : $this->trans('notification_booking_update');
-        
+
         // Format date as dd.mm.yyyy
         $date = date('d.m.Y', strtotime($booking['booking_date']));
-        
+
         // Remove seconds from time
         $startTime = substr($booking['start_time'], 0, 5);
         $endTime = substr($booking['end_time'], 0, 5);
 
-        // Table numbers
-        $tableNumber = (string)($booking['resource_id'] ?? '');
+        // Get Service Name in Slovak
+        $serviceName = $booking['service_name'] ?? '';
         try {
-            if (!empty($booking['resource_name']) && preg_match('/(\d+)/u', (string)$booking['resource_name'], $m)) {
-                $tableNumber = $m[1];
-            } else {
-                $db = \App\Database\Database::getInstance();
-                $stmt = $db->prepare('SELECT name FROM resources WHERE id = ?');
-                $stmt->execute([(int)($booking['resource_id'] ?? 0)]);
-                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                if ($row && preg_match('/(\d+)/u', (string)$row['name'], $m)) {
-                    $tableNumber = $m[1];
+            $db = \App\Database\Database::getInstance();
+            $stmt = $db->prepare('SELECT slug FROM services WHERE id = ?');
+            $stmt->execute([(int)($booking['service_id'] ?? 0)]);
+            $slug = $stmt->fetchColumn();
+            if ($slug) {
+                // Try to get translated name from loaded Slovak translations
+                $transKey = 'service_' . $slug . '_name';
+                $translated = $this->trans($transKey);
+                // If translation exists and is different from key, use it. Otherwise use capitalized slug.
+                if ($translated !== $transKey) {
+                    $serviceName = $translated;
+                } else {
+                    $serviceName = ucfirst($slug);
                 }
             }
         } catch (\Throwable $e) {
-            // keep fallback to resource_id
+            // keep existing service_name
         }
-        
+
+        // Table numbers
+        $tableNumber = $this->getTableNumber((int)($booking['resource_id'] ?? 0), $booking['resource_name'] ?? null);
+
         $message = "{$icon} <b>{$title}</b>\n";
         $message .= "🆔 ID: {$booking['id']}\n\n";
         $message .= "📅 {$this->trans('notification_date')}: {$date}\n";
         $message .= "🕐 {$this->trans('notification_time')}: {$startTime} - {$endTime}\n\n";
-        $message .= "🎯 {$this->trans('notification_service')}: {$booking['service_name']}\n";
+        $message .= "🎯 {$this->trans('notification_service')}: {$serviceName}\n";
         $message .= "🎱 {$this->trans('notification_table')}: {$tableNumber}\n\n";
-        $message .= "{$flag} {$this->trans('notification_language')}: {$language}\n";
+        $message .= "{$flag} {$this->trans('notification_language')}: {$customerLanguage}\n";
         $message .= "👤 {$this->trans('notification_customer_name')}: {$booking['customer_name']}\n";
         $message .= "📞 {$this->trans('notification_customer_phone')}: {$booking['customer_phone']}\n";
         $message .= "📧 Email: {$booking['customer_email']}\n\n";
-        
+
         if (!empty($booking['notes'])) {
             $message .= "📝 {$this->trans('notification_notes')}: {$booking['notes']}\n\n";
         }
@@ -150,10 +185,10 @@ class NotificationService
             $message .= "💰 {$this->trans('notification_total_price')}: " . number_format($booking['price'], 2) . " €\n";
         }
         $message .= "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
-        
+
         return $message;
     }
-    
+
     /**
      * Send email notification via Mailgun
      */
@@ -161,47 +196,47 @@ class NotificationService
     {
         $domain = $_ENV['MAILGUN_DOMAIN'] ?? null;
         $apiKey = $_ENV['MAILGUN_API_KEY'] ?? null;
-        
+
         if (!$domain || !$apiKey) {
             error_log('Mailgun credentials not configured');
             return false;
         }
-        
+
         $to = $booking['customer_email'] ?? null;
         if (!$to) {
             return false;
         }
-        
+
         $language = $booking['language'] ?? 'sk';
         $this->loadTranslations($language);
-        
+
         // Map status to template
         $templateMap = [
             'pending' => 'booking_confirmation',
             'confirmed' => 'confirmed',
             'cancelled' => 'cancelled'
         ];
-        
+
         $template = $templateMap[$status] ?? 'booking_confirmation';
-        
+
         // Subject based on status
         $subjects = [
             'pending' => $this->trans('email_subject_pending'),
             'confirmed' => $this->trans('email_subject_confirmed'),
             'cancelled' => $this->trans('email_subject_cancelled')
         ];
-        
+
         $subject = $subjects[$status] ?? $this->trans('email_subject_pending');
-        
+
         $url = "https://api.eu.mailgun.net/v3/{$domain}/messages";
-        
+
         $data = [
             'from' => 'Biliardovňa <' . $_ENV['MAILGUN_FROM_EMAIL'] . '>',
             'to' => $to,
             'subject' => $subject,
             'html' => $this->renderEmailTemplate($booking, $template)
         ];
-        
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -209,10 +244,10 @@ class NotificationService
         curl_setopt($ch, CURLOPT_USERPWD, "api:{$apiKey}");
         $result = curl_exec($ch);
         curl_close($ch);
-        
+
         return $result !== false;
     }
-    
+
     /**
      * Send review request email (once per email)
      */
@@ -341,10 +376,10 @@ class NotificationService
         $greeting = $this->trans('email_greeting');
         $thanks = $this->trans('email_thanks');
         $team = $this->trans('email_team');
-        
+
         $language = $booking['language'] ?? 'sk';
         $siteUrl = $_ENV['APP_URL'] . ($language !== 'sk' ? '/' . $language : '');
-        
+
         // Review request
         if ($template === 'review_request') {
             $reviewUrl = $booking['review_url'] ?? '#';
@@ -394,40 +429,44 @@ class NotificationService
             </body>
             </html>";
         }
-        
+
         // Standard booking templates
         $dateLabel = $this->trans('notification_date');
         $timeLabel = $this->trans('notification_time');
         $serviceLabel = $this->trans('notification_service');
+        $tableLabel = $this->trans('notification_table');
         $totalLabel = $this->trans('notification_total_price');
-        
+
         $date = date('d.m.Y', strtotime($booking['booking_date']));
         $startTime = substr($booking['start_time'], 0, 5);
         $endTime = substr($booking['end_time'], 0, 5);
-        
+
+        // Table number for email
+        $tableNumber = $this->getTableNumber((int)($booking['resource_id'] ?? 0), $booking['resource_name'] ?? null);
+
         $statusMessages = [
             'booking_confirmation' => $this->trans('email_booking_received'),
             'confirmed' => $this->trans('email_booking_confirmed'),
             'cancelled' => $this->trans('email_booking_cancelled')
         ];
-        
+
         $message = $statusMessages[$template] ?? $statusMessages['booking_confirmation'];
-        
+
         $statusColors = [
             'pending' => '#ff9800',
             'confirmed' => '#4caf50',
             'cancelled' => '#f44336'
         ];
-        
+
         $statusLabels = [
             'pending' => $this->trans('status_pending'),
             'confirmed' => $this->trans('status_confirmed'),
             'cancelled' => $this->trans('status_cancelled')
         ];
-        
+
         $statusColor = $statusColors[$booking['status']] ?? '#ff9800';
         $statusLabel = $statusLabels[$booking['status']] ?? $this->trans('status_pending');
-        
+
         $html = "
         <html>
         <head>
@@ -435,10 +474,10 @@ class NotificationService
         </head>
         <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
             <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
-                <h2 style='color: #2c3e50;'>{$this->trans('email_subject_' . ($template === 'booking_confirmation' ? 'pending' : $template))}</h2>
+                <h2 style='color: #2c3e50;'>{$this->trans('email_subject_' . ($template === 'booking_confirmation' ? 'pending' :$template))}</h2>
                 <p>{$greeting} {$booking['customer_name']},</p>
                 <p>{$message}</p>";
-        
+
         if ($booking['status'] === 'pending') {
             $html .= "
                 <p style='margin: 15px 0;'>
@@ -446,33 +485,35 @@ class NotificationService
                     {$this->trans('email_pending_not_valid')}
                 </p>";
         }
-        
+
         $html .= "
                 <div style='background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;'>
+                    <p style='margin: 5px 0;'><strong>ID:</strong> {$booking['id']}</p>
                     <p style='margin: 5px 0;'><strong>{$dateLabel}:</strong> {$date}</p>
                     <p style='margin: 5px 0;'><strong>{$timeLabel}:</strong> {$startTime} - {$endTime}</p>
                     <p style='margin: 5px 0;'><strong>{$serviceLabel}:</strong> {$booking['service_name']}</p>
+                    <p style='margin: 5px 0;'><strong>{$tableLabel}:</strong> {$tableNumber}</p>
                     <p style='margin: 5px 0;'><strong>{$totalLabel}:</strong> {$booking['price']} €</p>
                     <p style='margin: 10px 0 5px 0;'><strong>Status:</strong> <span style='color: {$statusColor}; font-weight: bold;'>{$statusLabel}</span></p>
                 </div>";
-        
+
         if (in_array($booking['status'], ['pending', 'confirmed']) && !empty($booking['cancellation_token'])) {
             $cancelUrl = $_ENV['APP_URL'] . '/booking/cancel?token=' . $booking['cancellation_token'];
             $cancelText = $this->trans('email_cancel_booking');
-            
+
             $html .= "
                 <p style='margin-top: 30px;'>
                     <a href='{$cancelUrl}' style='display: inline-block; padding: 12px 24px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px;'>{$cancelText}</a>
                 </p>";
         }
-        
+
         $html .= "
                 <p style='margin-top: 30px;'>{$thanks},<br><strong><a href='{$siteUrl}' style='color: #2c3e50; text-decoration: none;'>{$team}</a></strong></p>
             </div>
         </body>
         </html>
         ";
-        
+
         return $html;
     }
 }

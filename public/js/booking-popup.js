@@ -136,6 +136,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             popup.classList.add('active');
             document.body.style.overflow = 'hidden';
+            
+            // Lazy load reCAPTCHA when popup opens
+            if (window.loadRecaptcha) {
+                try { window.loadRecaptcha(); } catch(e) { console.error(e); }
+            }
+
             resetForm();
         });
     });
@@ -534,6 +540,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle opening from deals.js
     window.addEventListener('booking:open', (e) => {
+        // Lazy load reCAPTCHA when popup opens via event
+        if (window.loadRecaptcha) {
+            try { window.loadRecaptcha(); } catch(e) { console.error(e); }
+        }
+
         resetForm();
         const params = e.detail?.params || {};
 

@@ -3,41 +3,7 @@
  */
 
 // Auto-detect and cache language preference
-(function() {
-    const supportedLanguages = ['sk', 'en', 'ru', 'uk', 'de'];
-    const currentPath = window.location.pathname;
-    const pathLang = currentPath.split('/')[1];
-    
-    // Determine current page language
-    let currentLang = 'sk';
-    if (supportedLanguages.includes(pathLang)) {
-        currentLang = pathLang;
-    }
-    
-    // Get saved language
-    const savedLang = localStorage.getItem('preferred_language');
-    
-    // First visit - no saved language
-    if (!savedLang) {
-        const browserLang = (navigator.language || navigator.languages[0]).split('-')[0];
-        const detectedLang = supportedLanguages.includes(browserLang) ? browserLang : 'sk';
-        
-        localStorage.setItem('preferred_language', detectedLang);
-        
-        if (detectedLang !== currentLang) {
-            if (detectedLang === 'sk') {
-                window.location.href = '/';
-            } else {
-                window.location.href = '/' + detectedLang + currentPath;
-            }
-        }
-        return;
-    }
-    
-    // User has visited before - save current choice
-    localStorage.setItem('preferred_language', currentLang);
-    
-})();
+// Auto-detect is handled server-side now to prevent flashing
 
 // Language Switcher
 document.addEventListener('DOMContentLoaded', function() {
@@ -54,6 +20,36 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!langSwitcher.contains(e.target)) {
                 langSwitcher.classList.remove('active');
             }
+        });
+
+        // Set cookie on language selection
+        const langLinks = langSwitcher.querySelectorAll('.lang-dropdown a');
+        langLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // Stop immediate navigation
+                
+                // Determine language from href
+                const href = this.getAttribute('href');
+                let lang = 'sk'; // Default
+
+                // specific check for supported languages in path
+                const supported = ['en', 'ru', 'uk', 'de'];
+                for (const l of supported) {
+                    if (href === '/' + l || href.startsWith('/' + l + '/')) {
+                        lang = l;
+                        break;
+                    }
+                }
+
+                // Set cookie (match PHP settings: path=/, 1 year)
+                // We use a specific date string for max-age compatibility or just max-age
+                document.cookie = `app_lang=${lang}; path=/; max-age=31536000; samesite=Lax`;
+
+                // Small delay to ensure cookie is processed by browser before request
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 10);
+            });
         });
     }
 });

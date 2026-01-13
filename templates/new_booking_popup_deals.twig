@@ -364,10 +364,18 @@
   // Open popup from CTA
   Array.from(document.querySelectorAll('.deal-cta-button, [data-trigger]')).forEach(function (btn) {
     btn.addEventListener('click', function (e) {
+      const action = btn.getAttribute('data-action');
+      if (action === 'scroll') return; // let smooth scroll handle it if customized
+
       e.preventDefault();
       var trigger = (function(){ try { return JSON.parse(btn.dataset.trigger || '{}'); } catch(e){ return {}; } })();
       var popup = document.getElementById('bookingPopup');
       if (!popup) return;
+
+      // Lazy load reCAPTCHA immediately on open
+      if (window.loadRecaptcha) {
+          try { window.loadRecaptcha(); } catch(e) { console.error(e); }
+      }
 
       popup.classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -555,7 +563,6 @@
 }
 </style>
 
-<script src="https://www.google.com/recaptcha/api.js?render=6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz"></script>
 <script>
 /* reCAPTCHA v3 + надёжная инъекция токена в /api/booking/create (fetch & XHR).
    Фикс дублей: первый submit перехватываем с stopImmediatePropagation, после получения токена запускаем submit ОДИН раз. */
@@ -597,6 +604,36 @@
       e.stopImmediatePropagation(); // ключевой момент: не даём исходным хендлерам выполниться сейчас
 
       if (!window.grecaptcha || !grecaptcha.execute){
+        // Try lazy load
+        if(window.loadRecaptcha) {
+             window.loadRecaptcha().then(function(){
+                 // Wait for library to be ready after script load
+                 if (window.grecaptcha && window.grecaptcha.ready) {
+                     window.grecaptcha.ready(function() {
+                        try {
+                            grecaptcha.execute(SITE_KEY, {action: getAction()}).then(function(token){
+                                if (tokenEl) tokenEl.value = token;
+                                window.__rc3 = { token: token, action: getAction(), ts: Date.now() };
+                                resumeOnce();
+                            }).catch(function(err){
+                                console.error(err);
+                                resumeOnce(); // Submit anyway on error
+                            });
+                        } catch(e) {
+                            console.error(e);
+                            resumeOnce();
+                        }
+                     });
+                 } else {
+                     resumeOnce(); // Failed to init
+                 }
+             }).catch(function(err){
+                 console.error(err);
+                 resumeOnce(); // Script load failed
+             });
+             return;
+        }
+
         if (tokenEl) tokenEl.value = '';
         window.__rc3 = { token: '', action: getAction(), ts: Date.now() };
         resumeOnce();
@@ -648,6 +685,11 @@
     var hiddenTok = getHidden('recaptcha-token');
     if (hiddenTok)
       return { token: hiddenTok, action: act };
+
+    // Lazy load if not present
+    if (!window.grecaptcha && window.loadRecaptcha) {
+      try { await window.loadRecaptcha(); } catch(e){}
+    }
 
     if (window.grecaptcha && typeof grecaptcha.execute === 'function'){
       var key = window.__recaptchaSiteKey || findSiteKey();

@@ -459,8 +459,8 @@ return [
     'games_darts_variations_title' => 'Varianty hry',
     'games_darts_variations' => 'Existuje množstvo variácií hry šípky: 501 - najpopulárnejšia verzia, kde hráči začínajú s 501 bodmi a musia znížiť skóre presne na nulu. Cricket - taktická hra zameraná na konkrétne čísla. Around the Clock - hra pre tréning presnosti. Killer - zábavná skupinová verzia pre viacerých hráčov.',
     'games_darts_equipment_title' => 'Naše vybavenie',
-    'games_darts_equipment' => 'V našom klube máme 5 klasických profesionálnych terčov z kvalitného sisalového vlákna, ktoré zabezpečujú dlhú životnosť a optimálny herný zážitok. Terče sú umiestnené v štandardnej výške 1,73m s regulárnou vzdialenosťou 2,37m. Ponúkame prenájom profesionálnych šípok rôznych hmotností. Body sa počítajú manuálne, čo zachováva autentický zážitok z tradičných šípok.',
-    'games_darts_feature1' => '5 klasických terčov',
+    'games_darts_equipment' => 'V našom klube máme 6 klasických profesionálnych terčov z kvalitného sisalového vlákna, ktoré zabezpečujú dlhú životnosť a optimálny herný zážitok. Terče sú umiestnené v štandardnej výške 1,73m s regulárnou vzdialenosťou 2,37m. Ponúkame prenájom profesionálnych šípok rôznych hmotností. Body sa počítajú manuálne, čo zachováva autentický zážitok z tradičných šípok.',
+    'games_darts_feature1' => '6 klasických terčov',
     'games_darts_feature2' => 'Profesionálne šípky na prenájom',
     'games_darts_feature3' => 'Vhodné pre všetky úrovne hráčov',
 

@@ -49,16 +49,34 @@
     {# Адаптив — всегда последним #}
     <link rel="stylesheet" href="/public/css/responsive.css">
 
-    <!-- reCAPTCHA v3 Invisible -->
-    <script src="https://www.google.com/recaptcha/api.js?render=6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz"></script>
+    <!-- reCAPTCHA v3 Invisible (Lazy Load) -->
     <script>
-      window.getRecaptchaToken = function(action = 'general') {
+      window.recaptchaLoaded = false;
+      window.loadRecaptcha = function() {
+        if (window.recaptchaLoaded) return Promise.resolve();
         return new Promise((resolve, reject) => {
-          if (!window.grecaptcha) return reject(new Error('grecaptcha not loaded'));
-          grecaptcha.ready(function() {
-            grecaptcha.execute('6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz', { action })
-              .then(resolve).catch(reject);
-          });
+          const script = document.createElement('script');
+          script.src = 'https://www.google.com/recaptcha/api.js?render=6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz';
+          script.async = true;
+          script.defer = true;
+          script.onload = function() {
+            window.recaptchaLoaded = true;
+            resolve();
+          };
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      };
+
+      window.getRecaptchaToken = function(action = 'general') {
+        return window.loadRecaptcha().then(() => {
+            return new Promise((resolve, reject) => {
+              if (!window.grecaptcha) return reject(new Error('grecaptcha not loaded'));
+              grecaptcha.ready(function() {
+                grecaptcha.execute('6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz', { action })
+                  .then(resolve).catch(reject);
+              });
+            });
         });
       };
     </script>
