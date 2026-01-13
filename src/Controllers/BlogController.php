@@ -95,11 +95,21 @@ class BlogController
         $translationsFile = __DIR__ . '/../../translations/' . $this->language . '.php';
         $translations = file_exists($translationsFile) ? require $translationsFile : [];
         
+        // Prepare OG Image
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $domain = $_SERVER['HTTP_HOST'];
+        $baseUri = $protocol . $domain;
+        $ogImage = $article['image'] ? ($baseUri . $article['image']) : ($baseUri . '/public/images/1920x1080_with_logo.webp');
+
         echo $this->twig->render('article.twig', [
             'language' => $this->language,
             'translations' => $translations,
             'article' => $article,
-            'current_page' => 'blog'
+            'current_page' => 'blog',
+            'og_image' => $ogImage,
+            'og_title' => $article['title'],
+            'og_description' => $article['excerpt'],
+            'og_type' => 'article'
         ]);
     }
 }

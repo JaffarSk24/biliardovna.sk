@@ -68,7 +68,7 @@ class PageController extends Controller
             'og_title' => $meta['og:title'] ?? ($meta['title'] ?? ''),
             'og_description' => $meta['og:description'] ?? ($meta['description'] ?? ''),
             'og_type' => $meta['og:type'] ?? 'website',
-            'og_image' => $baseUri . ($meta['og:image'] ?? '/public/images/og/default.jpg'),
+            'og_image' => $baseUri . ($meta['og:image'] ?? '/public/images/1920x1080_with_logo.webp'),
             'og_url' => $canonical,
             'canonical' => $canonical,
             'current_language' => $this->language,

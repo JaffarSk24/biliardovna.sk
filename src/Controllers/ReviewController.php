@@ -43,7 +43,7 @@ class ReviewController extends Controller
         }
         
         // Google review URL
-        $googleReviewUrl = 'https://g.page/r/CQQSBE5PHKpyEBM/review';
+        $googleReviewUrl = 'https://g.page/r/CcFjisYRZdZWEBM/review';
         
         $this->render('review.twig', [
             'google_review_url' => $googleReviewUrl

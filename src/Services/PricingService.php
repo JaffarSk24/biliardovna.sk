@@ -25,8 +25,19 @@ class PricingService
     {
         $dateTime = new DateTime($date . ' ' . $startTime);
         $dayOfWeek = (int)$dateTime->format('N');
+        
+        // Block dates from 29.12.2025 to 14.01.2026
+        $checkDate = new DateTime($date);
+        $blockStart = new DateTime('2025-12-29');
+        $blockEnd = new DateTime('2026-01-14');
+        
+        if ($checkDate >= $blockStart && $checkDate <= $blockEnd) {
+            throw new \Exception('Club is closed from 29.12.2025 to 14.01.2026');
+        }
+
         $isHoliday = $this->holidayModel->isHoliday($date);
         
+
         $totalPrice = 0;
         
         // Calculate price for each hour separately
@@ -63,6 +74,16 @@ class PricingService
         $slots = [];
         $dateTime = new DateTime($date);
         $dayOfWeek = (int)$dateTime->format('N');
+        
+        // Block dates from 29.12.2025 to 14.01.2026
+        $checkDate = new DateTime($date);
+        $blockStart = new DateTime('2025-12-29');
+        $blockEnd = new DateTime('2026-01-14');
+        
+        if ($checkDate >= $blockStart && $checkDate <= $blockEnd) {
+            return [];
+        }
+
         $isHoliday = $this->holidayModel->isHoliday($date);
         
         // Generate slots from 16:00 to 23:00

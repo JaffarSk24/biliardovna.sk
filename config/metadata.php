@@ -9,7 +9,7 @@ return [
             'og:title' => 'Biliardovňa.sk — Biliardový klub v Bratislave',
             'og:description' => 'Najväčší biliardový klub v Bratislave. Pyramída, Pool, Šípky, Shuffleboard a skvelá atmosféra.',
             'og:type' => 'website',
-            'og:image' => '/public/images/og/home-sk.jpg',
+            'og:image' => '/public/images/1920x1080_with_logo.webp',
         ],
         'en' => [
             'title' => 'Biliardovňa.sk — Billiard Club in Bratislava',
@@ -18,7 +18,7 @@ return [
             'og:title' => 'Biliardovňa.sk — Billiard Club in Bratislava',
             'og:description' => 'The largest billiard club in Bratislava. Pyramid, Pool, Darts, Shuffleboard and great atmosphere.',
             'og:type' => 'website',
-            'og:image' => '/public/images/og/home-en.jpg',
+            'og:image' => '/public/images/1920x1080_with_logo.webp',
         ],
         'ru' => [
             'title' => 'Biliardovňa.sk — Бильярдный клуб в Братиславе',
@@ -27,7 +27,7 @@ return [
             'og:title' => 'Biliardovňa.sk — Бильярдный клуб в Братиславе',
             'og:description' => 'Крупнейший бильярдный клуб в Братиславе. Пирамида, Пул, Дартс, Шаффлборд и отличная атмосфера.',
             'og:type' => 'website',
-            'og:image' => '/public/images/og/home-ru.jpg',
+            'og:image' => '/public/images/1920x1080_with_logo.webp',
         ],
         'uk' => [
             'title' => 'Biliardovňa.sk — Більярдний клуб у Братиславі',
@@ -36,7 +36,7 @@ return [
             'og:title' => 'Biliardovňa.sk — Більярдний клуб у Братиславі',
             'og:description' => 'Найбільший більярдний клуб у Братиславі. Піраміда, Пул, Дартс, Шаффлборд та чудова атмосфера.',
             'og:type' => 'website',
-            'og:image' => '/public/images/og/home-uk.jpg',
+            'og:image' => '/public/images/1920x1080_with_logo.webp',
         ],
         'de' => [
             'title' => 'Biliardovňa.sk — Billardclub in Bratislava',
@@ -45,7 +45,7 @@ return [
             'og:title' => 'Biliardovňa.sk — Billardclub in Bratislava',
             'og:description' => 'Der größte Billardclub in Bratislava. Pyramide, Pool, Darts, Shuffleboard und tolle Atmosphäre.',
             'og:type' => 'website',
-            'og:image' => '/public/images/og/home-de.jpg',
+            'og:image' => '/public/images/1920x1080_with_logo.webp',
         ],
     ],
     'games' => [
