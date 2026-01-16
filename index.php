@@ -452,82 +452,101 @@ $router->post('/webhook/telegram', function () {
             exit;
         }
 
-        if (strpos($data, 'confirm_') === 0) {
-            $bookingId = (int)str_replace('confirm_', '', $data);
+        try {
+            if (strpos($data, 'confirm_') === 0) {
+                $bookingId = (int)str_replace('confirm_', '', $data);
 
-            $bookingService = new \App\Services\BookingService();
-            $bookingService->updateStatus($bookingId, 'confirmed');
+                $bookingService = new \App\Services\BookingService();
+                $bookingService->updateStatus($bookingId, 'confirmed');
 
-            $originalText = $callbackQuery['message']['text'];
-            $lines = explode("\n", $originalText);
-            $lines[0] = '✅ Potvrdené!';
-            $newText = implode("\n", $lines);
+                $originalText = $callbackQuery['message']['text'];
+                $lines = explode("\n", $originalText);
+                $lines[0] = '✅ Potvrdené!';
+                $newText = implode("\n", $lines);
 
-            $url = "https://api.telegram.org/bot{$token}/editMessageText";
-            $editData = [
-                'chat_id' => $chatId,
-                'message_id' => $messageId,
-                'text' => $newText,
-                'parse_mode' => 'HTML',
-                'reply_markup' => json_encode([
-                    'inline_keyboard' => [[
-                        ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $bookingId]
-                    ]]
-                ])
+                $url = "https://api.telegram.org/bot{$token}/editMessageText";
+                $editData = [
+                    'chat_id' => $chatId,
+                    'message_id' => $messageId,
+                    'text' => $newText,
+                    'parse_mode' => 'HTML',
+                    'reply_markup' => json_encode([
+                        'inline_keyboard' => [[
+                            ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $bookingId]
+                        ]]
+                    ])
+                ];
+
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_exec($ch);
+                curl_close($ch);
+
+                $answerUrl = "https://api.telegram.org/bot{$token}/answerCallbackQuery";
+                $answerData = [
+                    'callback_query_id' => $callbackQuery['id'],
+                    'text' => 'Rezervácia potvrdená ✅'
+                ];
+
+                $ch = curl_init($answerUrl);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_exec($ch);
+                curl_close($ch);
+            } elseif (strpos($data, 'cancel_') === 0) {
+                $bookingId = (int)str_replace('cancel_', '', $data);
+
+                $bookingService = new \App\Services\BookingService();
+                $bookingService->updateStatus($bookingId, 'cancelled');
+
+                $originalText = $callbackQuery['message']['text'];
+                $lines = explode("\n", $originalText);
+                $lines[0] = '❌ Zrušené!';
+                $newText = implode("\n", $lines);
+
+                $url = "https://api.telegram.org/bot{$token}/editMessageText";
+                $editData = [
+                    'chat_id' => $chatId,
+                    'message_id' => $messageId,
+                    'text' => $newText,
+                    'parse_mode' => 'HTML'
+                ];
+
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_exec($ch);
+                curl_close($ch);
+
+                $answerUrl = "https://api.telegram.org/bot{$token}/answerCallbackQuery";
+                $answerData = [
+                    'callback_query_id' => $callbackQuery['id'],
+                    'text' => 'Rezervácia zrušená ❌'
+                ];
+
+                $ch = curl_init($answerUrl);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_exec($ch);
+                curl_close($ch);
+            }
+        } catch (\Exception $e) {
+            file_put_contents($logFile, "Callback Error: " . $e->getMessage() . "\n", FILE_APPEND);
+
+            // Notify user of error
+            $url = "https://api.telegram.org/bot{$token}/answerCallbackQuery";
+            $answerData = [
+                'callback_query_id' => $callbackQuery['id'],
+                'text' => '❌ Chyba: ' . substr($e->getMessage(), 0, 100),
+                'show_alert' => true
             ];
 
             $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_exec($ch);
-            curl_close($ch);
-
-            $answerUrl = "https://api.telegram.org/bot{$token}/answerCallbackQuery";
-            $answerData = [
-                'callback_query_id' => $callbackQuery['id'],
-                'text' => 'Rezervácia potvrdená ✅'
-            ];
-
-            $ch = curl_init($answerUrl);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_exec($ch);
-            curl_close($ch);
-        } elseif (strpos($data, 'cancel_') === 0) {
-            $bookingId = (int)str_replace('cancel_', '', $data);
-
-            $bookingService = new \App\Services\BookingService();
-            $bookingService->updateStatus($bookingId, 'cancelled');
-
-            $originalText = $callbackQuery['message']['text'];
-            $lines = explode("\n", $originalText);
-            $lines[0] = '❌ Zrušené!';
-            $newText = implode("\n", $lines);
-
-            $url = "https://api.telegram.org/bot{$token}/editMessageText";
-            $editData = [
-                'chat_id' => $chatId,
-                'message_id' => $messageId,
-                'text' => $newText,
-                'parse_mode' => 'HTML'
-            ];
-
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_exec($ch);
-            curl_close($ch);
-
-            $answerUrl = "https://api.telegram.org/bot{$token}/answerCallbackQuery";
-            $answerData = [
-                'callback_query_id' => $callbackQuery['id'],
-                'text' => 'Rezervácia zrušená ❌'
-            ];
-
-            $ch = curl_init($answerUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
