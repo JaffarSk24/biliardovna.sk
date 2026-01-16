@@ -535,7 +535,7 @@ $router->post('/webhook/telegram', function () {
                 curl_exec($ch);
                 curl_close($ch);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             file_put_contents($logFile, "Callback Error: " . $e->getMessage() . "\n", FILE_APPEND);
 
             // Notify user of error
@@ -627,7 +627,7 @@ $router->post('/webhook/telegram', function () {
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_exec($ch);
                 curl_close($ch);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 file_put_contents($logFile, "Coupon Error: " . $e->getMessage() . "\n", FILE_APPEND);
 
                 $url = "https://api.telegram.org/bot{$token}/sendMessage";
