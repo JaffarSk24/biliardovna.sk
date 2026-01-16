@@ -1,0 +1,155 @@
+{% extends 'base_admin.twig' %}
+
+{% block content %}
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>Booking Status <small>(Last 30 Days)</small></h3>
+        <div class="stat-grid">
+            <div class="stat-item success">
+                <span class="count">{{ stats.completed|default(0) }}</span>
+                <span class="label">Completed</span>
+            </div>
+            <div class="stat-item warning">
+                <span class="count">{{ stats.confirmed|default(0) }}</span>
+                <span class="label">Confirmed</span>
+            </div>
+            <div class="stat-item info">
+                <span class="count">{{ stats.pending|default(0) }}</span>
+                <span class="label">Created</span>
+            </div>
+            <div class="stat-item danger">
+                <span class="count">{{ stats.cancelled|default(0) }}</span>
+                <span class="label">Cancelled</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <h3>Popularity <small>(Last 30 Days)</small></h3>
+        <ul class="popularity-list">
+            {% for game, count in popularity %}
+                <li>
+                    <span class="game-name">{{ game|capitalize }}</span>
+                    <span class="game-count">{{ count }} bookings</span>
+                    <div class="progress-bar">
+                        <div class="fill" style="width: {{ (count / (popularity|first)) * 100 }}%;"></div>
+                    </div>
+                </li>
+            {% else %}
+                <li style="text-align: center; color: var(--color-muted);">No data availabe.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="admin-card mt-4">
+    <h3>Newest Pending Bookings</h3>
+    {% if pending_bookings %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Service</th>
+                    <th>Customer</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in pending_bookings %}
+                <tr>
+                    <td>{{ booking.booking_date|date('d.m.Y') }}</td>
+                    <td>{{ booking.start_time|slice(0,5) }}</td>
+                    <td>{{ booking.service_name }}</td>
+                    <td>{{ booking.customer_name }}</td>
+                    <td>
+                        <a href="/admin/bookings?status=pending" class="btn btn-sm btn-primary">Review</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center; padding: 20px; color: var(--color-muted);">No pending bookings.</p>
+    {% endif %}
+</div>
+
+<style>
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.stat-card {
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    padding: 20px;
+}
+.stat-card h3 {
+    margin-top: 0;
+    color: var(--color-gold);
+    border-bottom: 1px solid var(--admin-border);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.stat-card h3 small {
+    font-size: 0.6em;
+    color: var(--color-muted);
+}
+.stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+}
+.stat-item .count {
+    display: block;
+    font-size: 2em;
+    font-weight: bold;
+}
+.stat-item.success { color: var(--admin-success); }
+.stat-item.warning { color: var(--admin-warning); }
+.stat-item.info { color: #3498db; }
+.stat-item.danger { color: var(--admin-danger); }
+
+.popularity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.popularity-list li {
+    margin-bottom: 15px;
+}
+.popularity-list .game-name {
+    display: inline-block;
+    width: 30%;
+    font-weight: bold;
+}
+.popularity-list .game-count {
+    display: inline-block;
+    width: 20%;
+    text-align: right;
+    color: var(--color-muted);
+}
+.progress-bar {
+    display: inline-block;
+    width: 45%;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+.progress-bar .fill {
+    height: 100%;
+    background: var(--color-gold);
+    border-radius: 4px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'base_admin.twig' %}
+
+{% block content %}
+<div class="admin-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--admin-border); padding-bottom: 10px;">
+        <h3 style="color: var(--color-gold);">Manage Promocodes</h3>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="showTab('list')" class="btn btn-sm btn-primary tab-toggle active">Active Codes</button>
+            <button onclick="showTab('create')" class="btn btn-sm btn-primary tab-toggle">Create New</button>
+            <button onclick="showTab('generate')" class="btn btn-sm btn-secondary tab-toggle">Mass Generator</button>
+        </div>
+    </div>
+
+    <!-- Active List -->
+    <div id="tab-list" class="tab-pane" style="display: block;">
+        <div style="max-height: 70vh; overflow-y: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Discount</th>
+                        <th>Type</th>
+                        <th>Actual Usage</th>
+                        <th>Usage Limit</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for coupon in coupons %}
+                    <tr>
+                        <td>
+                            <strong style="color: var(--color-gold); font-family: monospace; font-size: 1.1em;">{{ coupon.code }}</strong>
+                        </td>
+                        <td>{{ coupon.discount_percent }}%</td>
+                        <td>{{ coupon.type|capitalize }}</td>
+                        <td>
+                             <span style="font-weight: bold; color: #fff;">{{ coupon.current_uses|default(0) }}</span>
+                        </td>
+                        <td>
+                            {% if coupon.usage_limit is null %}
+                                <span class="badge badge-success">Unlimited</span>
+                            {% elseif coupon.usage_limit == 1 %}
+                                <span class="badge badge-warning">Single Use</span>
+                            {% else %}
+                                {{ coupon.usage_limit }} uses
+                            {% endif %}
+                        </td>
+                        <td>{{ coupon.created_at|date('d.m.Y H:i') }}</td>
+                        <td>
+                            <form method="POST" action="/admin/promo/delete" onsubmit="return confirm('Delete this coupon?');" style="display: inline;">
+                                <input type="hidden" name="id" value="{{ coupon.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 20px;">No promocodes found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Create Form -->
+    <div id="tab-create" class="tab-pane" style="display: none;">
+        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; max-width: 500px; margin: 0 auto;">
+            <h4>Create Single Coupon</h4>
+            <form method="POST" action="/admin/promo/create">
+                <div class="form-group">
+                    <label>Code</label>
+                    <input type="text" name="code" placeholder="e.g. SUMMER2024" required style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label>Discount (%)</label>
+                    <input type="number" name="discount" placeholder="10" required style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label>Usage Limit</label>
+                    <select name="usage_limit" style="width: 100%;">
+                        <option value="1">One-Time (NULL)</option>
+                        <option value="0">Unlimited</option>
+                        <option value="5">5 Uses</option>
+                        <option value="10">10 Uses</option>
+                    </select>
+                    <small>Default is One-Time.</small>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Create Coupon</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Generate Form -->
+    <div id="tab-generate" class="tab-pane" style="display: none;">
+        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; max-width: 500px; margin: 0 auto;">
+            <h4>Mass Generate</h4>
+            <form method="POST" action="/admin/promo/generate">
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" name="amount" placeholder="50" required style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label>Prefix</label>
+                    <input type="text" name="prefix" placeholder="e.g. VIP" style="width: 100%;">
+                </div>
+                 <div class="form-group">
+                    <label>Discount (%)</label>
+                    <input type="number" name="discount" placeholder="10" required style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label>Usage Limit (per coupon)</label>
+                    <select name="usage_limit" style="width: 100%;">
+                        <option value="1">One-Time (NULL)</option>
+                        <option value="0">Unlimited</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">Generate Coupons</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+    document.getElementById('tab-' + tabName).style.display = 'block';
+    
+    // Update toggle buttons
+    document.querySelectorAll('.tab-toggle').forEach(el => el.style.opacity = '0.7');
+    document.querySelectorAll('.tab-toggle').forEach(el => el.classList.remove('active'));
+    
+    // Highlight active
+    event.target.style.opacity = '1';
+    event.target.classList.add('active');
+}
+</script>
+
+<style>
+.tab-toggle.active {
+    background: var(--color-gold) !important;
+    color: #000 !important;
+    opacity: 1 !important;
+}
+</style>
+{% endblock %}

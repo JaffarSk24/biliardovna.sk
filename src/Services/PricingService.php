@@ -11,13 +11,13 @@ class PricingService
 {
     private Pricing $pricingModel;
     private Holiday $holidayModel;
-    
+
     public function __construct()
     {
         $this->pricingModel = new Pricing();
         $this->holidayModel = new Holiday();
     }
-    
+
     /**
      * Calculate price for a booking (sum each hour separately)
      */
@@ -25,44 +25,35 @@ class PricingService
     {
         $dateTime = new DateTime($date . ' ' . $startTime);
         $dayOfWeek = (int)$dateTime->format('N');
-        
-        // Block dates from 29.12.2025 to 14.01.2026
-        $checkDate = new DateTime($date);
-        $blockStart = new DateTime('2025-12-29');
-        $blockEnd = new DateTime('2026-01-14');
-        
-        if ($checkDate >= $blockStart && $checkDate <= $blockEnd) {
-            throw new \Exception('Club is closed from 29.12.2025 to 14.01.2026');
-        }
 
         $isHoliday = $this->holidayModel->isHoliday($date);
-        
+
 
         $totalPrice = 0;
-        
+
         // Calculate price for each hour separately
         for ($i = 0; $i < $durationHours; $i++) {
             $currentTime = clone $dateTime;
             $currentTime->add(new DateInterval('PT' . $i . 'H'));
             $timeString = $currentTime->format('H:i:s');
-            
+
             $pricePerHour = $this->pricingModel->getPriceForSlot(
                 $serviceId,
                 $dayOfWeek,
                 $timeString,
                 $isHoliday
             );
-            
+
             if ($pricePerHour === null) {
                 throw new \Exception('Price not found for time slot: ' . $timeString);
             }
-            
+
             $totalPrice += $pricePerHour;
         }
-        
+
         return round($totalPrice, 2);
     }
-    
+
     /**
      * Get available time slots for a service on a specific date
      */
@@ -70,27 +61,27 @@ class PricingService
     {
         $config = require __DIR__ . '/../../config/app.php';
         $slotInterval = $config['booking']['slots_interval'];
-        
+
         $slots = [];
         $dateTime = new DateTime($date);
         $dayOfWeek = (int)$dateTime->format('N');
-        
-        // Block dates from 29.12.2025 to 14.01.2026
-        $checkDate = new DateTime($date);
-        $blockStart = new DateTime('2025-12-29');
-        $blockEnd = new DateTime('2026-01-14');
-        
-        if ($checkDate >= $blockStart && $checkDate <= $blockEnd) {
-            return [];
-        }
 
+        // Hardcoded block removed - using DB
         $isHoliday = $this->holidayModel->isHoliday($date);
-        
+
         // Generate slots from 16:00 to 23:00
         $startHour = 16;
         $endHour = 24;
-        
+
         for ($hour = $startHour; $hour < $endHour; $hour++) {
+            $slotStart = new DateTime($date . ' ' . sprintf('%02d:00:00', $hour));
+            $slotEnd = clone $slotStart;
+            $slotEnd->add(new DateInterval('PT1H'));
+
+            if ($this->isSlotBlocked($slotStart, $slotEnd, $serviceId)) {
+                continue;
+            }
+
             $time = sprintf('%02d:00:00', $hour);
             $price = $this->pricingModel->getPriceForSlot(
                 $serviceId,
@@ -98,7 +89,7 @@ class PricingService
                 $time,
                 $isHoliday
             );
-            
+
             if ($price !== null) {
                 $slots[] = [
                     'time' => $time,
@@ -108,10 +99,37 @@ class PricingService
                 ];
             }
         }
-        
+
         return $slots;
     }
-    
+
+    /**
+     * Check if a time slot is blocked in blocked_slots table
+     */
+    private function isSlotBlocked(DateTime $start, DateTime $end, int $serviceId): bool
+    {
+        $db = \App\Database\Database::getInstance();
+
+        $sql = "SELECT COUNT(*) FROM blocked_slots 
+                WHERE 
+                (
+                    (start_time < ? AND end_time > ?) -- Check overlap
+                ) 
+                AND 
+                (
+                    (service_id IS NULL) OR (service_id = ?)
+                )";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            $end->format('Y-m-d H:i:s'),
+            $start->format('Y-m-d H:i:s'),
+            $serviceId
+        ]);
+
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
     /**
      * Get price breakdown for display (sum each hour)
      */
@@ -120,34 +138,34 @@ class PricingService
         $dateTime = new DateTime($date . ' ' . $startTime);
         $dayOfWeek = (int)$dateTime->format('N');
         $isHoliday = $this->holidayModel->isHoliday($date);
-        
+
         $totalPrice = 0;
         $hourlyBreakdown = [];
-        
+
         // Calculate price for each hour
         for ($i = 0; $i < $durationHours; $i++) {
             $currentTime = clone $dateTime;
             $currentTime->add(new DateInterval('PT' . $i . 'H'));
             $timeString = $currentTime->format('H:i:s');
-            
+
             $pricePerHour = $this->pricingModel->getPriceForSlot(
                 $serviceId,
                 $dayOfWeek,
                 $timeString,
                 $isHoliday
             );
-            
+
             if ($pricePerHour === null) {
                 throw new \Exception('Price not found for time slot: ' . $timeString);
             }
-            
+
             $totalPrice += $pricePerHour;
             $hourlyBreakdown[] = [
                 'hour' => $currentTime->format('H:i'),
                 'price' => $pricePerHour
             ];
         }
-        
+
         return [
             'hourly_breakdown' => $hourlyBreakdown,
             'duration_hours' => $durationHours,

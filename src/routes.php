@@ -221,6 +221,17 @@ $router->get('/admin/holidays', function () use ($language) {
     (new AdminController($language))->manageHolidays();
 });
 
+// Admin Blocking
+$router->get('/admin/blocking', function () use ($language) {
+    (new AdminController($language))->blocking();
+});
+$router->post('/admin/blocking/add', function () use ($language) {
+    (new AdminController($language))->addBlock();
+});
+$router->post('/admin/blocking/delete', function () use ($language) {
+    (new AdminController($language))->deleteBlock();
+});
+
 // Admin Promo
 $router->get('/admin/promo', function () use ($language) {
     (new AdminPromoController($language))->index();

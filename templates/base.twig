@@ -85,6 +85,7 @@
 <body>
 
     {% include 'body-extra.twig' %}
+    {% include 'popup-overlay.twig' %}
     {% include 'header.twig' %}
 
     <main>
@@ -97,6 +98,7 @@
         // Translations for booking form
         window.bookingTranslations = {
             'select_time': '{{ 'select_time'|trans }}',
+            'date_blocked': '{{ 'date_blocked'|trans }}',
             'no_slots_available': '{{ 'no_slots_available'|trans }}',
             'occupied': '{{ 'occupied'|trans }}',
             'base_price': '{{ 'base_price'|trans }}',

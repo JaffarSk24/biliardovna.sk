@@ -8,6 +8,7 @@
     <link rel="manifest" href="/public/site.webmanifest">
     <link rel="icon" type="image/png" href="/public/images/favicon.png">
     <title>{{ page_title|default('Admin Panel') }} - Biliardovna.sk</title>
+    <link rel="stylesheet" href="/public/css/variables.css">
     <link rel="stylesheet" href="/public/css/admin.css">
     {% block head %}{% endblock %}
 </head>
@@ -21,7 +22,10 @@
                 <ul>
                     <li><a href="/admin">Dashboard</a></li>
                     <li><a href="/admin/bookings">Bookings</a></li>
+                    <li><a href="/admin/blocking">Date Blocking</a></li>
+                    <li><a href="/admin/popup">Popup Settings</a></li>
                     <li><a href="/admin/holidays">Holidays</a></li>
+                    <li><a href="/admin/promo">Promo Codes</a></li>
                     <li><a href="/admin/logout">Logout</a></li>
                 </ul>
             </nav>

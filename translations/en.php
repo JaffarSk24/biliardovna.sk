@@ -9,10 +9,10 @@ return [
     'menu_cafe' => 'Cafe',
     'menu_contact' => 'Contact',
     'menu_blog' => 'News & Events',
-    
+
     // Buttons
     'btn_book' => 'Book Now',
-    
+
     // Footer
     'footer_about' => 'Premium billiard club in the heart of Bratislava',
     'footer_quick_links' => 'Quick Links',
@@ -327,6 +327,7 @@ return [
     'service_shuffleboard_full' => 'Shuffleboard is a unique social game combining elements of curling and bowling on a table. The goal is to slide the puck as far as possible into the scoring zone without it falling off the end. It is great fun for groups of friends, couples, and corporate teambuilding. The game is physically undemanding yet very addictive.',
 
     // Booking form translations
+    'date_blocked' => 'This day is closed for booking',
     'no_slots_available' => 'No available slots',
     'occupied' => 'Occupied',
     'base_price' => 'Base price',

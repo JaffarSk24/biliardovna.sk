@@ -13,7 +13,7 @@ class BookingController extends Controller
     private PricingService $pricingService;
     private NotificationService $notificationService;
     private Service $serviceModel;
-    
+
     public function __construct(string $language = 'sk')
     {
         parent::__construct($language);
@@ -22,21 +22,21 @@ class BookingController extends Controller
         $this->notificationService = new NotificationService();
         $this->serviceModel = new Service();
     }
-    
+
     /**
      * Show booking form (home page)
      */
     public function index(): void
     {
         $services = $this->serviceModel->getWithTranslations($this->language);
-        
+
         $this->render('index.twig', [
             'services' => $services,
             'page_title' => 'Biliardovna.sk - Online rezervácie',
             'current_page' => 'home'
         ]);
     }
-    
+
     /**
      * Get available slots for a service/date (AJAX)
      */
@@ -44,15 +44,15 @@ class BookingController extends Controller
     {
         $serviceId = (int)($_GET['service_id'] ?? 0);
         $date = $_GET['date'] ?? '';
-        
+
         if (!$serviceId || !$date) {
             $this->json(['error' => 'Missing parameters'], 400);
             return;
         }
-        
+
         try {
             $slots = $this->pricingService->getAvailableSlots($serviceId, $date);
-            
+
             foreach ($slots as &$slot) {
                 $slot['available'] = $this->bookingService->checkAvailability(
                     $serviceId,
@@ -61,13 +61,13 @@ class BookingController extends Controller
                     1
                 );
             }
-            
+
             $this->json(['slots' => $slots]);
         } catch (\Exception $e) {
             $this->json(['error' => $e->getMessage()], 500);
         }
     }
-    
+
     /**
      * Calculate price for a booking (AJAX)
      */
@@ -77,12 +77,12 @@ class BookingController extends Controller
         $date = $_GET['date'] ?? '';
         $time = $_GET['time'] ?? '';
         $duration = (int)($_GET['duration'] ?? 1);
-        
+
         if (!$serviceId || !$date || !$time) {
             $this->json(['error' => 'Missing parameters'], 400);
             return;
         }
-        
+
         try {
             $breakdown = $this->pricingService->getPriceBreakdown(
                 $serviceId,
@@ -90,13 +90,13 @@ class BookingController extends Controller
                 $time,
                 $duration
             );
-            
+
             $this->json($breakdown);
         } catch (\Exception $e) {
             $this->json(['error' => $e->getMessage()], 500);
         }
     }
-    
+
     /**
      * Get resources availability for a service/date (AJAX)
      */
@@ -105,29 +105,29 @@ class BookingController extends Controller
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
         header('Expires: 0');
-        
+
         $serviceId = (int)($_GET['service_id'] ?? 0);
         $date = $_GET['date'] ?? '';
-        
+
         if (!$serviceId || !$date) {
             $this->json(['error' => 'Missing parameters'], 400);
             return;
         }
-        
+
         try {
             $availability = $this->bookingService->getResourcesAvailability($serviceId, $date);
-            
+
             if (isset($availability['resources'])) {
                 $lang = $_GET['lang'] ?? $this->language;
                 $translations = $this->translationService->getUITranslations($lang);
-                
+
                 foreach ($availability['resources'] as &$resource) {
                     $key = 'resource_' . $resource['id'];
                     $resource['name'] = $translations[$key] ?? $resource['name'];
                 }
                 unset($resource);
             }
-            
+
             $this->json($availability);
         } catch (\Exception $e) {
             $this->json(['error' => $e->getMessage()], 500);
@@ -140,24 +140,24 @@ class BookingController extends Controller
     public function validateCoupon(): void
     {
         $couponCode = $_GET['code'] ?? '';
-        
+
         if (!$couponCode) {
             $this->json(['valid' => false, 'message' => 'Missing coupon code'], 400);
             return;
         }
-        
+
         try {
             $db = \App\Database\Database::getInstance();
-            
+
             $stmt = $db->prepare("
-                SELECT id, type, discount_percent, used, valid_until
+                SELECT id, type, discount_percent, used, valid_until, usage_limit, current_uses
                 FROM coupons 
                 WHERE code = ? 
                 AND (valid_until IS NULL OR valid_until >= CURDATE())
             ");
             $stmt->execute([$couponCode]);
             $coupon = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
+
             if (!$coupon) {
                 $this->json([
                     'valid' => false,
@@ -165,29 +165,42 @@ class BookingController extends Controller
                 ]);
                 return;
             }
-            
-            if ($coupon['type'] === 'auto' && $coupon['used'] >= 1) {
+
+            // Check usage limits
+            $isLimitReached = false;
+
+            if (!is_null($coupon['usage_limit'])) {
+                $limit = (int)$coupon['usage_limit'];
+                $current = (int)($coupon['current_uses'] ?? 0);
+                if ($current >= $limit) {
+                    $isLimitReached = true;
+                }
+            } else {
+                // Unlimited, but maybe 'used' flag was manually set?
+                // Let's respect 'used' flag if usage_limit is NOT set, just in case legacy logic set used=1 for some reason.
+                // Actually, best to rely on Usage Limit concept. If usage_limit is NULL, it is unlimited.
+            }
+
+            // Legacy check for 'used' flag if usage_limit logic didn't trigger
+            // If usage_limit IS set, we trust current < limit.
+            // If usage_limit is NULL, we allow it.
+            // But what about the 'auto' / 'promo' types legacy check?
+            // "if ($coupon['type'] === 'auto' && $coupon['used'] >= 1)"
+
+            // New unified check:
+            if ($isLimitReached) {
                 $this->json([
                     'valid' => false,
-                    'message' => 'Coupon already used'
+                    'message' => 'Coupon usage limit reached'
                 ]);
                 return;
             }
-            
-            if ($coupon['type'] === 'promo' && $coupon['used'] >= 1) {
-                $this->json([
-                    'valid' => false,
-                    'message' => 'Coupon already used'
-                ]);
-                return;
-            }
-            
+
             $this->json([
                 'valid' => true,
                 'discount_percent' => (int)$coupon['discount_percent'],
                 'message' => 'Coupon valid'
             ]);
-            
         } catch (\Exception $e) {
             $this->json(['valid' => false, 'message' => $e->getMessage()], 500);
         }
@@ -202,7 +215,7 @@ class BookingController extends Controller
             $this->json(['success' => false, 'message' => 'Invalid request method'], 405);
             return;
         }
-        
+
         $input = json_decode(file_get_contents('php://input'), true);
 
         $token = trim($input['recaptcha_token'] ?? '');
@@ -213,7 +226,7 @@ class BookingController extends Controller
             $this->json(['success' => false, 'message' => 'captcha_failed', 'reason' => $reason], 400);
             return;
         }
-        
+
         $data = [
             'service_id' => (int)($input['service_id'] ?? 0),
             'resource_id' => (int)($input['resource_id'] ?? 0),
@@ -229,19 +242,19 @@ class BookingController extends Controller
             'discount_percent' => isset($input['discount_percent']) ? (float)$input['discount_percent'] : null,
             'original_price' => isset($input['original_price']) ? (float)$input['original_price'] : null
         ];
-        
+
         try {
             $result = $this->bookingService->create($data);
-            
+
             if ($result['success']) {
                 $booking = $result['booking'];
-                
+
                 $this->notificationService->sendTelegramNotification($booking, 'new');
-                
+
                 if (!empty($booking['customer_email'])) {
                     $this->notificationService->sendEmailNotification($booking);
                 }
-                
+
                 $this->json([
                     'success' => true,
                     'booking_id' => $booking['id'],
@@ -284,7 +297,7 @@ class BookingController extends Controller
             }
             return;
         }
-        
+
         $data = [
             'service_id' => (int)($_POST['service_id'] ?? 0),
             'booking_date' => $_POST['booking_date'] ?? '',
@@ -299,13 +312,13 @@ class BookingController extends Controller
             'discount_percent' => isset($_POST['discount_percent']) ? (float)$_POST['discount_percent'] : null,
             'original_price' => isset($_POST['original_price']) ? (float)$_POST['original_price'] : null
         ];
-        
+
         $result = $this->bookingService->create($data);
-        
+
         if ($result['success']) {
             $booking = $result['booking'];
             $this->notificationService->sendTelegramNotification($booking, 'new');
-            
+
             if (isset($_POST['ajax'])) {
                 $this->json($result);
             } else {
@@ -322,7 +335,7 @@ class BookingController extends Controller
             }
         }
     }
-    
+
     /**
      * Show booking success page
      */
@@ -332,10 +345,10 @@ class BookingController extends Controller
             $this->redirect('/');
             return;
         }
-        
+
         $bookingId = $_SESSION['booking_id'] ?? null;
         unset($_SESSION['booking_success'], $_SESSION['booking_id']);
-        
+
         $this->render('public/success.twig', [
             'booking_id' => $bookingId,
             'page_title' => 'Rezervácia úspešná'
@@ -348,22 +361,22 @@ class BookingController extends Controller
     public function cancel(): void
     {
         $token = $_GET['token'] ?? '';
-        
+
         if (!$token) {
             http_response_code(400);
             echo "<h1>Invalid token</h1>";
             return;
         }
-        
+
         try {
             $booking = $this->bookingService->getByToken($token);
-            
+
             if (!$booking) {
                 http_response_code(404);
                 echo "<h1>Booking not found</h1>";
                 return;
             }
-            
+
             if ($booking['status'] === 'cancelled') {
                 echo $this->twig->render('cancel.twig', [
                     'already_cancelled' => true,
@@ -375,9 +388,9 @@ class BookingController extends Controller
                 ]);
                 return;
             }
-            
+
             $this->bookingService->updateStatus($booking['id'], 'cancelled');
-            
+
             echo $this->twig->render('cancel.twig', [
                 'success' => true,
                 'language' => $this->language,

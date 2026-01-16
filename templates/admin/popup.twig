@@ -1,0 +1,110 @@
+{% extends "base_admin.twig" %}
+
+{% block content %}
+<div class="admin-card">
+    <h3>Emergency Popup Settings</h3>
+    <p style="margin-bottom: 20px; color: var(--color-muted);">
+        Enable a global popup message that appears to all visitors (e.g., for holidays or emergency closures).
+    </p>
+
+    <form action="/admin/popup/save" method="POST">
+        <div class="form-group">
+            <label>Popup Status</label>
+            <label class="switch">
+                <input type="checkbox" name="popup_enabled" value="1" {% if popup_enabled %}checked{% endif %}>
+                <span class="slider"></span>
+            </label>
+            <span style="margin-left: 10px; color: {% if popup_enabled %}var(--admin-success){% else %}var(--color-muted){% endif %}">
+                {% if popup_enabled %}Enabled{% else %}Disabled{% endif %}
+            </span>
+        </div>
+
+        <div class="form-group" style="margin-top: 15px; margin-bottom: 25px;">
+            <label style="display: block; margin-bottom: 8px; color: var(--color-muted); font-weight: 500;">Auto-Disable Date/Time (Bratislava Time)</label>
+            <div style="position: relative; max-width: 300px;">
+                <input type="datetime-local" 
+                       name="popup_expires_at" 
+                       value="{{ popup_expires_at }}" 
+                       style="width: 100%; padding: 12px; padding-left: 40px; background: rgba(0,0,0,0.2); border: 1px solid var(--admin-border); color: #fff; border-radius: var(--radius-md); font-family: var(--font-base); font-size: 1rem; box-sizing: border-box; transition: border-color var(--transition-fast);">
+                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-muted); pointer-events: none;">
+                    📅
+                </span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--color-muted); margin-top: 6px; opacity: 0.7;">
+                Select a date and time to automatically hide the popup. Leave empty to keep it active indefinitely.
+            </p>
+        </div>
+
+        <div class="tabs" style="margin-bottom: 15px;">
+            <button type="button" class="tab-btn active" onclick="openTab(event, 'sk')">🇸🇰 SK</button>
+            <button type="button" class="tab-btn" onclick="openTab(event, 'en')">🇬🇧 EN</button>
+            <button type="button" class="tab-btn" onclick="openTab(event, 'ru')">🇷🇺 RU</button>
+            <button type="button" class="tab-btn" onclick="openTab(event, 'de')">🇩🇪 DE</button>
+            <button type="button" class="tab-btn" onclick="openTab(event, 'uk')">🇺🇦 UK</button>
+        </div>
+
+        <div id="sk" class="tab-content" style="display: block;">
+            <label>Slovak Message (HTML allowed)</label>
+            <textarea name="popup_content_sk" rows="6" placeholder="Správa...">{{ popup_content_sk }}</textarea>
+        </div>
+        <div id="en" class="tab-content" style="display: none;">
+            <label>English Message</label>
+            <textarea name="popup_content_en" rows="6">{{ popup_content_en }}</textarea>
+        </div>
+        <div id="ru" class="tab-content" style="display: none;">
+            <label>Russian Message</label>
+            <textarea name="popup_content_ru" rows="6">{{ popup_content_ru }}</textarea>
+        </div>
+        <div id="de" class="tab-content" style="display: none;">
+            <label>German Message</label>
+            <textarea name="popup_content_de" rows="6">{{ popup_content_de }}</textarea>
+        </div>
+        <div id="uk" class="tab-content" style="display: none;">
+            <label>Ukrainian Message</label>
+            <textarea name="popup_content_uk" rows="6">{{ popup_content_uk }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Save Settings</button>
+
+<script>
+function openTab(evt, langName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tab-btn");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(langName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+</script>
+
+<style>
+.tab-btn {
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.05);
+    border: none;
+    color: var(--color-muted);
+    cursor: pointer;
+    font-size: 1.2em;
+    border-bottom: 2px solid transparent;
+}
+.tab-btn.active {
+    color: var(--color-gold);
+    border-bottom: 2px solid var(--color-gold);
+}
+.tab-content textarea {
+    width: 100%;
+    margin-top: 5px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--admin-border);
+    color: #fff;
+    padding: 10px;
+}
+</style>
+    </form>
+</div>
+{% endblock %}

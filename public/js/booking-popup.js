@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const i18nEl = document.getElementById('booking-i18n');
     const tr = (key, fallback = '') => {
+      if (window.bookingTranslations && window.bookingTranslations[key]) {
+          return window.bookingTranslations[key];
+      }
       if (!i18nEl) return fallback || key;
       const kebab = key.replace(/_/g, '-');
       const camel = kebab.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
@@ -218,6 +221,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && popup.classList.contains('active')) closePopup(); });
 
     // Date bounds and change
+    
+    // Fetch blocked dates once
+    let blockedDates = [];
+    fetch('/api/blocked-dates')
+        .then(r => r.json())
+        .then(data => {
+            if (data.dates) blockedDates = data.dates;
+        })
+        .catch(err => console.error('Error fetching blocked dates:', err));
+
     if (dateInput) {
         const today = new Date();
         const maxDate = new Date(); maxDate.setDate(today.getDate() + 14);
@@ -226,6 +239,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         dateInput.addEventListener('change', function() {
           const date = this.value;
+
+          // Check Calendar Blocked Dates
+          if (blockedDates.includes(date)) {
+              alert(tr('date_blocked', 'This day is closed for booking'));
+              this.value = '';
+              resetForm();
+              return;
+          }
 
           if (!isDateAllowed(date)) {
             alert(tr('deal_weekdays_only', 'Эта акция действует только в будние дни'));

@@ -1,0 +1,37 @@
+{% extends 'base_admin.twig' %}
+
+{% block content %}
+<div class="admin-card">
+    <div style="border-bottom: 1px solid var(--admin-border); margin-bottom: 20px; padding-bottom: 10px;">
+        <h3 style="color: var(--color-gold);">Manage Holidays</h3>
+        <p style="color: var(--color-muted);">Dates added here will be treated as "Weekends" for pricing (Weekend Price).</p>
+    </div>
+
+    <form method="post" action="/admin/holidays/add" class="form-group" style="display: flex; gap: 10px; align-items: flex-end; margin-bottom: 30px;">
+        <div style="flex: 1;">
+            <label for="date">Holiday Date</label>
+            <input type="date" id="date" name="date" required>
+        </div>
+        <div style="flex: 2;">
+            <label for="name">Holiday Name (Optional)</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Christmas">
+        </div>
+        <button type="submit" class="btn btn-primary">Add Holiday</button>
+    </form>
+
+    <h4 style="margin-bottom: 15px; color: var(--admin-text);">Upcoming Holidays:</h4>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        {% for holiday in holidays %}
+            <div style="background: rgba(39, 174, 96, 0.2); border: 1px solid rgba(39, 174, 96, 0.3); color: #2ecc71; padding: 5px 15px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                <span>{{ holiday.holiday_date|date('d.m.Y') }} <small style="color: inherit; opacity: 0.8;">({{ holiday.name|default('Holiday') }})</small></span>
+                <form method="post" action="/admin/holidays/delete" style="display:inline;">
+                    <input type="hidden" name="id" value="{{ holiday.id }}">
+                    <button type="submit" style="background: none; border: none; color: #2ecc71; cursor: pointer; font-size: 1.2em; line-height: 1;">&times;</button>
+                </form>
+            </div>
+        {% else %}
+            <p style="color: var(--color-muted);">No holidays configured.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

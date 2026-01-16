@@ -9,10 +9,10 @@ return [
     'menu_cafe' => 'Kaviareň',
     'menu_contact' => 'Kontakt',
     'menu_blog' => 'Novinky',
-    
+
     // Buttons
     'btn_book' => 'Rezervovať',
-    
+
     // Footer
     'footer_about' => 'Prémiový biliardový klub v srdci Bratislavy',
     'footer_quick_links' => 'Rýchle odkazy',
@@ -326,6 +326,7 @@ return [
     'service_shuffleboard_full' => 'Shuffleboard je jedinečná spoločenská hra, ktorá kombinuje prvky curlingu a bowlingu na stole. Cieľom je posunúť puk čo najďalej do bodovanej zóny bez toho, aby spadol z konca stola. Je to skvelá zábava pre skupiny priateľov, páriky aj firemné teambuildingy. Hra je fyzicky nenáročná a veľmi návyková.',
 
     // Booking form translations
+    'date_blocked' => 'Tento deň je uzavretý pre rezervácie',
     'no_slots_available' => 'Žiadne voľné termíny',
     'occupied' => 'Obsadené',
     'base_price' => 'Základná cena',
