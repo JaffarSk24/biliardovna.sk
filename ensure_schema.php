@@ -41,7 +41,21 @@ try {
         print_r($holidays);
     }
 
-    // 4. Inspect Coupons
+    // 4. Telegram Messages Schema
+    echo "Checking telegram_messages schema...\n";
+    $sqlKey = "CREATE TABLE IF NOT EXISTS telegram_messages (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        booking_id INT NOT NULL,
+        chat_id VARCHAR(50) NOT NULL,
+        message_id VARCHAR(50) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX (booking_id),
+        UNIQUE KEY unique_msg (chat_id, message_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+    $db->exec($sqlKey);
+    echo "telegram_messages ensured.\n";
+
+    // 5. Inspect Coupons
     echo "\n--- COUPONS Data ---\n";
     $coupons = $db->query("SELECT * FROM coupons LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
     print_r($coupons);

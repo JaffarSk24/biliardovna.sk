@@ -126,56 +126,56 @@ return [
 
     'cafe_welcome_title' => 'Ласкаво просимо до нашого кафе',
     'cafe_welcome_text' => 'Під час гри ви можете насолодитися широким вибором напоїв та десертів. Наше кафе пропонує якісне еспресо, свіжі соки, пиво та різноманітні закуски.',
-    'cafe_discount_title' => 'Знижка 10% для гравців',
-    'cafe_discount_text' => 'Усі гравці з активним бронюванням отримують знижку 10% на всі позиції меню.',
+    // Updated Info Block
+    'cafe_info_title' => 'Важливе повідомлення',
+    'cafe_info_text' => 'Послуги кафе та кімнати для куріння доступні лише для гравців з активним бронюванням!',
 
     'cafe_menu_title' => 'Наше меню',
 
-    'cafe_hot_drinks' => 'Гарячі напої',
-    'cafe_espresso_desc' => 'Класичне італійське еспресо',
-    'cafe_cappuccino_desc' => 'Еспресо з молочною пінкою',
-    'cafe_latte_desc' => 'Шарувата кава з молоком',
-    'cafe_tea' => 'Чай',
-    'cafe_tea_desc' => 'Вибір з чорних, зелених та фруктових чаїв',
-    'cafe_hot_chocolate' => 'Гарячий шоколад',
-    'cafe_hot_chocolate_desc' => 'Кремовий гарячий шоколад',
-
-    'cafe_cold_drinks' => 'Холодні напої',
-    'cafe_juice' => 'Сік',
-    'cafe_juice_desc' => 'Апельсин, яблуко, мультивітамін',
-    'cafe_lemonade' => 'Домашній лимонад',
-    'cafe_lemonade_desc' => 'Лимон, м\'ята, імбир',
-    'cafe_water' => 'Мінеральна вода',
-    'cafe_water_desc' => 'Газована / негазована 0,5л',
-
+    // PIVO
     'cafe_beer' => 'Пиво',
-    'cafe_draft_beer' => 'Розливне пиво',
-    'cafe_bottled_beer' => 'Пляшкове пиво',
-    'cafe_nonalcoholic_beer' => 'Безалкогольне пиво',
+    'menu_pilsner' => 'Pilsner Urquell 12° 330 мл',
+    'menu_stella' => 'Stella Artois 330 мл',
+    'menu_corona' => 'Corona Extra 355 мл',
+    'menu_stella_nealko' => 'Безалкогольне Stella Artois 330 мл',
 
-    'cafe_desserts' => 'Десерти',
-    'cafe_cheesecake' => 'Чізкейк',
-    'cafe_cheesecake_desc' => 'Кремовий чізкейк з фруктами',
-    'cafe_chocolate_cake' => 'Шоколадний торт',
-    'cafe_chocolate_cake_desc' => 'Насичений шоколадний торт',
-    'cafe_apple_pie' => 'Яблучний пиріг',
-    'cafe_apple_pie_desc' => 'Домашній яблучний пиріг з корицею',
+    // VINO
+    'cafe_wine' => 'Вино',
+    'menu_prosecco_bottle' => 'Prosecco 750 мл',
+    'menu_frizz_bottle' => 'I AM FRIZZ 750 мл',
+    'menu_cabernet' => 'Cabernet Sauvignon 150 мл',
+    'menu_cabernet_rose' => 'Cabernet Sauvignon Rose 150 мл',
+    'menu_chardonnay' => 'Chardonnay 150 мл',
 
-    'cafe_snacks' => 'Закуски',
-    'cafe_chips' => 'Чіпси',
-    'cafe_chips_desc' => 'Різні смаки',
-    'cafe_nuts' => 'Горішки',
-    'cafe_nuts_desc' => 'Солоні / смажені',
-    'cafe_nachos' => 'Начос',
-    'cafe_nachos_desc' => 'З соусами',
-    'cafe_sandwich' => 'Сендвіч',
-    'cafe_sandwich_desc' => 'Шинка, сир, овочі',
-    'cafe_pizza' => 'Піца',
-    'cafe_pizza_desc' => 'Різні види',
+    // NEALKO NAPOJE
+    'cafe_soft_drinks' => 'Безалкогольні напої',
+    'menu_cappy' => 'Cappy 250 мл',
+    'menu_redbull' => 'Red Bull',
+    'menu_kofola' => 'Kofola 250 мл',
+    'menu_coke' => 'Coca Cola 330 мл',
+    'menu_royal_cola' => 'Royal Crown Cola',
+    'menu_coke_zero' => 'Coca Cola Zero 200 мл',
+    'menu_tonic' => 'Schweppes Tonic 250 мл',
+    'menu_romer_still' => 'Römerquelle Негазована 330 мл',
+    'menu_romer_sparkling' => 'Römerquelle Газована 330 мл',
+    'menu_birell_pomelo' => 'Birell Radler Pomelo 500мл',
 
+    // KAVA
+    'cafe_coffee' => 'Кава',
+    'menu_lungo' => 'Lungo 180 мл',
+    'menu_americano_xl' => 'Americano XL 400мл',
+    'menu_americano_craft' => 'Americano Craft XL 400 мл',
+
+    // SLANE SNACKY
+    'cafe_snacks' => 'Солоні закуски',
+    'menu_sticks_salt' => 'Солоні палички 160г',
+    'menu_sticks_cheese' => 'Палички з сиром 160г',
+    'menu_peanuts' => 'Арахіс смажений солоний 100г',
+
+    // Gallery & CTA
     'cafe_gallery_title' => 'Галерея',
     'cafe_cta_title' => 'Забронюйте стіл і насолоджуйтесь частуванням',
-    'cafe_cta_text' => 'Не забувайте, що як гравець ви отримуєте знижку 10% на все з меню!',
+    'cafe_cta_text' => 'Нагадуємо: кафе відкрито тільки для відвідувачів, що грають.',
 
     // Contact page
     'pages_contact_title' => 'Контакти',
@@ -316,7 +316,7 @@ return [
     'service_pool_full' => 'Американський пул — це динамічна та захоплююча гра, популярна в усьому світі. Гравці намагаються забити кольорові кулі в лузи в певному порядку. Пул чудово підходить для дружніх зустрічей та турнірів. Наші 4 столи оснащені професійним обладнанням для максимального ігрового досвіду.',
 
     'service_darts_short' => 'Дартс',
-    'service_darts_full' => 'Дартс — це класична гра, що поєднує точність, концентрацію та веселощі. Наші 5 професійних мішеней пропонують автентичний ігровий досвід для одиночних гравців та груп. Ідеально підходить для корпоративних заходів, свят або дружніх змагань.',
+    'service_darts_full' => 'Дартс — це класична гра, що поєднує точність, концентрацію та веселощі. Наші 6 професійних мішеней пропонують автентичний ігровий досвід для одиночних гравців та груп. Ідеально підходить для корпоративних заходів, свят або дружніх змагань.',
 
     'service_table-football_short' => 'Настільний футбол',
     'service_table-football_full' => 'Настільний футбол — швидка та захоплююча гра для двох або чотирьох гравців. Вимагає швидкої реакції, координації та командної роботи. Наші 2 професійних автомати пропонують плавну гру та ідеально підходять як для турнірів, так і для відпочинку з друзями.',

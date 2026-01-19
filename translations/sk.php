@@ -126,56 +126,57 @@ return [
 
     'cafe_welcome_title' => 'Vitajte v našej kaviarni',
     'cafe_welcome_text' => 'Počas hry si môžete vychutnať širokú ponuku nápojov a dezertov. Naša kaviareň ponúka kvalitné espresso, čerstvé džúsy, pivo a rôzne občerstvenie.',
-    'cafe_discount_title' => '10% zľava pre hráčov',
-    'cafe_discount_text' => 'Všetci hráči s aktívnou rezerváciou získajú 10% zľavu na všetky položky z menu.',
+
+    // Updated Info Block (formerly Discount)
+    'cafe_info_title' => 'Dôležité upozornenie',
+    'cafe_info_text' => 'Služby kaviarne a fajčiarskej miestnosti sú dostupné len pre hráčov s aktívnou rezerváciou!',
 
     'cafe_menu_title' => 'Naše menu',
 
-    'cafe_hot_drinks' => 'Teplé nápoje',
-    'cafe_espresso_desc' => 'Klasické talianské espresso',
-    'cafe_cappuccino_desc' => 'Espresso s mliečnou penou',
-    'cafe_latte_desc' => 'Vrstvená káva s mliekom',
-    'cafe_tea' => 'Čaj',
-    'cafe_tea_desc' => 'Výber z čiernych, zelených a ovocných čajov',
-    'cafe_hot_chocolate' => 'Horúca čokoláda',
-    'cafe_hot_chocolate_desc' => 'Krémová horúca čokoláda',
-
-    'cafe_cold_drinks' => 'Studené nápoje',
-    'cafe_juice' => 'Džús',
-    'cafe_juice_desc' => 'Pomaranč, jablko, multivitamín',
-    'cafe_lemonade' => 'Domáca limonáda',
-    'cafe_lemonade_desc' => 'Citrón, mäta, zázvor',
-    'cafe_water' => 'Minerálka',
-    'cafe_water_desc' => 'Perlivá / neperlivá 0,5l',
-
+    // PIVO
     'cafe_beer' => 'Pivo',
-    'cafe_draft_beer' => 'Točené pivo',
-    'cafe_bottled_beer' => 'Fľaškové pivo',
-    'cafe_nonalcoholic_beer' => 'Nealkoholické pivo',
+    'menu_pilsner' => 'Pilsner Urquell 12° 330 ml',
+    'menu_stella' => 'Stella Artois 330 ml',
+    'menu_corona' => 'Corona Extra 355 ml',
+    'menu_stella_nealko' => 'Nealko Stella Artois 330 ml',
 
-    'cafe_desserts' => 'Dezerty',
-    'cafe_cheesecake' => 'Cheesecake',
-    'cafe_cheesecake_desc' => 'Krémový cheesecake s ovocím',
-    'cafe_chocolate_cake' => 'Čokoládová torta',
-    'cafe_chocolate_cake_desc' => 'Bohatá čokoládová torta',
-    'cafe_apple_pie' => 'Jablkový koláč',
-    'cafe_apple_pie_desc' => 'Domáci jablkový koláč so škoricou',
+    // VINO
+    'cafe_wine' => 'Víno',
+    'menu_prosecco_bottle' => 'Prosecco 750 ml',
+    'menu_frizz_bottle' => 'I AM FRIZZ 750 ml',
+    'menu_cabernet' => 'Cab. Sauvignon 150 ml',
+    'menu_cabernet_rose' => 'Cab. Sauvignon Rose 150 ml',
+    'menu_chardonnay' => 'Chardonnay 150 ml',
 
-    'cafe_snacks' => 'Občerstvenie',
-    'cafe_chips' => 'Chipsy',
-    'cafe_chips_desc' => 'Rôzne príchute',
-    'cafe_nuts' => 'Oriešky',
-    'cafe_nuts_desc' => 'Solené / pražené',
-    'cafe_nachos' => 'Nachos',
-    'cafe_nachos_desc' => 'S dipmi',
-    'cafe_sandwich' => 'Sendvič',
-    'cafe_sandwich_desc' => 'Šunka, syr, zelenina',
-    'cafe_pizza' => 'Pizza',
-    'cafe_pizza_desc' => 'Rôzne druhy',
+    // NEALKO NAPOJE
+    'cafe_soft_drinks' => 'Nealko nápoje',
+    'menu_cappy' => 'Cappy 250 ml',
+    'menu_redbull' => 'Red Bull',
+    'menu_kofola' => 'Kofola 250 ml',
+    'menu_coke' => 'Coca Cola 330 ml',
+    'menu_royal_cola' => 'Royal Crown Cola',
+    'menu_coke_zero' => 'Coca Cola Zero 200 ml',
+    'menu_tonic' => 'Schweppes Tonic 250 ml',
+    'menu_romer_still' => 'Römerquelle jemná 330 ml',
+    'menu_romer_sparkling' => 'Römerquelle neper. 330 ml',
+    'menu_birell_pomelo' => 'Birell Radler Grep 500ml',
 
+    // KAVA
+    'cafe_coffee' => 'Káva',
+    'menu_lungo' => 'Lungo 180 ml',
+    'menu_americano_xl' => 'Americano XL 400ml',
+    'menu_americano_craft' => 'Americano Craft XL 400 ml',
+
+    // SLANE SNACKY
+    'cafe_snacks' => 'Slané snacky',
+    'menu_sticks_salt' => 'Tyčinky solené 160g',
+    'menu_sticks_cheese' => 'Tyčinky so syrom 160g',
+    'menu_peanuts' => 'Arašidy praž. sol. 100g',
+
+    // Gallery & CTA
     'cafe_gallery_title' => 'Galéria',
     'cafe_cta_title' => 'Rezervujte si stôl a vychutnajte si občerstvenie',
-    'cafe_cta_text' => 'Nezabudnite, že ako hráč získate 10% zľavu na všetko z menu!',
+    'cafe_cta_text' => 'Pripomíname, že kaviareň je otvorená len pre hrajúcich zákazníkov.',
 
     // Contact page
     'pages_contact_title' => 'Kontakt',
@@ -317,7 +318,7 @@ return [
     'service_pool_full' => 'Americký pool je dynamická a zábavná hra, ktorá je obľúbená po celom svete. Hráči sa snažia zasunúť farebné guľôčky do dier v určenom poradí. Pool je skvelý pre priateľské stretnutia a turnaje. Naše 4 stoly sú vybavené profesionálnym vybavením pre maximálny herný zážitok.',
 
     'service_darts_short' => 'Šípky',
-    'service_darts_full' => 'Šípky sú klasická hra, ktorá kombinuje presnosť, koncentráciu a zábavu. Našich 5 profesionálnych terčov ponúka autentický herný zážitok pre jednotlivcov aj skupiny. Ideálne pre firemné akcie, oslavy alebo priateľské súťaže s priateľmi.',
+    'service_darts_full' => 'Šípky sú klasická hra, ktorá kombinuje presnosť, koncentráciu a zábavu. Našich 6 profesionálnych terčov ponúka autentický herný zážitok pre jednotlivcov aj skupiny. Ideálne pre firemné akcie, oslavy alebo priateľské súťaže s priateľmi.',
 
     'service_table-football_short' => 'Stolný futbal',
     'service_table-football_full' => 'Stolný futbal je rýchla a napínavá hra pre dvoch alebo štyroch hráčov. Vyžaduje rýchle reflexy, koordináciu a tímovú prácu. Naše 2 profesionálne automaty ponúkajú plynulú hru a sú ideálne pre turnaje aj voľnočasové hranie s priateľmi.',

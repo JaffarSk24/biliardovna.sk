@@ -126,56 +126,57 @@ return [
 
     'cafe_welcome_title' => 'Welcome to our cafe',
     'cafe_welcome_text' => 'During the game, you can enjoy a wide selection of drinks and desserts. Our cafe offers quality espresso, fresh juices, beer and various snacks.',
-    'cafe_discount_title' => '10% discount for players',
-    'cafe_discount_text' => 'All players with an active reservation receive a 10% discount on all menu items.',
+
+    // Updated Info Block
+    'cafe_info_title' => 'Important Notice',
+    'cafe_info_text' => 'Cafe and smoking room services are available only for players with an active reservation!',
 
     'cafe_menu_title' => 'Our menu',
 
-    'cafe_hot_drinks' => 'Hot drinks',
-    'cafe_espresso_desc' => 'Classic Italian espresso',
-    'cafe_cappuccino_desc' => 'Espresso with milk foam',
-    'cafe_latte_desc' => 'Layered coffee with milk',
-    'cafe_tea' => 'Tea',
-    'cafe_tea_desc' => 'Selection of black, green and fruit teas',
-    'cafe_hot_chocolate' => 'Hot chocolate',
-    'cafe_hot_chocolate_desc' => 'Creamy hot chocolate',
-
-    'cafe_cold_drinks' => 'Cold drinks',
-    'cafe_juice' => 'Juice',
-    'cafe_juice_desc' => 'Orange, apple, multivitamin',
-    'cafe_lemonade' => 'Homemade lemonade',
-    'cafe_lemonade_desc' => 'Lemon, mint, ginger',
-    'cafe_water' => 'Mineral water',
-    'cafe_water_desc' => 'Sparkling / still 0.5l',
-
+    // PIVO
     'cafe_beer' => 'Beer',
-    'cafe_draft_beer' => 'Draft beer',
-    'cafe_bottled_beer' => 'Bottled beer',
-    'cafe_nonalcoholic_beer' => 'Non-alcoholic beer',
+    'menu_pilsner' => 'Pilsner Urquell 12° 330 ml',
+    'menu_stella' => 'Stella Artois 330 ml',
+    'menu_corona' => 'Corona Extra 355 ml',
+    'menu_stella_nealko' => 'Non-alcoholic Stella Artois 330 ml',
 
-    'cafe_desserts' => 'Desserts',
-    'cafe_cheesecake' => 'Cheesecake',
-    'cafe_cheesecake_desc' => 'Creamy cheesecake with fruit',
-    'cafe_chocolate_cake' => 'Chocolate cake',
-    'cafe_chocolate_cake_desc' => 'Rich chocolate cake',
-    'cafe_apple_pie' => 'Apple pie',
-    'cafe_apple_pie_desc' => 'Homemade apple pie with cinnamon',
+    // VINO
+    'cafe_wine' => 'Wine',
+    'menu_prosecco_bottle' => 'Prosecco 750 ml',
+    'menu_frizz_bottle' => 'I AM FRIZZ 750 ml',
+    'menu_cabernet' => 'Cabernet Sauvignon 150 ml',
+    'menu_cabernet_rose' => 'Cabernet Sauvignon Rose 150 ml',
+    'menu_chardonnay' => 'Chardonnay 150 ml',
 
-    'cafe_snacks' => 'Snacks',
-    'cafe_chips' => 'Chips',
-    'cafe_chips_desc' => 'Various flavors',
-    'cafe_nuts' => 'Nuts',
-    'cafe_nuts_desc' => 'Salted / roasted',
-    'cafe_nachos' => 'Nachos',
-    'cafe_nachos_desc' => 'With dips',
-    'cafe_sandwich' => 'Sandwich',
-    'cafe_sandwich_desc' => 'Ham, cheese, vegetables',
-    'cafe_pizza' => 'Pizza',
-    'cafe_pizza_desc' => 'Various types',
+    // NEALKO NAPOJE
+    'cafe_soft_drinks' => 'Soft Drinks',
+    'menu_cappy' => 'Cappy 250 ml',
+    'menu_redbull' => 'Red Bull',
+    'menu_kofola' => 'Kofola 250 ml',
+    'menu_coke' => 'Coca Cola 330 ml',
+    'menu_royal_cola' => 'Royal Crown Cola',
+    'menu_coke_zero' => 'Coca Cola Zero 200 ml',
+    'menu_tonic' => 'Schweppes Tonic 250 ml',
+    'menu_romer_still' => 'Römerquelle Still 330 ml',
+    'menu_romer_sparkling' => 'Römerquelle Sparkling 330 ml',
+    'menu_birell_pomelo' => 'Birell Radler Pomelo 500ml',
 
+    // KAVA
+    'cafe_coffee' => 'Coffee',
+    'menu_lungo' => 'Lungo 180 ml',
+    'menu_americano_xl' => 'Americano XL 400ml',
+    'menu_americano_craft' => 'Americano Craft XL 400 ml',
+
+    // SLANE SNACKY
+    'cafe_snacks' => 'Savory Snacks',
+    'menu_sticks_salt' => 'Salty Sticks 160g',
+    'menu_sticks_cheese' => 'Cheese Sticks 160g',
+    'menu_peanuts' => 'Roasted Salted Peanuts 100g',
+
+    // Gallery & CTA
     'cafe_gallery_title' => 'Gallery',
     'cafe_cta_title' => 'Book a table and enjoy refreshments',
-    'cafe_cta_text' => 'Don\'t forget that as a player you get a 10% discount on everything from the menu!',
+    'cafe_cta_text' => 'Reminder: The cafe is open only for playing customers.',
 
     // Contact page
     'pages_contact_title' => 'Contact',
@@ -316,7 +317,7 @@ return [
     'service_pool_full' => 'American Pool is a dynamic and fun game that is popular worldwide. Players try to pocket colored balls in a specific order. Pool is great for friendly gatherings and tournaments. Our 4 tables are equipped with professional equipment for maximum gaming experience.',
 
     'service_darts_short' => 'Darts',
-    'service_darts_full' => 'Darts is a classic game that combines precision, concentration and fun. Our 5 professional dartboards offer an authentic gaming experience for individuals and groups. Ideal for corporate events, celebrations or friendly competitions with friends.',
+    'service_darts_full' => 'Darts is a classic game that combines precision, concentration and fun. Our 6 professional dartboards offer an authentic gaming experience for individuals and groups. Ideal for corporate events, celebrations or friendly competitions with friends.',
 
     'service_table-football_short' => 'Table Football',
     'service_table-football_full' => 'Table football is a fast and exciting game for two or four players. It requires quick reflexes, coordination, and teamwork. Our 2 professional tables offer smooth gameplay and are perfect for tournaments or casual play with friends.',

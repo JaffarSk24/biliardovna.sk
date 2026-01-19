@@ -59,14 +59,40 @@ class NotificationService
             ]);
         }
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $result = curl_exec($ch);
-        curl_close($ch);
+        // Gather all target chat IDs
+        $targetChats = [];
+        // Always include the main chat ID
+        if ($chatId) {
+            $targetChats[] = trim($chatId);
+        }
+        // Include additional allowed chats
+        $allowedChats = $_ENV['TELEGRAM_ALLOWED_CHATS'] ?? '';
+        if ($allowedChats) {
+            $extras = explode(',', $allowedChats);
+            foreach ($extras as $extra) {
+                $targetChats[] = trim($extra);
+            }
+        }
 
-        return $result !== false;
+        $targetChats = array_unique(array_filter($targetChats));
+
+        $success = false;
+        foreach ($targetChats as $targetChatId) {
+            $data['chat_id'] = $targetChatId;
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            if ($result !== false) {
+                $success = true;
+            }
+        }
+
+        return $success;
     }
 
     /**

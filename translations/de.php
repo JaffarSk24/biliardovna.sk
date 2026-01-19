@@ -125,57 +125,58 @@ return [
     'pages_cafe_subtitle' => 'Genießen Sie Erfrischungen während des Spiels',
 
     'cafe_welcome_title' => 'Willkommen in unserem Café',
-    'cafe_welcome_text' => 'Während des Spiels können Sie eine große Auswahl an Getränken und Desserts genießen. Unser Café bietet hochwertigen Espresso, frische Säfte, Bier und verschiedene Snacks.',
-    'cafe_discount_title' => '10% Rabatt für Spieler',
-    'cafe_discount_text' => 'Alle Spieler mit einer aktiven Reservierung erhalten 10% Rabatt auf alle Menüpositionen.',
+    'cafe_welcome_text' => 'Genießen Sie während des Spiels eine große Auswahl an Getränken und Snacks. Unser Café bietet hochwertigen Espresso, frische Säfte, Bier und verschiedene Snacks.',
+
+    // Updated Info Block
+    'cafe_info_title' => 'Wichtiger Hinweis',
+    'cafe_info_text' => 'Die Nutzung des Cafés und des Raucherraums ist nur für Spieler mit aktiver Reservierung möglich!',
 
     'cafe_menu_title' => 'Unsere Speisekarte',
 
-    'cafe_hot_drinks' => 'Heiße Getränke',
-    'cafe_espresso_desc' => 'Klassischer italienischer Espresso',
-    'cafe_cappuccino_desc' => 'Espresso mit Milchschaum',
-    'cafe_latte_desc' => 'Geschichteter Kaffee mit Milch',
-    'cafe_tea' => 'Tee',
-    'cafe_tea_desc' => 'Auswahl aus schwarzen, grünen und Früchtetees',
-    'cafe_hot_chocolate' => 'Heiße Schokolade',
-    'cafe_hot_chocolate_desc' => 'Cremige heiße Schokolade',
-
-    'cafe_cold_drinks' => 'Kalte Getränke',
-    'cafe_juice' => 'Saft',
-    'cafe_juice_desc' => 'Orange, Apfel, Multivitamin',
-    'cafe_lemonade' => 'Hausgemachte Limonade',
-    'cafe_lemonade_desc' => 'Zitrone, Minze, Ingwer',
-    'cafe_water' => 'Mineralwasser',
-    'cafe_water_desc' => 'Sprudelnd / still 0,5l',
-
+    // PIVO
     'cafe_beer' => 'Bier',
-    'cafe_draft_beer' => 'Fassbier',
-    'cafe_bottled_beer' => 'Flaschenbier',
-    'cafe_nonalcoholic_beer' => 'Alkoholfreies Bier',
+    'menu_pilsner' => 'Pilsner Urquell 12° 330 ml',
+    'menu_stella' => 'Stella Artois 330 ml',
+    'menu_corona' => 'Corona Extra 355 ml',
+    'menu_stella_nealko' => 'Alkoholfreies Stella Artois 330 ml',
 
-    'cafe_desserts' => 'Desserts',
-    'cafe_cheesecake' => 'Käsekuchen',
-    'cafe_cheesecake_desc' => 'Cremiger Käsekuchen mit Früchten',
-    'cafe_chocolate_cake' => 'Schokoladenkuchen',
-    'cafe_chocolate_cake_desc' => 'Reichhaltiger Schokoladenkuchen',
-    'cafe_apple_pie' => 'Apfelkuchen',
-    'cafe_apple_pie_desc' => 'Hausgemachter Apfelkuchen mit Zimt',
+    // VINO
+    'cafe_wine' => 'Wein',
+    'menu_prosecco_bottle' => 'Prosecco 750 ml',
+    'menu_frizz_bottle' => 'I AM FRIZZ 750 ml',
+    'menu_cabernet' => 'Cabernet Sauvignon 150 ml',
+    'menu_cabernet_rose' => 'Cabernet Sauvignon Rose 150 ml',
+    'menu_chardonnay' => 'Chardonnay 150 ml',
 
-    'cafe_snacks' => 'Snacks',
-    'cafe_chips' => 'Chips',
-    'cafe_chips_desc' => 'Verschiedene Geschmacksrichtungen',
-    'cafe_nuts' => 'Nüsse',
-    'cafe_nuts_desc' => 'Gesalzen / geröstet',
-    'cafe_nachos' => 'Nachos',
-    'cafe_nachos_desc' => 'Mit Dips',
-    'cafe_sandwich' => 'Sandwich',
-    'cafe_sandwich_desc' => 'Schinken, Käse, Gemüse',
-    'cafe_pizza' => 'Pizza',
-    'cafe_pizza_desc' => 'Verschiedene Sorten',
+    // NEALKO NAPOJE
+    'cafe_soft_drinks' => 'Alkoholfreie Getränke',
+    'menu_cappy' => 'Cappy 250 ml',
+    'menu_redbull' => 'Red Bull',
+    'menu_kofola' => 'Kofola 250 ml',
+    'menu_coke' => 'Coca Cola 330 ml',
+    'menu_royal_cola' => 'Royal Crown Cola',
+    'menu_coke_zero' => 'Coca Cola Zero 200 ml',
+    'menu_tonic' => 'Schweppes Tonic 250 ml',
+    'menu_romer_still' => 'Römerquelle Still 330 ml',
+    'menu_romer_sparkling' => 'Römerquelle Prickelnd 330 ml',
+    'menu_birell_pomelo' => 'Birell Radler Pomelo 500ml',
 
+    // KAVA
+    'cafe_coffee' => 'Kaffee',
+    'menu_lungo' => 'Lungo 180 ml',
+    'menu_americano_xl' => 'Americano XL 400ml',
+    'menu_americano_craft' => 'Americano Craft XL 400 ml',
+
+    // SLANE SNACKY
+    'cafe_snacks' => 'Salzige Snacks',
+    'menu_sticks_salt' => 'Salzstangen 160g',
+    'menu_sticks_cheese' => 'Käsestangen 160g',
+    'menu_peanuts' => 'Geröstete gesalzene Erdnüsse 100g',
+
+    // Gallery & CTA
     'cafe_gallery_title' => 'Galerie',
-    'cafe_cta_title' => 'Reservieren Sie einen Tisch und genießen Sie Erfrischungen',
-    'cafe_cta_text' => 'Vergessen Sie nicht, dass Sie als Spieler 10% Rabatt auf alles aus der Speisekarte erhalten!',
+    'cafe_cta_title' => 'Reservieren Sie einen Tisch und genießen Sie Snacks',
+    'cafe_cta_text' => 'Hinweis: Das Café ist nur für spielende Gäste geöffnet.',
 
     // Contact page
     'pages_contact_title' => 'Kontakt',
@@ -316,7 +317,7 @@ return [
     'service_pool_full' => 'Amerikanisches Pool ist ein dynamisches und unterhaltsames Spiel, das weltweit beliebt ist. Die Spieler versuchen, farbige Kugeln in einer bestimmten Reihenfolge einzulochen. Pool eignet sich hervorragend für freundschaftliche Treffen und Turniere. Unsere 4 Tische sind mit professioneller Ausrüstung für maximales Spielerlebnis ausgestattet.',
 
     'service_darts_short' => 'Darts',
-    'service_darts_full' => 'Darts ist ein klassisches Spiel, das Präzision, Konzentration und Spaß kombiniert. Unsere 5 professionellen Dartscheiben bieten ein authentisches Spielerlebnis für Einzelspieler und Gruppen. Ideal für Firmenveranstaltungen, Feiern oder freundschaftliche Wettbewerbe mit Freunden.',
+    'service_darts_full' => 'Darts ist ein klassisches Spiel, das Präzision, Konzentration und Spaß kombiniert. Unsere 6 professionellen Dartscheiben bieten ein authentisches Spielerlebnis für Einzelspieler und Gruppen. Ideal für Firmenveranstaltungen, Feiern oder freundschaftliche Wettbewerbe mit Freunden.',
 
     'service_table-football_short' => 'Tischfußball',
     'service_table-football_full' => 'Tischfußball ist ein schnelles und spannendes Spiel für zwei oder vier Spieler. Es erfordert schnelle Reflexe, Koordination und Teamarbeit. Unsere 2 professionellen Automaten bieten ein flüssiges Spiel und sind ideal für Turniere oder Freizeitspiele mit Freunden.',

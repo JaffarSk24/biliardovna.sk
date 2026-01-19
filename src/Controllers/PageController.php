@@ -225,15 +225,9 @@ class PageController extends Controller
 
     public function cafe()
     {
-        header("HTTP/1.1 301 Moved Permanently");
-        $target = ($this->language === 'sk') ? '/' : "/{$this->language}";
-        header("Location: " . $target);
-        exit;
-        /*
         return $this->renderWithSeo('cafe.twig', 'cafe', [
             'current_page' => 'cafe'
         ]);
-        */
     }
 
     public function contact()

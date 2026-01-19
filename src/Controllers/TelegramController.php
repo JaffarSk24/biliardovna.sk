@@ -73,22 +73,47 @@ class TelegramController extends Controller
         $lines[0] = $newStatusText;
         $newText = implode("\n", $lines);
 
-        $editData = [
-            'chat_id' => $chatId,
-            'message_id' => $messageId,
-            'text' => $newText,
-            'parse_mode' => 'HTML'
-        ];
-
-        if ($status === 'confirmed') {
-            $editData['reply_markup'] = json_encode([
-                'inline_keyboard' => [[
-                    ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $bookingId]
-                ]]
-            ]);
+        // 1. Get all messages associated with this booking
+        try {
+            $db = Database::getInstance();
+            $stmt = $db->prepare("SELECT chat_id, message_id FROM telegram_messages WHERE booking_id = ?");
+            $stmt->execute([$bookingId]);
+            $messages = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            $messages = [];
         }
 
-        $this->sendMessage('editMessageText', $token, $editData);
+        // If no messages found (legacy booking?), at least update the one that triggered the callback
+        $foundCurrent = false;
+        foreach ($messages as $msg) {
+            if ($msg['chat_id'] == $chatId && $msg['message_id'] == $messageId) {
+                $foundCurrent = true;
+                break;
+            }
+        }
+        if (!$foundCurrent) {
+            $messages[] = ['chat_id' => $chatId, 'message_id' => $messageId];
+        }
+
+        // 2. Broadcast update to all
+        foreach ($messages as $msg) {
+            $editData = [
+                'chat_id' => $msg['chat_id'],
+                'message_id' => $msg['message_id'],
+                'text' => $newText,
+                'parse_mode' => 'HTML'
+            ];
+
+            if ($status === 'confirmed') {
+                $editData['reply_markup'] = json_encode([
+                    'inline_keyboard' => [[
+                        ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $bookingId]
+                    ]]
+                ]);
+            }
+
+            $this->sendMessage('editMessageText', $token, $editData);
+        }
 
         $answerData = [
             'callback_query_id' => $callbackQueryId,
