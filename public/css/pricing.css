@@ -1,0 +1,335 @@
+.pricing-hero {
+    padding: 120px 0 60px;
+    margin-top: -120px;
+    padding-top: 240px;
+    background: var(--color-espresso);
+    text-align: center;
+    position: relative;
+}
+
+.pricing-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/public/images/pattern-bg.png');
+    background-repeat: repeat;
+    background-size: 800px 457px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pricing-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.pricing-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+.pricing-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+
+.pricing-tables {
+    padding: 60px 0;
+    background: var(--color-espresso);
+    position: relative;
+}
+
+.pricing-tables::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/public/images/pattern-bg.png');
+    background-repeat: repeat;
+    background-size: 800px 457px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pricing-tables .container {
+    position: relative;
+    z-index: 1;
+}
+
+.pricing-tables::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 1200px;
+    height: 1px;
+    background: var(--accent-color);
+    opacity: 0.5;
+    z-index: 1;
+}
+
+.pricing-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.pricing-tab {
+    padding: 1rem 2rem;
+    background: rgba(26, 20, 16, 0.6);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: var(--radius-sm);
+}
+
+.pricing-tab:hover {
+    border-color: var(--accent-color);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.pricing-tab.active {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--color-espresso);
+}
+
+.pricing-content {
+    position: relative;
+}
+
+.pricing-table-wrapper {
+    display: none;
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.pricing-table-wrapper.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.pricing-table-scroll {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-wood);
+    min-width: 800px;
+}
+
+.pricing-table thead {
+    background: var(--color-espresso);
+}
+
+.pricing-table th {
+    padding: 1.2rem 1rem;
+    text-align: center;
+    font-weight: 600;
+    color: var(--accent-color);
+    border-bottom: 2px solid var(--accent-color);
+    font-size: 1rem;
+}
+
+.pricing-table th:first-child {
+    text-align: left;
+    padding-left: 1.5rem;
+}
+
+.pricing-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.pricing-table tbody tr:hover {
+    background: rgba(212, 175, 55, 0.05);
+}
+
+.pricing-table tbody tr.prime-time {
+    background: rgba(212, 175, 55, 0.08);
+}
+
+.pricing-table tbody tr.prime-time:hover {
+    background: rgba(212, 175, 55, 0.15);
+}
+
+.pricing-table td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.pricing-table td.time-col {
+    text-align: left;
+    padding-left: 1.5rem;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.pricing-table td.holiday-price {
+    background: rgba(212, 175, 55, 0.1);
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.pricing-table th.holiday-col {
+    background: rgba(212, 175, 55, 0.15);
+}
+
+.pricing-action {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.pricing-action .btn-primary {
+    display: inline-block;
+    padding: 14px 32px;
+    background: var(--accent-color);
+    color: var(--color-espresso);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.pricing-action .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.pricing-action .btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.pricing-action .btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .pricing-hero {
+        padding: 100px 0 40px;
+    }
+
+    .pricing-hero h1 {
+        font-size: 2rem;
+    }
+
+    .pricing-subtitle {
+        font-size: 1rem;
+    }
+
+    .pricing-tables {
+        padding: 40px 0;
+    }
+
+    .pricing-tabs {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .pricing-tab {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+    }
+
+    .pricing-table th,
+    .pricing-table td {
+        padding: 0.8rem 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .pricing-action .btn-primary {
+        width: 100%;
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
+
+.pricing-table tbody td:hover {
+    background: rgba(212, 175, 55, 0.2);
+    cursor: pointer;
+}
+
+.pricing-table tbody tr:hover td.time-col {
+    color: var(--accent-hover);
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+}
+
+.pricing-table tbody td:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(212, 175, 55, 0.1);
+    pointer-events: none;
+}
+
+.pricing-table td {
+    position: relative;
+}
+
+.pricing-table tbody tr.highlight-row td.time-col {
+    color: var(--accent-hover);
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+}
+
+.pricing-table tbody td.highlight-col {
+    background: rgba(212, 175, 55, 0.15);
+}
+
+.pricing-table thead th.highlight-header {
+    color: var(--accent-hover);
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+}
+
+@media (max-width: 768px) {
+  .pricing-hero {
+    padding-top: 100px !important;
+  }
+}

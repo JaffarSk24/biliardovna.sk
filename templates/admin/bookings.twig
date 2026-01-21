@@ -1,0 +1,72 @@
+{% extends 'base_admin.twig' %}
+
+{% block content %}
+<div class="admin-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--admin-border); padding-bottom: 10px;">
+        <h3 style="color: var(--color-gold);">Manage Bookings</h3>
+        <div style="display: flex; gap: 10px;">
+            <a href="?status=pending" class="btn btn-primary" style="background: var(--admin-warning); color: #fff;">Pending</a>
+            <a href="?status=confirmed" class="btn btn-primary" style="background: var(--admin-success); color: #fff;">Confirmed</a>
+            <a href="?status=cancelled" class="btn btn-primary" style="background: var(--admin-danger); color: #fff;">Cancelled</a>
+            <a href="/admin/bookings" class="btn" style="background: #555; color: #fff;">All</a>
+        </div>
+    </div>
+
+    <div style="max-height: 70vh; overflow-y: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date & Time</th>
+                    <th>Service</th>
+                    <th>Customer</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>#{{ booking.id }}</td>
+                    <td>
+                        {{ booking.booking_date|date('d.m.Y') }}<br>
+                        <small style="color: var(--color-muted);">{{ booking.start_time|slice(0,5) }} - {{ booking.end_time|slice(0,5) }}</small>
+                    </td>
+                    <td>{{ booking.formatted_service_name }} (Stôl {{ booking.formatted_table_number }})</td>
+                    <td>
+                        {{ booking.customer_name }}<br>
+                        <small style="color: var(--color-muted);">{{ booking.customer_phone }}</small>
+                    </td>
+                    <td>
+                        {{ booking.price }} €
+                        {% if booking.coupon_redeemed %}
+                            <br><small style="color: var(--admin-success);">Promo: {{ booking.coupon_redeemed }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ booking.status }}">{{ booking.status|capitalize }}</span>
+                    </td>
+                    <td>
+                        <form method="POST" action="/admin/bookings/update" style="display: inline-flex; gap: 5px;">
+                            <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                            {% if booking.status == 'pending' %}
+                                <button type="submit" name="status" value="confirmed" class="btn btn-sm btn-success">Approve</button>
+                                <button type="submit" name="status" value="cancelled" class="btn btn-sm btn-danger">Reject</button>
+                            {% elseif booking.status == 'confirmed' %}
+                                <button type="submit" name="status" value="completed" class="btn btn-sm btn-primary">Complete</button>
+                                <button type="submit" name="status" value="cancelled" class="btn btn-sm btn-danger">Cancel</button>
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 20px;">No bookings found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

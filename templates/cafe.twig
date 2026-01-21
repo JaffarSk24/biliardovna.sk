@@ -1,0 +1,294 @@
+{% extends "base.twig" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/public/css/cafe.css?v=20251117">
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <h1>{{ translations.pages_cafe_title|default('Kaviareň') }}</h1>
+        <p>{{ translations.pages_cafe_subtitle|default('Vychutnajte si občerstvenie počas hry') }}</p>
+    </div>
+</section>
+
+<section class="cafe-intro">
+    <div class="container">
+        <div class="cafe-intro-content">
+            <div class="cafe-intro-text">
+                <h2>{{ translations.cafe_welcome_title|default('Vitajte v našej kaviarni') }}</h2>
+                <p>{{ translations.cafe_welcome_text|default('Počas hry si môžete vychutnať širokú ponuku nápojov a občerstvenia. Naša kaviareň ponúka kvalitné espresso, čerstvé džúsy, alkoholické i nealkoholické nápoje a rôzne občerstvenie.') }}</p>
+                <div class="cafe-highlight">
+                    <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                    </svg>
+                    <strong>{{ translations.cafe_info_title|default('Dôležitý oznam') }}</strong>
+                    <p>{{ translations.cafe_info_text|default('Služby kaviarne a fajčiarskej miestnosti sú dostupné iba pre hrajúcich zákazníkov.') }}</p>
+                </div>
+            </div>
+            <div class="cafe-intro-image">
+                <img src="/public/images/cafe-1.webp" alt="Kaviareň" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cafe-menu">
+    <div class="container">
+        <h2>{{ translations.cafe_menu_title|default('Naše menu') }}</h2>
+        
+        {# PIVO #}
+        <div class="menu-category">
+            <h3>{{ translations.cafe_beer|default('Pivo') }}</h3>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_pilsner }}</h4></div>
+                    <div class="menu-item-price">2.40 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_stella }}</h4></div>
+                    <div class="menu-item-price">2.40 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_corona }}</h4></div>
+                    <div class="menu-item-price">3.50 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_stella_nealko }}</h4></div>
+                    <div class="menu-item-price">2.80 €</div>
+                </div>
+            </div>
+        </div>
+
+        {# VINO #}
+        <div class="menu-category">
+            <h3>{{ translations.cafe_wine|default('Vino') }}</h3>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_prosecco_bottle }}</h4></div>
+                    <div class="menu-item-price">14.50 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_frizz_bottle }}</h4></div>
+                    <div class="menu-item-price">9.50 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_cabernet }}</h4></div>
+                    <div class="menu-item-price">2.50 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_cabernet_rose }}</h4></div>
+                    <div class="menu-item-price">2.50 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_chardonnay }}</h4></div>
+                    <div class="menu-item-price">2.50 €</div>
+                </div>
+            </div>
+        </div>
+
+        {# NEALKO #}
+        <div class="menu-category">
+            <h3>{{ translations.cafe_soft_drinks|default('Nealko') }}</h3>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_cappy }}</h4></div>
+                    <div class="menu-item-price">3.00 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_redbull }}</h4></div>
+                    <div class="menu-item-price">3.00 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_kofola }}</h4></div>
+                    <div class="menu-item-price">2.40 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_coke }}</h4></div>
+                    <div class="menu-item-price">3.00 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_royal_cola }}</h4></div>
+                    <div class="menu-item-price">2.60 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_coke_zero }}</h4></div>
+                    <div class="menu-item-price">3.00 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_tonic }}</h4></div>
+                    <div class="menu-item-price">2.20 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_romer_still }}</h4></div>
+                    <div class="menu-item-price">1.80 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_romer_sparkling }}</h4></div>
+                    <div class="menu-item-price">1.80 €</div>
+                </div>
+                 <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_birell_pomelo }}</h4></div>
+                    <div class="menu-item-price">2.20 €</div>
+                </div>
+            </div>
+        </div>
+
+        {# KAVA #}
+        <div class="menu-category">
+            <h3>{{ translations.cafe_coffee|default('Káva') }}</h3>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_lungo }}</h4></div>
+                    <div class="menu-item-price">2.00 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_americano_xl }}</h4></div>
+                    <div class="menu-item-price">3.00 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_americano_craft }}</h4></div>
+                    <div class="menu-item-price">4.00 €</div>
+                </div>
+            </div>
+        </div>
+
+        {# SNACKS #}
+         <div class="menu-category">
+            <h3>{{ translations.cafe_snacks|default('Snacky') }}</h3>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_sticks_salt }}</h4></div>
+                    <div class="menu-item-price">3.00 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_sticks_cheese }}</h4></div>
+                    <div class="menu-item-price">3.00 €</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-info"><h4>{{ translations.menu_peanuts }}</h4></div>
+                    <div class="menu-item-price">1.20 €</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="cafe-gallery">
+    <div class="container">
+        <h2>{{ translations.cafe_gallery_title|default('Galéria') }}</h2>
+        <div class="cafe-gallery-grid gallery-grid">
+            <div class="gallery-item">
+                <img src="/public/images/cafe-1.webp" alt="Kaviareň" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="/public/images/cafe-2.webp" alt="Kaviareň" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="/public/images/cafe-3.webp" alt="Kaviareň" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="/public/images/cafe-4.webp" alt="Kaviareň" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="/public/images/cafe-5.webp" alt="Kaviareň" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="/public/images/cafe-6.webp" alt="Kaviareň" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cafe-cta">
+    <div class="container">
+        <h2>{{ translations.cafe_cta_title|default('Rezervujte si stôl a vychutnajte si občerstvenie') }}</h2>
+        <p>{{ translations.cafe_cta_text|default('Nezabudnite, že ako hráč získate 10% zľavu na všetko z menu!') }}</p>
+        <a href="{{ language == 'sk' ? '/' : '/' ~ language }}#services" class="btn-primary btn-large">{{ translations.btn_book_now|default('Rezervovať teraz') }}</a>
+    </div>
+</section>
+
+<script>
+// Lightbox (as on home), scoped to cafe gallery
+document.addEventListener('DOMContentLoaded', function() {
+  const galleryRoot = document.querySelector('.cafe-gallery');
+  if (!galleryRoot) return;
+
+  const galleryItems = galleryRoot.querySelectorAll('.gallery-item');
+  if (galleryItems.length === 0) return;
+
+  // Create lightbox once (global, как на главной)
+  let lightbox = document.getElementById('lightbox-cafe');
+  if (!lightbox) {
+    lightbox = document.createElement('div');
+    lightbox.id = 'lightbox-cafe';
+    lightbox.className = 'lightbox';
+    lightbox.innerHTML = `
+      <div class="lightbox-content">
+        <span class="lightbox-close">&times;</span>
+        <span class="lightbox-prev">&#10094;</span>
+        <span class="lightbox-next">&#10095;</span>
+        <img src="" alt="Gallery Image">
+        <div class="lightbox-counter"></div>
+      </div>
+    `;
+    document.body.appendChild(lightbox);
+  }
+
+  const lightboxImg = lightbox.querySelector('img');
+  const closeBtn = lightbox.querySelector('.lightbox-close');
+  const prevBtn  = lightbox.querySelector('.lightbox-prev');
+  const nextBtn  = lightbox.querySelector('.lightbox-next');
+  const counter  = lightbox.querySelector('.lightbox-counter');
+
+  let currentIndex = 0;
+  const images = Array.from(galleryItems).map(item => item.querySelector('img').src);
+
+  function openLightbox(index) {
+    currentIndex = index;
+    lightboxImg.src = images[currentIndex];
+    counter.textContent = `${currentIndex + 1} / ${images.length}`;
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden'; // как на главной
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+    // важно: не удаляем DOM lightbox → ничего не «выпадает» внизу
+  }
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % images.length;
+    lightboxImg.src = images[currentIndex];
+    counter.textContent = `${currentIndex + 1} / ${images.length}`;
+  }
+
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    lightboxImg.src = images[currentIndex];
+    counter.textContent = `${currentIndex + 1} / ${images.length}`;
+  }
+
+  galleryItems.forEach((item, index) => {
+    item.addEventListener('click', () => openLightbox(index));
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+  nextBtn.addEventListener('click', showNext);
+  prevBtn.addEventListener('click', showPrev);
+
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') showNext();
+    if (e.key === 'ArrowLeft') showPrev();
+  });
+});
+</script>
+{% endblock %}

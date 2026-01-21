@@ -1,0 +1,294 @@
+/* Contact Page */
+
+.page-hero {
+    padding: 120px 0 60px;
+    margin-top: -120px;
+    padding-top: 240px;
+    background: var(--color-espresso);
+    text-align: center;
+    position: relative;
+}
+.page-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url('/public/images/pattern-bg.png');
+    background-repeat: repeat; background-size: 800px 457px;
+    opacity: 0.15; pointer-events: none;
+}
+.page-hero .container { position: relative; z-index: 1; }
+.page-hero h1 { font-size: 3rem; font-weight: 700; color: var(--accent-color); margin-bottom: 16px; }
+.page-hero p { font-size: 1.2rem; color: var(--color-text); opacity: .85; }
+
+/* Info */
+.contact-info {
+    padding: 80px 0; background: var(--color-espresso); position: relative;
+}
+.contact-info::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: url('/public/images/pattern-bg.png');
+    background-repeat: repeat; background-size: 800px 457px;
+    opacity: .15; pointer-events: none;
+}
+.contact-info .container { position: relative; z-index: 1; }
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+.contact-card {
+    background: var(--color-wood);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    transition: transform .2s ease;
+}
+.contact-card:hover { transform: translateY(-3px); }
+.contact-icon { color: var(--accent-color); margin-bottom: 12px; opacity: .9; }
+.contact-card h3 { color: var(--accent-color); margin: 8px 0 6px; font-size: 1.2rem; }
+.contact-card p, .contact-card a { color: var(--text-color); text-decoration: none; }
+
+/* Transport */
+.contact-transport {
+    padding: 80px 0; background: var(--color-wood);
+}
+.contact-transport h2 { color: var(--accent-color); text-align: center; margin-bottom: 40px; font-size: 2rem; }
+.transport-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+.transport-card {
+    background: rgba(0,0,0,.25);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 24px;
+}
+.transport-icon { color: var(--accent-color); margin-bottom: 12px; }
+
+/* Map – из главной */
+.map-section { position: relative; background: var(--color-wood); padding: 0; margin: 0; }
+.map-container { width: 100%; height: 550px; line-height: 0; }
+.map-container iframe { width: 100%; height: 100%; display: block; filter: grayscale(30%) contrast(1.1); }
+.map-info {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    background: rgba(26,20,16,.95);
+    border: 2px solid var(--accent-color);
+    border-radius: var(--radius-md);
+    padding: 30px 50px; text-align: center; backdrop-filter: blur(10px);
+}
+.map-info h3 { font-size: 1.8rem; color: var(--accent-color); margin-bottom: 10px; }
+.map-info p { color: var(--text-color); margin-bottom: 20px; font-size: 1.1rem; }
+.btn-directions {
+    display: inline-block; padding: 12px 28px;
+    background: var(--accent-color); color: var(--color-espresso);
+    border-radius: var(--radius-sm); text-decoration: none; font-weight: 600;
+    transition: all var(--transition-fast);
+}
+.btn-directions:hover { background: var(--accent-hover); transform: translateY(-2px); }
+
+/* Social */
+.contact-social { padding: 80px 0; background: var(--color-espresso); position: relative; }
+.contact-social::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: url('/public/images/pattern-bg.png');
+    background-repeat: repeat; background-size: 800px 457px;
+    opacity: .15; pointer-events: none;
+}
+.contact-social .container { position: relative; z-index: 1; }
+.contact-social h2 { color: var(--accent-color); text-align: center; margin-bottom: 30px; font-size: 2rem; }
+
+.contact-social .footer-social {
+    display: flex;
+    gap: 72px;
+    margin-top: 72px;
+    justify-content: center; /* оставляю по центру, как у вас было */
+}
+.contact-social .footer-social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;             /* x2 */
+    height: 72px;            /* x2 */
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+    color: var(--text-color); /* иконки не будут полупрозрачными */
+}
+.contact-social .footer-social a svg { /* x2 от исходных 20px */
+    width: 40px;
+    height: 40px;
+    display: block;
+}
+.contact-social .footer-social a:hover {
+    background: var(--accent-color);
+    transform: translateY(-2px);
+}
+.contact-social .footer-social a:hover svg {
+    color: var(--color-espresso);
+}
+
+/* Бэкдроп */
+.message-modal-backdrop {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.6); visibility: hidden; opacity: 0;
+  transition: opacity var(--transition-fast), visibility var(--transition-fast);
+  z-index: 1000;
+}
+.message-modal-backdrop.is-open { visibility: visible; opacity: 1; }
+
+/* Окно */
+.message-modal {
+  position: relative; /* фиксирует кнопку закрытия внутри окна */
+  width: min(560px, 92vw);
+  background: var(--color-espresso);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 24px;
+  color: var(--text-color);
+  outline: none;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+}
+.message-close {
+  position: absolute; top: 10px; right: 12px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.06); color: var(--text-color);
+  border: none; cursor: pointer; font-size: 20px; line-height: 1;
+  transition: all var(--transition-fast);
+}
+.message-close:hover { background: var(--accent-color); color: var(--color-espresso); }
+
+.message-hint { opacity: .8; margin: 6px 0 16px; }
+
+/* Сетка мессенджеров */
+.message-list {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-top: 8px;
+}
+@media (max-width: 520px) {
+  .message-list { grid-template-columns: repeat(2, 1fr); }
+}
+.message-item {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--text-color);
+}
+.message-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.06);
+  transition: all var(--transition-fast);
+}
+.message-icon svg { width: 40px; height: 40px; }
+.message-item:hover .message-icon {
+  background: var(--accent-color); transform: translateY(-2px);
+}
+.message-item:hover .message-icon svg { color: var(--color-espresso); }
+
+/* Лочим скролл страницы при открытом модале */
+body.modal-open { overflow: hidden; }
+
+/* CTA (scoped) */
+.contact-cta { padding: 80px 0; background: var(--color-espresso); text-align: center; }
+.contact-cta h2 { color: var(--accent-color); margin-bottom: 16px; font-size: 2rem; }
+.contact-cta p { color: var(--text-color); opacity: .85; margin-bottom: 28px; font-size: 1.1rem; }
+.contact-cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+.contact-cta .btn-primary {
+    display: inline-block; padding: 14px 32px;
+    background: var(--accent-color); color: var(--color-espresso);
+    border: none; border-radius: var(--radius-sm); font-weight: 600; font-size: 1rem;
+    text-decoration: none; transition: all var(--transition-fast); cursor: pointer;
+}
+.contact-cta .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); }
+
+.contact-cta .btn-secondary {
+    display: inline-block; padding: 14px 32px;
+    background: transparent; color: var(--accent-color); border: 2px solid var(--accent-color);
+    border-radius: var(--radius-sm); font-weight: 600; text-decoration: none; transition: all var(--transition-fast); cursor: pointer;
+}
+.contact-cta .btn-secondary:hover { background: var(--accent-color); color: var(--color-espresso); }
+
+.contact-cta .btn-large { padding: 16px 48px; font-size: 1.125rem; }
+
+/* Responsive */
+@media (max-width: 992px) {
+    .contact-grid { grid-template-columns: repeat(2, 1fr); }
+    .transport-grid { grid-template-columns: 1fr; }
+    .map-info { width: 90%; padding: 20px 30px; }
+}
+@media (max-width: 576px) {
+    .contact-grid { grid-template-columns: 1fr; }
+    .page-hero h1 { font-size: 2rem; }
+    .page-hero p { font-size: 1rem; }
+}
+
+/* Mobile: reduce top offset of the first block title */
+@media (max-width: 768px) {
+  main > section:first-of-type :is(h1, h2, .section-title) {
+    margin-top: var(--space-sm, 12px) !important;
+    padding-top: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-hero {
+    padding-top: 100px !important;
+  }
+}
+
+/* Contact: force socials to single row on mobile */
+@media (max-width: 768px) {
+  .contact-social .footer-social {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    gap: 16px !important;
+  }
+  .contact-social .footer-social a {
+    width: 56px !important;
+    height: 56px !important;
+  }
+  .contact-social .footer-social a svg {
+    width: 28px !important;
+    height: 28px !important;
+  }
+}
+
+/* Popup messengers: single row on mobile */
+@media (max-width: 768px) {
+  .message-modal .message-list {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    gap: 16px !important;
+  }
+  .message-modal .message-item { flex: 0 0 auto !important; }
+  .message-modal .message-icon { width: 56px !important; height: 56px !important; }
+  .message-modal .message-icon svg { width: 28px !important; height: 28px !important; }
+}
+
+@media (max-width: 399px) {
+  .message-modal .message-list { gap: 12px !important; }
+  .message-modal .message-icon { width: 48px !important; height: 48px !important; }
+  .message-modal .message-icon svg { width: 24px !important; height: 24px !important; }
+}
+
+/* Contact cards: 2-column layout on mobile, grouped L/R */
+/* Left: Address + Hours; Right: Phone + Email */
+@media (max-width: 768px) {
+  .contact-info .contact-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "address phone"
+      "hours   email";
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  /* Remove outer margins if any, let grid gap control spacing */
+  .contact-info .contact-card { margin: 0 !important; }
+
+  .contact-info .contact-card:nth-child(1) { grid-area: address; } /* Adresa */
+  .contact-info .contact-card:nth-child(2) { grid-area: phone; }   /* Telefón */
+  .contact-info .contact-card:nth-child(3) { grid-area: email; }   /* Email */
+  .contact-info .contact-card:nth-child(4) { grid-area: hours; }   /* Otváracie hodiny */
+}

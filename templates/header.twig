@@ -1,0 +1,119 @@
+{# header.twig - partial для шапки #}
+<header>
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <a href="{{ language == 'sk' ? '/' : '/' ~ language }}">
+          <img src="/public/images/horizontal-white-noback.png" alt="Biliardovna.sk">
+        </a>
+      </div>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <ul class="main-menu">
+          <li><a href="{{ language == 'sk' ? '/' : '/' ~ language }}" class="{{ current_page|default('') == 'home' ? 'active' : '' }}">{{ translations.menu_home|default('Domov') }}</a></li>
+          <li><a href="{{ language == 'sk' ? '/biliard-a-hry' : '/' ~ language ~ '/games' }}" class="{{ current_page|default('') == 'games' ? 'active' : '' }}">{{ translations.menu_games|default('Biliard a hry') }}</a></li>
+          <li><a href="{{ language == 'sk' ? '/cennik' : '/' ~ language ~ '/pricing' }}" class="{{ current_page|default('') == 'pricing' ? 'active' : '' }}">{{ translations.menu_pricing|default('Cenník') }}</a></li>
+          <li><a href="{{ language == 'sk' ? '/akcie' : '/' ~ language ~ '/deals' }}" class="{{ current_page|default('') == 'deals' ? 'active' : '' }}">{{ translations.menu_deals|default('Akcie') }}</a></li>
+          <li>
+            <a href="{{ language == 'sk' ? '/blog' : '/' ~ language ~ '/blog' }}"
+               class="{{ current_page|default('') == 'blog' ? 'active' : '' }}">
+              {{ translations.menu_blog|default('Novinky') }}
+            </a>
+          </li>
+          <li><a href="{{ language == 'sk' ? '/kaviaren' : '/' ~ language ~ '/cafe' }}" class="{{ current_page|default('') == 'cafe' ? 'active' : '' }}">{{ translations.menu_cafe|default('Kaviareň') }}</a></li>
+          <li><a href="{{ language == 'sk' ? '/kontakt' : '/' ~ language ~ '/contact' }}" class="{{ current_page|default('') == 'contact' ? 'active' : '' }}">{{ translations.menu_contact|default('Kontakt') }}</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <div class="language-switcher" id="languageSwitcher">
+          <button class="lang-current" id="langToggle" aria-haspopup="true" aria-expanded="false">
+            <span class="lang-flag">{{ language|upper }}</span>
+            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+              <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          {# Построим целевые пути для каждой локали, учитывая страницу статьи #}
+          {% set isArticle = article is defined and article.slug is defined %}
+          {% set page = current_page|default('home') %}
+
+          {% if isArticle %}
+            {% set path_sk = '/blog/' ~ article.slug %}
+            {% set path_en = '/en/blog/' ~ article.slug %}
+            {% set path_ru = '/ru/blog/' ~ article.slug %}
+            {% set path_uk = '/uk/blog/' ~ article.slug %}
+            {% set path_de = '/de/blog/' ~ article.slug %}
+          {% else %}
+            {% if page == 'home' or page == '' %}
+              {% set path_sk = '/' %}
+              {% set path_en = '/en' %}
+              {% set path_ru = '/ru' %}
+              {% set path_uk = '/uk' %}
+              {% set path_de = '/de' %}
+            {% elseif page == 'games' %}
+              {% set path_sk = '/biliard-a-hry' %}
+              {% set path_en = '/en/games' %}
+              {% set path_ru = '/ru/games' %}
+              {% set path_uk = '/uk/games' %}
+              {% set path_de = '/de/games' %}
+            {% elseif page == 'pricing' %}
+              {% set path_sk = '/cennik' %}
+              {% set path_en = '/en/pricing' %}
+              {% set path_ru = '/ru/pricing' %}
+              {% set path_uk = '/uk/pricing' %}
+              {% set path_de = '/de/pricing' %}
+            {% elseif page == 'deals' %}
+              {% set path_sk = '/akcie' %}
+              {% set path_en = '/en/deals' %}
+              {% set path_ru = '/ru/deals' %}
+              {% set path_uk = '/uk/deals' %}
+              {% set path_de = '/de/deals' %}
+            {% elseif page == 'blog' %}
+              {% set path_sk = '/blog' %}
+              {% set path_en = '/en/blog' %}
+              {% set path_ru = '/ru/blog' %}
+              {% set path_uk = '/uk/blog' %}
+              {% set path_de = '/de/blog' %}
+            {% elseif page == 'cafe' %}
+              {% set path_sk = '/kaviaren' %}
+              {% set path_en = '/en/cafe' %}
+              {% set path_ru = '/ru/cafe' %}
+              {% set path_uk = '/uk/cafe' %}
+              {% set path_de = '/de/cafe' %}
+            {% elseif page == 'contact' %}
+              {% set path_sk = '/kontakt' %}
+              {% set path_en = '/en/contact' %}
+              {% set path_ru = '/ru/contact' %}
+              {% set path_uk = '/uk/contact' %}
+              {% set path_de = '/de/contact' %}
+            {% else %}
+              {# дефолт — главная #}
+              {% set path_sk = '/' %}
+              {% set path_en = '/en' %}
+              {% set path_ru = '/ru' %}
+              {% set path_uk = '/uk' %}
+              {% set path_de = '/de' %}
+            {% endif %}
+          {% endif %}
+
+          <ul class="lang-dropdown" id="langDropdown" aria-label="Language switcher">
+            <li><a href="{{ path_sk }}" class="{{ language == 'sk' ? 'active' : '' }}">Slovenčina</a></li>
+            <li><a href="{{ path_en }}" class="{{ language == 'en' ? 'active' : '' }}">English</a></li>
+            <li><a href="{{ path_ru }}" class="{{ language == 'ru' ? 'active' : '' }}">Русский</a></li>
+            <li><a href="{{ path_uk }}" class="{{ language == 'uk' ? 'active' : '' }}">Українська</a></li>
+            <li><a href="{{ path_de }}" class="{{ language == 'de' ? 'active' : '' }}">Deutsch</a></li>
+          </ul>
+        </div>
+
+        <a href="{{ language == 'sk' ? '/' : '/' ~ language }}#services" class="btn-primary btn-book">{{ 'btn_book'|trans }}</a>
+
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

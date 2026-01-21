@@ -1,0 +1,169 @@
+{% extends "base.twig" %}
+
+{% block title %}Admin: Promo{% endblock %}
+
+{% block styles %}
+{{ parent() }}
+<style>
+.admin-form { max-width: 980px; margin: 24px auto; padding: 24px; background: #1f1b15; border-radius: 12px; }
+.admin-form h2 { margin: 0 0 16px; }
+.admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.admin-grid-1 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.admin-field label { display: block; margin-bottom: 6px; opacity: 0.9; }
+.admin-field input[type="text"],
+.admin-field input[type="datetime-local"],
+.admin-field input[type="date"],
+.admin-field input[type="time"],
+.admin-field textarea,
+.admin-field select { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #3a3125; background:#2b241c; color:#fff; }
+.admin-row { margin: 12px 0; }
+.admin-error { color: #ff6b6b; font-size: 0.9rem; }
+.admin-actions { display: flex; gap: 12px; margin-top: 16px; }
+.btn { padding: 10px 16px; border-radius: 8px; border: 0; cursor: pointer; }
+.btn-primary { background: #D4AF37; color: #1f1b15; }
+.btn-secondary { background: #3a3125; color: #fff; }
+.weekdays { display:flex; gap:10px; flex-wrap:wrap; }
+.weekdays label { background:#2b241c; padding:8px 10px; border-radius:8px; border:1px solid #3a3125; }
+.checkbox-inline { display:flex; align-items:center; gap:8px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-form">
+  <h2>{{ item.id ? 'Edit Promo' : 'Create Promo' }}</h2>
+  {% if errors and errors|length %}
+    <div class="admin-error">Please fix the errors below.</div>
+  {% endif %}
+  <form method="post" action="/admin/promo/save">
+    <input type="hidden" name="id" value="{{ item.id|default('') }}">
+
+    <div class="admin-grid">
+      <div class="admin-field">
+        <label>Slug*</label>
+        <input type="text" name="slug" value="{{ item.slug }}">
+        {% if errors.slug %}<div class="admin-error">{{ errors.slug }}</div>{% endif %}
+      </div>
+      <div class="admin-field">
+        <label>Language</label>
+        <select name="language">
+          {% for lang in languages %}
+          <option value="{{ lang }}" {{ item.language == lang ? 'selected' : '' }}>{{ lang|upper }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="admin-field">
+        <label>Title*</label>
+        <input type="text" name="title" value="{{ item.title }}">
+        {% if errors.title %}<div class="admin-error">{{ errors.title }}</div>{% endif %}
+      </div>
+      <div class="admin-field">
+        <label>Subtitle</label>
+        <input type="text" name="subtitle" value="{{ item.subtitle }}">
+      </div>
+
+      <div class="admin-field" style="grid-column:1/-1">
+        <label>Excerpt</label>
+        <textarea name="excerpt" rows="3">{{ item.excerpt }}</textarea>
+      </div>
+
+      <div class="admin-field">
+        <label>Hero Image URL</label>
+        <input type="text" name="hero_image" value="{{ item.hero_image }}">
+      </div>
+      <div class="admin-field">
+        <label>Publish At</label>
+        <input type="datetime-local" name="publish_at" value="{{ item.publish_at ? item.publish_at|date('Y-m-d\\TH:i') : '' }}">
+      </div>
+
+      <div class="admin-field">
+        <label>Status</label>
+        <select name="status">
+          {% for st in statuses %}
+          <option value="{{ st }}" {{ item.status == st ? 'selected' : '' }}>{{ st|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="admin-field checkbox-inline">
+        <input type="checkbox" name="featured" id="featured" {{ item.featured ? 'checked' : '' }}>
+        <label for="featured">Featured</label>
+      </div>
+    </div>
+
+    <div class="admin-row">
+      <div class="admin-field">
+        <label>Body (HTML)</label>
+        <textarea name="body_html" rows="8">{{ item.body_html }}</textarea>
+      </div>
+    </div>
+
+    <hr class="admin-row">
+
+    <h3>Promo Settings</h3>
+    <div class="admin-grid">
+      <div class="admin-field">
+        <label>Coupon Code*</label>
+        <input type="text" name="coupon_code" value="{{ promo.coupon_code }}">
+        {% if errors.coupon_code %}<div class="admin-error">{{ errors.coupon_code }}</div>{% endif %}
+      </div>
+      <div class="admin-field">
+        <label>Service</label>
+        <select name="service_id">
+          <option value="">All services</option>
+          {% for s in services %}
+            <option value="{{ s.id }}" {{ promo.service_id == s.id ? 'selected' : '' }}>{{ s.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="admin-field">
+        <label>Min Slots</label>
+        <input type="text" name="min_slots" value="{{ promo.min_slots }}">
+      </div>
+      <div class="admin-field checkbox-inline">
+        <input type="checkbox" name="auto_apply" id="auto_apply" {{ promo.auto_apply ? 'checked' : '' }}>
+        <label for="auto_apply">Auto apply in popup</label>
+      </div>
+
+      <div class="admin-field">
+        <label>Weekdays (1=Mon ... 7=Sun)</label>
+        <div class="weekdays">
+          {% set wd = (promo.allowed_weekdays ?: '')|split(',') %}
+          {% for i in 1..7 %}
+            {% set checked = wd and (''~i) in wd %}
+            <label><input type="checkbox" name="weekdays[]" value="{{ i }}" {{ checked ? 'checked' : '' }}> {{ i }}</label>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="admin-field">
+        <label>Allowed Weekdays Raw (optional)</label>
+        <input type="text" name="allowed_weekdays" value="{{ promo.allowed_weekdays }}">
+      </div>
+
+      <div class="admin-field">
+        <label>Time Start</label>
+        <input type="time" name="time_start" value="{{ promo.time_start }}">
+      </div>
+      <div class="admin-field">
+        <label>Time End</label>
+        <input type="time" name="time_end" value="{{ promo.time_end }}">
+      </div>
+
+      <div class="admin-field">
+        <label>Date Start</label>
+        <input type="date" name="date_start" value="{{ promo.date_start }}">
+      </div>
+      <div class="admin-field">
+        <label>Date End</label>
+        <input type="date" name="date_end" value="{{ promo.date_end }}">
+      </div>
+    </div>
+
+    <div class="admin-actions">
+      <button type="submit" class="btn btn-primary">Save</button>
+      {% if item.id %}
+        <a class="btn btn-secondary" href="/{{ item.language }}/deals/{{ item.slug }}" target="_blank">Open</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

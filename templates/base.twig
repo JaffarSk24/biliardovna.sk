@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="/public/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/public/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/images/apple-touch-icon.png">
+    <link rel="manifest" href="/public/site.webmanifest">
+    <link rel="icon" type="image/png" href="/public/images/favicon.png">
+    <title>{{ page_title|default('Biliardovňa.sk') }}</title>
+    <meta name="description" content="{{ meta_description|default('Biliardový klub v Bratislave') }}">
+    <meta name="keywords" content="{{ meta_keywords|default('') }}">
+    <link rel="canonical" href="{{ canonical|default('') }}">
+
+    <meta property="og:title" content="{{ og_title|default(page_title|default('Biliardovňa.sk')) }}">
+    <meta property="og:description" content="{{ og_description|default(meta_description|default('')) }}">
+    <meta property="og:type" content="{{ og_type|default('website') }}">
+    <meta property="og:url" content="{{ og_url|default('') }}">
+    <meta property="og:image" content="{{ og_image|default('/public/images/1920x1080_with_logo.webp') }}">
+    <meta property="og:site_name" content="Biliardovňa.sk">
+    <meta property="og:locale" content="{{ language }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ og_title|default(page_title|default('Biliardovňa.sk')) }}">
+    <meta name="twitter:description" content="{{ og_description|default(meta_description|default('')) }}">
+    <meta name="twitter:image" content="{{ og_image|default('/public/images/1920x1080_with_logo.webp') }}">
+
+    {% for lang_code, url in alternates %}
+    <link rel="alternate" hreflang="{{ lang_code }}" href="{{ url }}">
+    {% endfor %}
+
+    {# Базовые стили и токены #}
+    <link rel="stylesheet" href="/public/css/variables.css">
+    <link rel="stylesheet" href="/public/css/base.css">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/utilities.css">
+    <link rel="stylesheet" href="/public/css/booking-popup.css">
+
+    {# Страничные стили (дети могут добавить свои через {{ parent() }}) #}
+    {% block styles %}{% endblock %}
+
+    {# Доп. head-вставки (мета, скрипты и т.д.) #}
+    {% block head %}{% endblock %}
+
+    {# Необязательный include, не ломает, если файла нет #}
+    {% include 'header-extra.twig' ignore missing %}
+
+    {# Адаптив — всегда последним #}
+    <link rel="stylesheet" href="/public/css/responsive.css">
+
+    <!-- reCAPTCHA v3 Invisible (Lazy Load) -->
+    <script>
+      window.recaptchaLoaded = false;
+      window.loadRecaptcha = function() {
+        if (window.recaptchaLoaded) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://www.google.com/recaptcha/api.js?render=6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz';
+          script.async = true;
+          script.defer = true;
+          script.onload = function() {
+            window.recaptchaLoaded = true;
+            resolve();
+          };
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      };
+
+      window.getRecaptchaToken = function(action = 'general') {
+        return window.loadRecaptcha().then(() => {
+            return new Promise((resolve, reject) => {
+              if (!window.grecaptcha) return reject(new Error('grecaptcha not loaded'));
+              grecaptcha.ready(function() {
+                grecaptcha.execute('6LfT5RIsAAAAABkCTeWZKYOHGUo892f9Yf9ja8Cz', { action })
+                  .then(resolve).catch(reject);
+              });
+            });
+        });
+      };
+    </script>
+
+</head>
+<body>
+
+    {% include 'body-extra.twig' %}
+    {% include 'popup-overlay.twig' %}
+    {% include 'header.twig' %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'footer.twig' %}
+
+    <script>
+        // Translations for booking form
+        window.bookingTranslations = {
+            'select_time': {{ 'select_time'|trans|json_encode|raw }},
+            'date_blocked': {{ 'date_blocked'|trans|json_encode|raw }},
+            'no_slots_available': {{ 'no_slots_available'|trans|json_encode|raw }},
+            'occupied': {{ 'occupied'|trans|json_encode|raw }},
+            'base_price': {{ 'base_price'|trans|json_encode|raw }},
+            'time_multiplier': {{ 'time_multiplier'|trans|json_encode|raw }},
+            'total': {{ 'total'|trans|json_encode|raw }},
+            'loading': {{ 'loading'|trans|json_encode|raw }},
+            'multi_slot_hint': {{ 'multi_slot_hint'|trans|json_encode|raw }},
+            'submit_booking': {{ 'submit_booking'|trans|json_encode|raw }},
+            'error_loading_slots': {{ 'error_loading_slots'|trans|json_encode|raw }},
+            'error_calculating_price': {{ 'error_calculating_price'|trans|json_encode|raw }},
+            'error_submitting': {{ 'error_submitting'|trans|json_encode|raw }},
+            'error_service_required': {{ 'error_service_required'|trans|json_encode|raw }},
+            'error_date_required': {{ 'error_date_required'|trans|json_encode|raw }},
+            'error_time_required': {{ 'error_time_required'|trans|json_encode|raw }},
+            'error_name_required': {{ 'error_name_required'|trans|json_encode|raw }},
+            'error_phone_required': {{ 'error_phone_required'|trans|json_encode|raw }},
+            'error_email_invalid': {{ 'error_email_invalid'|trans|json_encode|raw }},
+            'duration_1': {{ 'duration_1'|trans|json_encode|raw }},
+            'duration_2': {{ 'duration_2'|trans|json_encode|raw }},
+            'duration_3': {{ 'duration_3'|trans|json_encode|raw }},
+            'duration_4': {{ 'duration_4'|trans|json_encode|raw }},
+            'duration_5': {{ 'duration_5'|trans|json_encode|raw }},
+            'duration_6': {{ 'duration_6'|trans|json_encode|raw }},
+            'duration_7': {{ 'duration_7'|trans|json_encode|raw }},
+            'duration_8': {{ 'duration_8'|trans|json_encode|raw }},
+            'success_wait_confirmation': {{ 'success_wait_confirmation'|trans|json_encode|raw }},
+            'selection_hint': {{ 'selection_hint'|trans|json_encode|raw }},
+            'select_consecutive': {{ 'select_consecutive'|trans|json_encode|raw }},
+            'select_table_time': {{ 'select_table_time'|trans|json_encode|raw }},
+            'booking_error': {{ 'booking_error'|trans|json_encode|raw }},
+            'loading_error': {{ 'loading_error'|trans|json_encode|raw }},
+            'no_tables': {{ 'no_tables'|trans|json_encode|raw }},
+            'no_slots': {{ 'no_slots'|trans|json_encode|raw }}
+        };
+    </script>
+
+    <script src="/public/js/app.js"></script>
+    <script src="/public/js/booking.js"></script>
+    <script src="/public/js/events.js"></script>
+    <script src="/public/js/booking-popup.js"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

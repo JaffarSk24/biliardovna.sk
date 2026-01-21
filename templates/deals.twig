@@ -1,0 +1,222 @@
+{% extends "base.twig" %}
+
+{# Устанавливаем заголовок страницы для base.twig #}
+{% set page_title = t.deals_title ~ ' - Biliardovňa' %}
+
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/public/css/deals.css?v=20251114">
+    {# booking-popup.css подключается глобально в base.twig — дубль не нужен #}
+{% endblock %}
+
+{% block content %}
+<section class="deals-hero">
+    <div class="container">
+        <h1>{{ t.deals_title }}</h1>
+        <p class="deals-subtitle">{{ t.deals_subtitle }}</p>
+    </div>
+</section>
+
+<section class="deals-section">
+    <div class="container">
+        <div class="deals-grid">
+            {% for deal in deals %}
+            <div class="deal-card">
+                <div class="deal-image">
+                    <img src="{{ deal.image|e('html_attr') }}" alt="{{ deal.title|e('html_attr') }}">
+                </div>
+                <div class="deal-content">
+                    <h3 class="deal-title">{{ deal.title }}</h3>
+                    <p class="deal-description">{{ deal.description }}</p>
+                    <div class="deal-benefit">
+                        <div class="deal-benefit-text">{{ deal.benefit }}</div>
+                    </div>
+                    <div class="deal-action">
+                        <a href="#" class="deal-cta-button" data-trigger="{{ deal.trigger|e('html_attr') }}">
+                            {{ t.deals_button|default('Воспользоваться') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% include 'new_booking_popup_deals.twig' %}
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+(function () {
+    // Страховка: подключаем page CSS в <head>, если блок стилей не отрендерился
+    var href = '/public/css/deals.css?v=20251114';
+    if (!document.querySelector('link[href*="deals.css"]')) {
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = href;
+        document.head.appendChild(l);
+    }
+})();
+</script>
+
+<script>
+// Флаг страницы акций
+window.isDealsPage = true;
+</script>
+
+<script src="/public/js/deals.js" defer></script>
+
+<script>
+// Весь код запускаем после готовности DOM
+document.addEventListener('DOMContentLoaded', function() {
+  // Отключаем только один конкретный алерт ("выберите стол и время") на странице акций
+  (function() {
+    const origAlert = window.alert;
+    window.alert = function(msg) {
+      try {
+        if (window.isDealsPage && typeof msg === 'string') {
+          const norm = msg.toLowerCase().replace(/\s+/g, ' ').trim();
+          const block = [
+            '{{ t.select_table_time|default("Пожалуйста, выберите стол и время")|e("js") }}'.toLowerCase().replace(/\s+/g, ' ').trim(),
+            'please select a table and time',
+            'prosím, vyberte stôl a čas'
+          ];
+          if (block.some(b => norm.includes(b))) return; // глушим только этот алерт
+        }
+      } catch(e) {}
+      return origAlert.apply(window, arguments);
+    };
+  })();
+
+  window.currentServiceId = null;
+
+  // Утилита активации сервиса (табы)
+  const serviceTabs = document.querySelectorAll('.service-tab');
+  const activateService = (tab) => {
+    if (!tab) return;
+    serviceTabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    window.currentServiceId = tab.dataset.service;
+    const sidInput = document.getElementById('popup-service-id');
+    if (sidInput) sidInput.value = tab.dataset.service;
+
+    const nameEl = document.getElementById('popup-service-name');
+    const nameSpan = tab.querySelector('span');
+    if (nameEl && nameSpan) nameEl.textContent = nameSpan.textContent;
+
+    const iconId = tab.dataset.icon;
+    const svg = iconId ? `<svg class="service-icon-large"><use href="#${iconId}"></use></svg>` : '';
+    const left = document.getElementById('popup-service-icon-left');
+    const right = document.getElementById('popup-service-icon-right');
+    if (left) left.innerHTML = svg;
+    if (right) right.innerHTML = svg;
+
+    // Синхронизируем нативный контрол, который слушает booking-popup.js
+    const serviceSelect = document.getElementById('popup-service');
+    if (serviceSelect) {
+      const newVal = String(tab.dataset.service || '');
+      if (String(serviceSelect.value) !== newVal) {
+        serviceSelect.value = newVal;
+      }
+      serviceSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    const dateInput = document.getElementById('popup-date');
+    if (dateInput && dateInput.value) {
+      dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  };
+
+  serviceTabs.forEach(tab => tab.addEventListener('click', () => activateService(tab)));
+
+  // Обработчик кнопок "Воспользоваться" на карточках акций
+  document.querySelectorAll('.deal-cta-button').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      let trigger = {};
+      try { trigger = JSON.parse(this.dataset.trigger || '{}'); } catch(e) { trigger = {}; }
+
+      const popup = document.getElementById('bookingPopup');
+      if (!popup) return;
+
+      // Открываем попап
+      popup.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      // Инициализируем booking-popup.js один раз через скрытую кнопку,
+      // пока пользователь еще ничего не выбирал (сброс слотов не навредит)
+      const hiddenBtn = document.getElementById('hidden-book-btn');
+      if (hiddenBtn) {
+        if (trigger.service) hiddenBtn.dataset.serviceId = String(trigger.service);
+        hiddenBtn.click();
+      }
+
+      // Визуально активируем нужный сервис (табы, иконки, скрытый input)
+      if (trigger.service) {
+        const tab = document.querySelector(`.service-tab[data-service="${trigger.service}"]`);
+        activateService(tab);
+      }
+
+      // Сохраняем ограничения акции
+      window.dealCoupon = trigger.coupon || null;
+      window.dealTimeRestriction = trigger.timeRestriction || null;
+      window.dealDateRestriction = trigger.dateRestriction || null;
+
+      // Автоприменение купона после первого клика по доступному слоту
+      if (trigger.coupon) {
+        const pendingCoupon = String(trigger.coupon);
+        const slotClickHandler = function(ev) {
+          const slot = ev.target.closest('.time-slot');
+          if (!slot || slot.classList.contains('disabled')) return;
+
+          setTimeout(() => {
+            const couponInput = document.getElementById('popup-coupon');
+            const couponBtn = document.getElementById('coupon-check-btn');
+            if (couponInput && couponBtn) {
+              couponInput.value = pendingCoupon;
+              couponInput.type = 'password';
+              couponInput.disabled = true;
+              couponBtn.click();
+            }
+          }, 350);
+
+          document.removeEventListener('click', slotClickHandler, true);
+        };
+        document.addEventListener('click', slotClickHandler, true);
+      }
+    });
+  });
+
+  // Запрет на выбор даты без выбранного сервиса (оставляем этот алерт)
+  const dateEl = document.getElementById('popup-date');
+  if (dateEl) {
+    dateEl.addEventListener('click', function(e) {
+      if (!window.currentServiceId) {
+        e.preventDefault();
+        alert('{{ t.select_service_first|default("Пожалуйста, сначала выберите услугу")|e("js") }}');
+      }
+    });
+  }
+
+  // Показ кнопки отправки, когда появляется блок деталей
+  const details = document.getElementById('details-section');
+  if (details) {
+    const actions = document.querySelector('.popup-actions');
+    const obs = new MutationObserver(() => {
+      if (actions) actions.style.display = details.style.display || '';
+    });
+    obs.observe(details, { attributes: true, attributeFilter: ['style', 'class'] });
+  }
+
+  // Сброс overflow при закрытии попапа (на всякий)
+  const closeBtn = document.getElementById('popupClose');
+  if (closeBtn) closeBtn.addEventListener('click', () => {
+    document.body.style.overflow = '';
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,623 @@
+<?php
+
+return [
+    // Menu
+    'menu_home' => 'Home',
+    'menu_games' => 'Billiards & Games',
+    'menu_pricing' => 'Pricing',
+    'menu_deals' => 'Deals',
+    'menu_cafe' => 'Cafe',
+    'menu_contact' => 'Contact',
+    'menu_blog' => 'News & Events',
+
+    // Buttons
+    'btn_book' => 'Book Now',
+
+    // Footer
+    'footer_about' => 'Premium billiard club in the heart of Bratislava',
+    'footer_quick_links' => 'Quick Links',
+    'footer_contact' => 'Contact',
+    'footer_hours' => 'Opening Hours',
+    'footer_weekdays' => 'Mon - Fri',
+    'footer_weekend' => 'Sat - Sun',
+    'footer_rights' => 'All rights reserved',
+    'footer_privacy' => 'Privacy Policy',
+    'footer_terms' => 'Terms & Conditions',
+
+    // Games page
+    'pages_games_title' => 'Billiards & Games',
+    'pages_games_subtitle' => 'Discover our selection of games and entertainment',
+    'games_intro_title' => 'Professional equipment for your entertainment',
+    'games_intro_text' => 'In our club you will find professional billiard tables, electronic darts and table football. All equipment is regularly maintained and in perfect condition.',
+
+    'games_piramida_title' => 'Pyramid',
+    'games_piramida_desc' => 'European billiards, also known as pyramid, is the most popular form of billiard game in Eastern Europe. Played with 15 white balls and one red ball on a large table with narrow pockets.',
+    'games_piramida_feature1' => '4 professional 12ft tables',
+    'games_piramida_feature2' => 'Quality cues and balls',
+    'games_piramida_feature3' => 'Suitable for beginners and professionals',
+    'games_piramida_feature4' => 'Cue rental available',
+
+    'games_pool_desc' => 'American billiards (pool) is the most widespread form of billiard game in the world. Played with 15 colored balls and one white ball. We offer various game variants: 8-ball, 9-ball, 10-ball.',
+    'games_pool_feature1' => '4 professional 9ft tables',
+    'games_pool_feature2' => 'Original Aramith balls',
+    'games_pool_feature3' => 'Various game variants',
+    'games_pool_feature4' => 'Tournaments and leagues',
+
+    'games_darts_title' => 'Darts',
+    'games_darts_desc' => 'Darts is perfect for fun with friends or competitive tournaments.',
+    'games_darts_feature1' => '5 dartboards',
+    'games_darts_feature2' => 'More than 20 game options',
+    'games_darts_feature3' => 'Safe controlled environment',
+    'games_darts_feature4' => 'Darts included in rental price',
+
+    'games_foosball_title' => 'Table Football',
+    'games_foosball_desc' => 'Dynamic game for 2 or 4 players. Professional tables with smooth movement and quality craftsmanship guarantee great entertainment.',
+    'games_foosball_feature1' => '2 professional tables',
+    'games_foosball_feature2' => 'Telescopic rods',
+    'games_foosball_feature3' => 'Suitable for all age categories',
+    'games_foosball_feature4' => 'Fast and fun game',
+
+    'games_rules_title' => 'Rules and Etiquette',
+    'games_rules_respect_title' => 'Respect Others',
+    'games_rules_respect_desc' => 'Do not disturb players during the game, keep quiet during shots.',
+    'games_rules_equipment_title' => 'Equipment Care',
+    'games_rules_equipment_desc' => 'Handle equipment carefully, do not use excessive force.',
+    'games_rules_cleanliness_title' => 'Cleanliness',
+    'games_rules_cleanliness_desc' => 'Keep the area clean, use ashtrays and trash bins.',
+    'games_rules_help_title' => 'Staff Assistance',
+    'games_rules_help_desc' => 'In case of problems or questions, contact the staff.',
+
+    'games_cta_title' => 'Ready to Play?',
+    'games_cta_text' => 'Book your table online and come enjoy great entertainment!',
+
+    'btn_view_pricing' => 'View Pricing',
+    'btn_book_now' => 'Book Now',
+
+    // Pricing page
+    'pages_pricing_title' => 'Pricing',
+    'pages_pricing_subtitle' => 'Transparent prices with no hidden fees',
+    'pricing_time' => 'Time',
+    'pricing_monday' => 'Monday',
+    'pricing_tuesday' => 'Tuesday',
+    'pricing_wednesday' => 'Wednesday',
+    'pricing_thursday' => 'Thursday',
+    'pricing_friday' => 'Friday',
+    'pricing_saturday' => 'Saturday',
+    'pricing_sunday' => 'Sunday',
+    'pricing_holiday' => 'Holiday',
+    'pricing_note' => '* Prices are per table per hour',
+
+    // Deals page
+    'pages_deals_title' => 'Deals & Special Offers',
+    'pages_deals_subtitle' => 'Save with our great offers',
+    'deals_active' => 'Active',
+    'deals_new' => 'New',
+    'deals_free' => 'FREE',
+    'deals_valid_until' => 'Valid until',
+    'deals_permanent' => 'Permanent offer',
+
+    'deals_weekday_title' => 'Weekday Discount',
+    'deals_weekday_description' => 'Book a table Monday to Thursday between 4:00 PM - 6:00 PM and get 20% off.',
+
+    'deals_birthday_title' => 'Birthday Free',
+    'deals_birthday_description' => 'Celebrating a birthday? The birthday person plays completely free! Valid for groups of 4 or more.',
+
+    'deals_student_title' => 'Student Discount',
+    'deals_student_description' => 'Students with a valid student ID get 15% off all games on weekdays.',
+
+    'deals_group_title' => 'Group Booking',
+    'deals_group_description' => 'Book 3 or more tables at once and get 25% off the entire order.',
+
+    'deals_loyalty_title' => 'Loyalty Card',
+    'deals_loyalty_description' => 'Visit us 10 times and the 11th visit is completely free. Valid for all games.',
+
+    'deals_corporate_title' => 'Corporate Events',
+    'deals_corporate_description' => 'Organizing a corporate event? We offer special prices and full service for companies.',
+
+    'deals_terms_title' => 'Terms & Conditions',
+    'deals_terms_1' => 'Deals cannot be combined with other discounts',
+    'deals_terms_2' => 'Discounts valid only for online bookings',
+    'deals_terms_3' => 'Terms subject to change',
+    'deals_terms_4' => 'Contact us for more information',
+
+    // Cafe page
+    'pages_cafe_title' => 'Cafe',
+    'pages_cafe_subtitle' => 'Enjoy refreshments during the game',
+
+    'cafe_welcome_title' => 'Welcome to our cafe',
+    'cafe_welcome_text' => 'During the game, you can enjoy a wide selection of drinks and desserts. Our cafe offers quality espresso, fresh juices, beer and various snacks.',
+
+    // Updated Info Block
+    'cafe_info_title' => 'Important Notice',
+    'cafe_info_text' => 'Cafe and smoking room services are available only for players with an active reservation!',
+
+    'cafe_menu_title' => 'Our menu',
+
+    // PIVO
+    'cafe_beer' => 'Beer',
+    'menu_pilsner' => 'Pilsner Urquell 12° 330 ml',
+    'menu_stella' => 'Stella Artois 330 ml',
+    'menu_corona' => 'Corona Extra 355 ml',
+    'menu_stella_nealko' => 'Non-alcoholic Stella Artois 330 ml',
+
+    // VINO
+    'cafe_wine' => 'Wine',
+    'menu_prosecco_bottle' => 'Prosecco 750 ml',
+    'menu_frizz_bottle' => 'I AM FRIZZ 750 ml',
+    'menu_cabernet' => 'Cabernet Sauvignon 150 ml',
+    'menu_cabernet_rose' => 'Cabernet Sauvignon Rose 150 ml',
+    'menu_chardonnay' => 'Chardonnay 150 ml',
+
+    // NEALKO NAPOJE
+    'cafe_soft_drinks' => 'Soft Drinks',
+    'menu_cappy' => 'Cappy 250 ml',
+    'menu_redbull' => 'Red Bull',
+    'menu_kofola' => 'Kofola 250 ml',
+    'menu_coke' => 'Coca Cola 330 ml',
+    'menu_royal_cola' => 'Royal Crown Cola',
+    'menu_coke_zero' => 'Coca Cola Zero 200 ml',
+    'menu_tonic' => 'Schweppes Tonic 250 ml',
+    'menu_romer_still' => 'Römerquelle Still 330 ml',
+    'menu_romer_sparkling' => 'Römerquelle Sparkling 330 ml',
+    'menu_birell_pomelo' => 'Birell Radler Pomelo 500ml',
+
+    // KAVA
+    'cafe_coffee' => 'Coffee',
+    'menu_lungo' => 'Lungo 180 ml',
+    'menu_americano_xl' => 'Americano XL 400ml',
+    'menu_americano_craft' => 'Americano Craft XL 400 ml',
+
+    // SLANE SNACKY
+    'cafe_snacks' => 'Savory Snacks',
+    'menu_sticks_salt' => 'Salty Sticks 160g',
+    'menu_sticks_cheese' => 'Cheese Sticks 160g',
+    'menu_peanuts' => 'Roasted Salted Peanuts 100g',
+
+    // Gallery & CTA
+    'cafe_gallery_title' => 'Gallery',
+    'cafe_cta_title' => 'Book a table and enjoy refreshments',
+    'cafe_cta_text' => 'Reminder: The cafe is open only for playing customers.',
+
+    // Contact page
+    'pages_contact_title' => 'Contact',
+    'pages_contact_subtitle' => 'We’re here for you',
+
+    'contact_address_title' => 'Address',
+    'contact_phone_title' => 'Phone',
+    'contact_email_title' => 'Email',
+    'contact_hours_title' => 'Opening hours',
+    'contact_hours_daily' => 'Daily',
+
+    'contact_transport_title' => 'How to get here',
+    'contact_public_transport' => 'Public transport',
+    'contact_buses' => 'Buses',
+    'contact_trolleys' => 'Trolleybuses',
+    'contact_stop' => 'Stop',
+    'contact_walk' => 'On foot',
+    'contact_minutes' => 'min',
+
+    'contact_parking' => 'Parking',
+    'contact_parking_free' => 'Free parking in a gated area',
+    'contact_parking_before' => 'Before 20:00',
+    'contact_parking_club' => 'right by the club',
+    'contact_parking_after' => 'After 20:00',
+    'contact_parking_street' => 'on the street below the building',
+
+    'contact_map_title' => 'Map',
+    'contact_social_title' => 'Follow us',
+
+    'contact_cta_title' => 'Any questions?',
+    'contact_cta_text' => 'Feel free to contact us by phone or via social media. We’ll be happy to help!',
+
+    'btn_call' => 'Call',
+    'btn_book' => 'Book',
+    'btn_message' => 'Message',
+
+    'contact_write_us' => 'Write to us',
+    'contact_choose_messenger' => 'Choose a messenger',
+    'messenger_telegram' => 'Telegram',
+    'messenger_whatsapp' => 'WhatsApp',
+    'messenger_viber' => 'Viber',
+    'close' => 'Close',
+
+    // Blog page
+    'blog.title' => 'News and Events',
+    'blog.intro' => 'News, tips and interesting facts from the world of billiard games',
+    'blog.read_more' => 'Read More',
+    'blog.no_posts' => 'No posts yet',
+    'blog.previous' => 'Previous',
+    'blog.next' => 'Next',
+
+    // Blog post page
+    'blog.author' => 'Author',
+    'blog.tags' => 'Tags',
+    'blog.share' => 'Share',
+    'blog.previous_post' => 'Previous Article',
+    'blog.next_post' => 'Next Article',
+    'blog.back_to_list' => 'Back to Blog',
+
+    // Booking page (index)
+    'book_now' => 'Book Now',
+    'booking_title_prefix' => 'Booking:',
+    'select_service' => 'Select Service',
+    'booking_section_datetime' => 'Date and Time of Visit',
+    'date_label' => 'Visit Date',
+    'time_label' => 'Visit Time',
+    'select_date' => 'Select visit date',
+    'select_time' => 'Select visit time',
+    'select_time_placeholder' => 'Select time',
+    'select_table_and_time' => 'Select table and time',
+    'name_placeholder' => 'e.g.: John Smith',
+    'phone_placeholder' => 'e.g.: +421 903 000 000',
+    'email_placeholder' => 'e.g.: example@gmail.com',
+    'notes_placeholder' => 'Optional. E.g.: We will be 6 people',
+    'duration' => 'Duration',
+    'minutes' => 'minutes',
+    'price' => 'Price',
+    'your_details' => 'Your Details',
+    'name' => 'Name',
+    'phone' => 'Phone',
+    'email' => 'Email',
+    'notes' => 'Note',
+    'submit_booking' => 'Book Now',
+    'duration_1' => '1 hour',
+    'duration_2' => '2 hours',
+    'duration_3' => '3 hours',
+    'duration_4' => '4 hours',
+    'duration_5' => '5 hours',
+    'duration_6' => '6 hours',
+    'duration_7' => '7 hours',
+    'duration_8' => '8 hours',
+    'loading' => 'Loading...',
+    'no_slots_available' => 'No available slots',
+    'error_loading_slots' => 'Loading error',
+    'occupied' => 'Occupied',
+    'selection_hint' => 'You can select multiple consecutive slots',
+    'select_consecutive' => 'Please select consecutive slots',
+    'select_table_time' => 'Please select a table and time',
+    'booking_error' => 'Error submitting booking',
+    'booking_success_title' => 'Thank you!',
+    'booking_success_message' => 'Your booking has been successfully created',
+    'success_wait_confirmation' => 'Wait for a call from the club administrator to confirm your booking',
+    'close' => 'Close',
+
+    // Resources (tables)
+    'resource_1' => 'Pyramid - Table 1',
+    'resource_2' => 'Pyramid - Table 2',
+    'resource_3' => 'Pyramid - Table 3',
+    'resource_4' => 'Pyramid - Table 4',
+    'resource_5' => 'Pool - Table 1',
+    'resource_6' => 'Pool - Table 2',
+    'resource_7' => 'Pool - Table 3',
+    'resource_8' => 'Pool - Table 4',
+    'resource_9' => 'Darts - Target 1',
+    'resource_10' => 'Darts - Target 2',
+    'resource_11' => 'Darts - Target 3',
+    'resource_12' => 'Darts - Target 4',
+    'resource_13' => 'Darts - Target 5',
+    'resource_14' => 'Table Football - Table 1',
+    'resource_15' => 'Table Football - Table 2',
+
+    // Services
+    'service_piramida_name' => 'Pyramid',
+    'service_piramida_description' => 'Russian pyramid',
+    'service_pool_name' => 'Pool',
+    'service_pool_description' => 'American pool',
+    'service_darts_name' => 'Darts',
+    'service_darts_description' => 'Darts',
+    'service_table-football_name' => 'Foosball',
+    'service_tablefootball_name' => 'Table Football',
+    'service_table-football_description' => 'Table football',
+
+    // Services detailed descriptions
+    'service_piramida_short' => 'European Pyramid',
+    'service_piramida_full' => 'European Pyramid is a classic billiard game that requires precision and strategy. Players try to pocket balls using the white cue ball. This game is ideal for those seeking a challenge and wanting to test their skills. Our club has 4 professional tables with quality cloth and lighting.',
+
+    'service_pool_short' => 'American Pool',
+    'service_pool_full' => 'American Pool is a dynamic and fun game that is popular worldwide. Players try to pocket colored balls in a specific order. Pool is great for friendly gatherings and tournaments. Our 4 tables are equipped with professional equipment for maximum gaming experience.',
+
+    'service_darts_short' => 'Darts',
+    'service_darts_full' => 'Darts is a classic game that combines precision, concentration and fun. Our 6 professional dartboards offer an authentic gaming experience for individuals and groups. Ideal for corporate events, celebrations or friendly competitions with friends.',
+
+    'service_table-football_short' => 'Table Football',
+    'service_table-football_full' => 'Table football is a fast and exciting game for two or four players. It requires quick reflexes, coordination, and teamwork. Our 2 professional tables offer smooth gameplay and are perfect for tournaments or casual play with friends.',
+
+    'service_shuffleboard_name' => 'Shuffleboard',
+    'service_shuffleboard_description' => 'Shuffleboard',
+    'service_shuffleboard_short' => 'Shuffleboard',
+    'service_shuffleboard_full' => 'Shuffleboard is a unique social game combining elements of curling and bowling on a table. The goal is to slide the puck as far as possible into the scoring zone without it falling off the end. It is great fun for groups of friends, couples, and corporate teambuilding. The game is physically undemanding yet very addictive.',
+
+    // Booking form translations
+    'date_blocked' => 'This day is closed for booking',
+    'no_slots_available' => 'No available slots',
+    'occupied' => 'Occupied',
+    'base_price' => 'Base price',
+    'time_multiplier' => 'Time multiplier',
+    'total' => 'Total',
+    'loading' => 'Loading...',
+    'error_loading_slots' => 'Error loading slots',
+    'error_calculating_price' => 'Error calculating price',
+    'error_submitting' => 'Error submitting booking',
+    'error_service_required' => 'Please select a service',
+    'error_date_required' => 'Please select a date',
+    'error_time_required' => 'Please select a time',
+    'error_name_required' => 'Please enter name (min. 2 characters)',
+    'error_phone_required' => 'Please enter phone number',
+    'error_email_invalid' => 'Invalid email',
+    'booking_terms_agree' => 'I agree with',
+    'and' => 'and',
+    'multi_slot_hint' => 'You can select several consecutive hours',
+
+    // Home page
+    'hero_title' => 'Billiard Club in Bratislava',
+    'hero_subtitle' => 'Premium tables, professional equipment and great atmosphere',
+    'hero_cta' => 'Book a table',
+    'services_title' => 'Our Games',
+    'hour' => 'hour',
+    'holidays' => 'Holidays and weekends',
+    'table_singular' => 'table',
+    'tables' => 'tables',
+    'targets' => 'dartboards',
+    'football_tables' => 'tables',
+    'quality_title' => 'Legendary Quality',
+    'quality_description' => 'We offer professional tables of our own production. Experienced players and billiard experts collaborated on their design. The tables meet the requirements of international federations and tournaments. We use original Aramith balls made from Belgian phenolic polymer — the most durable material with perfect roundness and balance. Quality cues from renowned manufacturers complete the premium gaming experience.',
+    'gallery_title' => 'Gallery',
+    'visit_us' => 'Visit Us',
+    'get_directions' => 'Get Directions',
+
+    // Events
+    'events_title' => 'News and Events',
+    'event_details' => 'Read more',
+
+    // Notifications
+    'notification_new_booking' => 'New booking!',
+    'notification_booking_update' => 'Booking update',
+    'notification_date' => 'Date',
+    'notification_time' => 'Time',
+    'notification_service' => 'Service',
+    'notification_customer_name' => 'Name',
+    'notification_customer_phone' => 'Phone',
+    'notification_total_price' => 'Total',
+    'notification_notes' => 'Note',
+    'notification_table' => 'Table №',
+    'notification_language' => 'Language',
+    'notification_coupon' => 'Promo code',
+    'email_subject_pending' => 'Your booking request - Biliardovna.sk',
+    'email_subject_confirmed' => 'Booking confirmed - Biliardovna.sk',
+    'email_subject_cancelled' => 'Booking cancelled - Biliardovna.sk',
+    'email_greeting' => 'Hello',
+    'email_booking_received' => 'Your booking has been received and is awaiting confirmation.',
+    'email_booking_confirmed' => 'Your booking has been confirmed! We look forward to seeing you at the specified date and time. We recommend arriving at least 15 minutes early. In case of delay, time will not be compensated.',
+    'email_booking_cancelled' => 'Your booking has been cancelled.',
+    'email_pending_wait_call' => 'Please wait for a call from the club administrator to confirm your booking.',
+    'email_pending_not_valid' => 'An unconfirmed booking is not valid and does not grant the right to visit the club at the specified time.',
+    'email_contact_info' => 'We will contact you at',
+    'email_thanks' => 'Thank you',
+    'email_team' => 'Biliardovna.sk Team',
+    'email_cancel_booking' => 'Cancel booking',
+    'email_subject_review_request' => 'How did you like it? Get a discount! - Biliardovna.sk',
+    'email_review_title' => 'Thank you for visiting!',
+    'email_review_text' => 'We are glad you visited us. We would be very grateful if you leave us a review on Google.',
+    'email_review_button' => 'Leave a review',
+    'email_review_coupon_info' => 'After leaving a review, you will receive a 10% discount coupon for your next visit!',
+    'email_subject_coupon' => 'Your 10% Discount Coupon - Biliardovna.sk',
+    'email_coupon_title' => 'Thank you for your review!',
+    'email_coupon_text' => 'Thank you for taking the time to leave us a review. As a token of our appreciation, we have prepared a discount coupon for you.',
+    'email_coupon_code_label' => 'Your discount code:',
+    'email_coupon_discount' => '10% discount on your next visit',
+    'email_coupon_valid' => 'Valid until',
+    'email_coupon_how_to_use' => 'Enter this code when booking and get 10% off the total amount.',
+    'review_redirect_title' => 'Thank you!',
+    'review_redirect_text' => 'We will redirect you to Google reviews in a moment. After leaving a review, we will send you a discount coupon via email.',
+    'review_leave_google' => 'Leave a Google Review',
+    'status_pending' => 'Awaiting confirmation',
+    'status_confirmed' => 'Confirmed',
+    'status_cancelled' => 'Cancelled',
+
+    //Cancel page
+    'cancel_success' => 'Booking successfully cancelled',
+    'cancel_success_text' => 'We are sorry that your booking was cancelled.',
+    'cancel_welcome_back' => 'We look forward to welcoming you at our club',
+    'cancel_already_cancelled' => 'Booking already cancelled',
+    'cancel_already_cancelled_text' => 'This booking was previously cancelled.',
+    'error_invalid_token' => 'Invalid token',
+    'error_booking_not_found' => 'Booking not found',
+
+    // Coupon fields
+    'coupon' => 'Promo code',
+    'coupon_placeholder' => 'Enter promo code',
+    'coupon_check' => 'Verify code',
+    'coupon_valid' => 'Code valid! Discount applied',
+    'coupon_invalid' => 'Invalid or already used code',
+    'coupon_error' => 'Error verifying code',
+
+    // Games page - Pyramid
+    'games_piramida_title' => 'Pyramid',
+    'games_piramida_history_title' => 'History and Essence of the Game',
+    'games_piramida_history' => 'Pyramid originated in the 18th century and became the most popular form of billiards in Eastern Europe. It is played with 15 white balls and one red ball on a large table with narrow pockets, making the game technically more challenging than American pool.',
+    'games_piramida_variations_title' => 'Game Variations',
+    'games_piramida_variations' => 'There are several popular variations: Classic pyramid - the most widespread version where the goal is to pocket 8 balls. European pyramid - a modern version with international rules. Dynamic pyramid - a faster version for tournaments and competitions.',
+    'games_piramida_equipment_title' => 'Our Equipment',
+    'games_piramida_equipment' => 'Our club has 4 professional 12ft (3.6m x 1.8m) tables with slate beds and quality cloth. We use certified balls and professional cues from renowned brands. For beginners, we offer cue rental and basic instructions.',
+    'games_piramida_feature1' => '4 professional 12ft tables',
+    'games_piramida_feature2' => 'Quality cues and balls',
+    'games_piramida_feature3' => 'Suitable for beginners and professionals',
+
+    // Games page - Pool
+    'games_pool_title' => 'Pool',
+    'games_pool_history_title' => 'History and Essence of the Game',
+    'games_pool_history' => 'American pool originated in the 19th century in the USA and quickly spread worldwide. It is played with 15 colored balls and one white cue ball on a table with wider pockets than pyramid. Pool is more dynamic and accessible for beginners, yet requires precise technique and strategy.',
+    'games_pool_variations_title' => 'Game Variations',
+    'games_pool_variations' => 'Pool offers many variations: 8-Ball - the most popular version where players must pocket all their balls and finally the black eight. 9-Ball - a professional version with dynamic gameplay. 10-Ball - a tournament version with stricter rules. Straight Pool - a classic version for long games.',
+    'games_pool_equipment_title' => 'Our Equipment',
+    'games_pool_equipment' => 'Our club has 4 professional 9ft (2.7m x 1.4m) tables with slate beds and premium cloth. We use certified Aramith balls and professional cues from Predator and Cuetec brands. Tables are regularly maintained and calibrated for optimal gaming experience.',
+    'games_pool_feature1' => '4 professional 9ft tables',
+    'games_pool_feature2' => 'Certified balls and cues',
+    'games_pool_feature3' => 'Perfect for tournaments and fun',
+
+    // Games page - Darts
+    'games_darts_title' => 'Darts',
+    'games_darts_history_title' => 'History and Essence of the Game',
+    'games_darts_history' => 'Darts has its roots in medieval England, where soldiers threw short arrows at wooden barrels or tree trunks. The modern form of the game developed in the 19th century in English pubs. Today, darts is a popular game worldwide, combining precision, concentration, and strategy.',
+    'games_darts_variations_title' => 'Game Variations',
+    'games_darts_variations' => 'There are many variations of darts: 501 - the most popular version where players start with 501 points and must reduce the score to exactly zero. Cricket - a tactical game focused on specific numbers. Around the Clock - a game for accuracy training. Killer - a fun group version for multiple players.',
+    'games_darts_equipment_title' => 'Our Equipment',
+    'games_darts_equipment' => 'Our club has 6 classic professional dartboards made of quality sisal fiber, ensuring long lifespan and optimal gaming experience. Boards are mounted at standard height of 1.73m with regulation distance of 2.37m. We offer rental of professional darts in various weights. Scores are counted manually, preserving the authentic experience of traditional darts.',
+    'games_darts_feature1' => '6 classic dartboards',
+    'games_darts_feature2' => 'Professional darts for rent',
+    'games_darts_feature3' => 'Suitable for all skill levels',
+
+    // Games page - Football
+    'games_foosball_title' => 'Foosball',
+    'games_foosball_history_title' => 'History and Essence of the Game',
+    'games_foosball_history' => 'Foosball (or table football) originated in the 20th century and quickly became popular entertainment in bars, clubs, and homes worldwide. The game simulates a football match where players control figurines using rods and try to score goals against opponents. It\'s a dynamic game requiring quick reflexes, coordination, and teamwork.',
+    'games_foosball_variations_title' => 'Game Variations',
+    'games_foosball_variations' => 'Foosball offers various game modes: Classic match 1 vs 1 or 2 vs 2 - the most popular format for friendly games. Tournament mode - professional rules with time limits. Goalie Wars - goalkeeper duel. Monster Ball - fast version with a larger ball for beginners.',
+    'games_foosball_equipment_title' => 'Our Equipment',
+    'games_foosball_equipment' => 'Our club has 2 professional foosball tables with robust constructions, precisely balanced rods, and quality playing surfaces. Tables are equipped with ergonomic handles and non-slip legs for stability during intense play. Figurines are made of durable material and regularly maintained. Perfect for friendly gatherings, corporate events, or family celebrations.',
+    'games_foosball_feature1' => '2 professional tables',
+    'games_foosball_feature2' => 'Quality figures and smooth surface',
+    'games_foosball_feature3' => 'Fun for friends and family',
+
+    // Games page - Shuffleboard
+    'games_shuffleboard_title' => 'Shuffleboard',
+    'games_shuffleboard_history_title' => 'History and Essence',
+    'games_shuffleboard_history' => 'Shuffleboard has its roots in 15th-century England. It requires touch, strategy, and a steady hand. Players slide pucks down a long smooth table aiming for scoring zones at the opposite end while knocking opponent pucks off.',
+    'games_shuffleboard_variations_title' => 'Game Variations',
+    'games_shuffleboard_variations' => 'The most famous version is Knock Off, played to 15 points. Other popular variants include Horse Collar and Crazy Eight. Rules are simple to learn, but mastery takes practice.',
+    'games_shuffleboard_equipment_title' => 'Our Equipment',
+    'games_shuffleboard_equipment' => 'Our club features a unique professional 12ft shuffleboard table. The playing surface is made of solid maple with a polymer coating for perfect glide. Professional pucks and special sand (wax) are available for optimal game speed.',
+    'games_shuffleboard_feature1' => 'Professional solid wood table',
+    'games_shuffleboard_feature2' => 'Perfect glide',
+    'games_shuffleboard_feature3' => 'Unique in the area',
+
+    // Pricing Section
+    'pricing_title' => 'Pricing',
+    'pricing_subtitle' => 'Transparent prices for all our services',
+    'pricing_time' => 'Time',
+    'pricing_monday' => 'Monday',
+    'pricing_tuesday' => 'Tuesday',
+    'pricing_wednesday' => 'Wednesday',
+    'pricing_thursday' => 'Thursday',
+    'pricing_friday' => 'Friday',
+    'pricing_saturday' => 'Saturday',
+    'pricing_sunday' => 'Sunday',
+    'pricing_holiday' => 'Holidays',
+
+    // Deals Section
+    'deals_title' => 'Deals',
+    'deals_subtitle' => 'Special offers and great packages',
+    'deals_button' => 'Get this deal',
+    'deal_weekdays_only' => 'This deal is valid only on weekdays',
+    'booking_multi_hours_hint' => 'You can select multiple consecutive hours',
+    'booking_discount_min_consecutive' => 'To get the discount, select at least 4 consecutive hours',
+
+    // Blog Section
+    'category_turnaj' => 'Tournament',
+    'category_article' => 'Article',
+    'category_noviny' => 'News',
+    'blog_title' => 'News and Events',
+    'blog_subtitle' => 'Follow our news, tournaments and promotions',
+    'blog_read_button' => 'Read more',
+    'back_to_blog' => 'Back to blog',
+    'back_to_blog' => 'Back to blog',
+
+    // Privacy Policy
+    'privacy_title' => 'Privacy Policy',
+    'privacy_content' => '
+        <h2>1. General Provisions</h2>
+        <p>The controller of personal data pursuant to Art. 4 point 7 of Regulation (EU) 2016/679 of the European Parliament and of the Council on the protection of natural persons with regard to the processing of personal data and on the free movement of such data (hereinafter: "GDPR") is <strong>Biliardovňa.sk</strong> (hereinafter: "Controller").</p>
+        
+        <h2>2. Sources and Categories of Processed Personal Data</h2>
+        <p>The Controller processes personal data that you have provided or personal data that the Controller has obtained based on the fulfillment of your order:</p>
+        <ul>
+            <li>Name and surname</li>
+            <li>Email address</li>
+            <li>Phone number</li>
+        </ul>
+
+        <h2>3. Legal Reason and Purpose of Processing Personal Data</h2>
+        <p>The legal reason for processing personal data is:</p>
+        <ul>
+            <li>Performance of the contract between you and the Controller pursuant to Art. 6 para. 1 letter b) GDPR (table reservation).</li>
+            <li>The legitimate interest of the Controller in providing direct marketing (especially for sending commercial communications and newsletters) pursuant to Art. 6 para. 1 letter f) GDPR.</li>
+        </ul>
+        <p>The purpose of processing personal data is:</p>
+        <ul>
+            <li>Processing your order/reservation and exercising the rights and obligations arising from the contractual relationship between you and the Controller.</li>
+            <li>Website traffic analytics via third-party tools (Google Analytics, Meta Pixel, Microsoft Clarity, Bing).</li>
+        </ul>
+
+        <h2>4. Data Retention Period</h2>
+        <p>The Controller retains personal data:</p>
+        <ul>
+            <li>For the period necessary to exercise the rights and obligations arising from the contractual relationship between you and the Controller and to assert claims from these contractual relationships (for a period of 10 years from the termination of the contractual relationship).</li>
+            <li>Until the consent to the processing of personal data for marketing purposes is withdrawn, for a maximum of 5 years, if the personal data is processed based on consent.</li>
+        </ul>
+
+        <h2>5. Recipients of Personal Data (Subcontractors of the Controller)</h2>
+        <p>Recipients of personal data are persons:</p>
+        <ul>
+            <li>Participating in the delivery of goods / services / execution of payments based on a contract.</li>
+            <li>Providing website operation services and other services in connection with the operation of the website.</li>
+            <li>Providing marketing services (Google, Meta, Microsoft).</li>
+        </ul>
+
+        <h2>6. Cookies and Analytical Tools</h2>
+        <p>Our site uses cookies and analytical tools:</p>
+        <ul>
+            <li><strong>Google Analytics:</strong> Used for analyzing traffic and user behavior on the website.</li>
+            <li><strong>Meta Pixel:</strong> Used for measuring conversions and targeting ads on Facebook and Instagram.</li>
+            <li><strong>Microsoft Clarity:</strong> Records user behavior (heatmaps, recordings) so we can improve the user experience.</li>
+            <li><strong>Bing Ads:</strong> Used for tracking conversions from the Bing search engine.</li>
+        </ul>
+
+        <h2>7. Your Rights</h2>
+        <p>Under the conditions set out in the GDPR, you have:</p>
+        <ul>
+            <li>The right to access your personal data pursuant to Art. 15 GDPR.</li>
+            <li>The right to rectification of personal data pursuant to Art. 16 GDPR, or restriction of processing pursuant to Art. 18 GDPR.</li>
+            <li>The right to erasure of personal data pursuant to Art. 17 GDPR.</li>
+            <li>The right to object to processing pursuant to Art. 21 GDPR.</li>
+            <li>The right to data portability pursuant to Art. 20 GDPR.</li>
+            <li>The right to withdraw consent to processing in writing or electronically to the address or email of the Controller.</li>
+        </ul>
+    ',
+
+    // Terms & Conditions (VOP)
+    'terms_title' => 'Terms & Conditions',
+    'terms_content' => '
+        <h2>1. General Provisions</h2>
+        <p>These Terms and Conditions (hereinafter "T&C") govern the relationship between the operator of the club Biliardovňa.sk (hereinafter "Operator") and club visitors (hereinafter "Client"). By entering the club premises or making a reservation, the Client expresses agreement with these T&C.</p>
+
+        <h2>2. Rules of Conduct in the Club</h2>
+        <p>To ensure a pleasant and safe environment for all visitors, the following rules apply in the club premises:</p>
+        <ul>
+            <li>Entry to the club is allowed only to persons not under the influence of intoxicating substances.</li>
+            <li>Use of drugs and intoxicating substances is <strong>strictly prohibited</strong> in the club premises. Violation of this prohibition leads to immediate expulsion from the club and a ban on further entry.</li>
+            <li>Consumption of own alcoholic and non-alcoholic beverages and food is <strong>prohibited</strong> in the club premises.</li>
+            <li>Visitors are obliged to behave considerately towards other guests and staff, not to disturb the game with loud behavior or inappropriate conduct.</li>
+            <li>It is forbidden to sit on billiard tables, place drinks or food on them, and in any way damage the club equipment.</li>
+        </ul>
+
+        <h2>3. Provision of Services and Right to Refuse Service</h2>
+        <p>The Operator reserves the right to:</p>
+        <ul>
+            <li><strong>Refuse service or entry to any person without giving a reason</strong> and without the right to a refund, especially if the person violates the T&C, is under the influence of alcohol or drugs, behaves aggressively, or disturbs other guests.</li>
+            <li>Expel from the club a person who violates rules or good morals.</li>
+        </ul>
+
+        <h2>4. Cafe and Consumption</h2>
+        <p><strong>The ordering system in the cafe is linked to active game tables.</strong> The use of cafe services is intended primarily for playing customers. The Operator reserves the right not to serve persons who do not have a reserved game to ensure comfort and availability of services for players.</p>
+
+        <h2>5. Reservations and Cancellation Policy</h2>
+        <p>Reservations can be made online via the website or by phone.</p>
+        <ul>
+            <li>The reservation is valid after confirmation by the Operator.</li>
+            <li>In case of a delay of more than 15 minutes without prior notice, the Operator reserves the right to cancel the reservation and offer the table to other interested parties.</li>
+        </ul>
+
+        <h2>6. Liability for Damage</h2>
+        <p>The Client is liable for all damage caused to the Operator property (e.g., damage to cloth, breaking a cue, breaking inventory) and is obliged to pay for it in full on the spot.</p>
+    ',
+];

@@ -1,0 +1,46 @@
+{% extends 'base_admin.twig' %}
+
+
+{% block content %}
+<div class="admin-card">
+    <div style="border-bottom: 1px solid var(--admin-border); margin-bottom: 20px; padding-bottom: 10px;">
+        <h3 style="color: var(--color-gold);">Block Full Date (Calendar Inactive)</h3>
+        <p style="color: var(--color-muted);">This will make the date <strong>unselectable</strong> in the booking calendar.</p>
+    </div>
+    
+    <form method="post" action="/admin/blocking/calendar/add" class="form-group" style="display: flex; gap: 10px; align-items: flex-end;">
+        <div style="flex: 1;">
+            <label for="block_date">Date to Block</label>
+            <input type="date" id="block_date" name="date" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Block Date</button>
+    </form>
+
+    <h4 style="margin-top: 30px; margin-bottom: 10px; color: var(--admin-text);">Quick Block (Next 30 Days)</h4>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 30px;">
+        {% for qd in quick_dates %}
+        <form method="post" action="/admin/blocking/calendar/add">
+            <input type="hidden" name="date" value="{{ qd.date }}">
+            <button type="submit" style="width: 100%; padding: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--admin-border); color: var(--admin-text); border-radius: 4px; cursor: pointer; transition: all 0.2s;">
+                {{ qd.display }}
+            </button>
+        </form>
+        {% endfor %}
+    </div>
+
+    <h4 style="margin-top: 30px; margin-bottom: 15px; color: var(--admin-text);">Blocked Dates:</h4>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        {% for date in blocked_dates %}
+            <div style="background: rgba(231, 76, 60, 0.2); border: 1px solid rgba(231, 76, 60, 0.3); color: #e74c3c; padding: 5px 15px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                {{ date|date('d.m.Y') }}
+                <form method="post" action="/admin/blocking/calendar/delete" style="display:inline;">
+                    <input type="hidden" name="date" value="{{ date }}">
+                    <button type="submit" style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2em; line-height: 1;">&times;</button>
+                </form>
+            </div>
+        {% else %}
+            <p style="color: var(--color-muted);">No full dates blocked.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

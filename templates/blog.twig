@@ -1,0 +1,49 @@
+{% extends "base.twig" %}
+
+{% block title %}{{ translations.blog_title|default('Novinky a podujatia') }} - Biliardovňa{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="/public/css/blog.css?v=20251117">
+{% endblock %}
+
+{% block content %}
+<section class="blog-hero">
+    <div class="container">
+        <h1>{{ translations.blog_title|default('Novinky a podujatia') }}</h1>
+        <p class="blog-subtitle">{{ translations.blog_subtitle|default('Sledujte naše aktuality, turnaje a udalosti') }}</p>
+    </div>
+</section>
+
+<section class="blog-section">
+    <div class="container">
+        {% if articles|length > 0 %}
+        <div class="blog-grid">
+            {% for article in articles %}
+            <div class="blog-card">
+                <div class="blog-image">
+                    <img src="{{ article.image }}" alt="{{ article.title }}">
+                    {% if article.category %}
+                    <span class="blog-category">{{ article.category }}</span>
+                    {% endif %}
+                </div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-date">{{ article.date }}</span>
+                    </div>
+                    <h3 class="blog-title">{{ article.title }}</h3>
+                    <p class="blog-excerpt">{{ article.excerpt }}</p>
+                    <div class="blog-action">
+                        <a href="{{ url('/blog/' ~ article.slug) }}" class="blog-read-button">
+                            {{ translations.blog_read_button|default('Čítať ďalej') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-state">Zatiaľ žiadne články.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

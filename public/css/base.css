@@ -1,0 +1,219 @@
+/*! ==========================================================================
+ * Biliardovna.sk - Base Styles
+ * Consolidated CSS Variables and Base Rules
+ * ========================================================================== */
+
+/* ==========================================================================
+   CSS Variables (consolidated from variables.css)
+   ========================================================================== */
+:root {
+    /* Color Palette - Premium Billiards Theme */
+    --color-forest: #0b3d2e;        /* Dark green - primary accent */
+    --color-espresso: #221b18;      /* Dark brown - secondary accent */
+    --color-black: #0b0b0b;         /* Deep black */
+    --color-wood: #3b2f2a;          /* Warm wood tone */
+    --color-gold: #c9a34a;          /* Premium gold accent */
+    --color-ivory: #f6f1e6;         /* Cream for cards/contrasts */
+    --color-muted: #9aa39b;         /* Muted neutral */
+
+    /* Semantic Colors (mapped from palette) */
+    --primary-color: var(--color-forest);
+    --secondary-color: var(--color-espresso);
+    --accent-color: var(--color-gold);
+    --accent-hover: #b8923d;
+    --background-color: var(--color-black);
+    --surface-color: rgba(255,255,255,0.03);
+    --card-bg: var(--color-ivory);
+    --text-color: #efefe9;
+    --text-on-card: #1f1f1f;
+    --border-color: rgba(255,255,255,0.08);
+    --muted-border: rgba(255,255,255,0.04);
+
+    /* Typography */
+    --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-heading-weight: 700;
+    --font-body-weight: 400;
+    --base-font-size: 16px;
+    --h1-size: 2.5rem;
+    --h2-size: 1.8rem;
+
+    /* Spacing & Radii */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 32px;
+
+    /* Shadows & Visual Effects */
+    --shadow-soft: 0 6px 24px rgba(2,6,10,0.6);
+    --shadow-subtle: 0 2px 10px rgba(2,6,10,0.45);
+    --glass: rgba(255,255,255,0.04);
+
+    /* Transitions & Animations */
+    --transition-fast: 150ms;
+    --transition-default: 300ms;
+    --transition-normal: 300ms;
+    --transition-smooth: 450ms;
+
+    /* Z-index Layers */
+    --z-header: 1000;
+    --z-modal: 2000;
+}
+
+/* ==========================================================================
+   Base Reset & Global Styles
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-base);
+    font-size: var(--base-font-size);
+    font-weight: var(--font-body-weight);
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Main Content */
+main {
+    min-height: 0;
+    padding: 0;
+}
+
+h1 {
+    color: var(--accent-color);
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: var(--h1-size);
+}
+
+h2 {
+    color: var(--accent-color);
+    margin: 20px 0;
+    font-size: var(--h2-size);
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-default);
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1a252f;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-subtle);
+}
+
+.btn-secondary {
+    background: var(--accent-color);
+    color: var(--color-espresso);
+}
+
+.btn-secondary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-subtle);
+}
+
+/* Alerts */
+.alert {
+    padding: 16px 20px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 30px;
+}
+
+.alert-error {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #ff6b6b;
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    color: #51cf66;
+}
+
+.alert p {
+    margin: 0;
+}
+
+/* Text Utilities */
+.text-muted {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+.text-error {
+    color: #ff6b6b;
+}
+
+/* Success Page */
+.success-message {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.success-message h1 {
+    color: var(--accent-color);
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   Scroll Animations
+   ========================================================================== */
+.animate-element {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-element.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger animation for multiple elements */
+.service-item.animate-element {
+    transition-delay: 0.1s;
+}
+
+.service-item:nth-child(2).animate-element {
+    transition-delay: 0.2s;
+}
+
+.service-item:nth-child(3).animate-element {
+    transition-delay: 0.3s;
+}
+
+.gallery-item.animate-element {
+    transition-delay: calc(var(--item-index, 0) * 0.05s);
+}

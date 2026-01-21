@@ -1,0 +1,24 @@
+
+{
+    "name": "biliardovna/booking-system",
+    "description": "Complete booking system for Biliardovna.sk",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "twig/twig": "^3.0",
+        "vlucas/phpdotenv": "^5.5",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"copy('.env.example', '.env');\""
+        ]
+    }
+}

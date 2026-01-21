@@ -1,0 +1,62 @@
+:root {
+    /* Основная палитра (премиум) */
+    --color-forest: #0b3d2e;    /* темно-зелёный — primary accent */
+    --color-espresso: #221b18;  /* темно-коричневый — secondary accent */
+    --color-black: #0b0b0b;     /* глубокий чёрный */
+    --color-wood: #3b2f2a;      /* тёплый древесный оттенок */
+    --color-gold: #c9a34a;      /* премиум-акцент (золото) */
+    --color-ivory: #f6f1e6;     /* сливочный для карточек/контрастов */
+    --color-muted: #9aa39b;     /* приглушённый нейтральный */
+
+    /* Семантические / совместимые переменные (используются в текущем CSS) */
+    --primary-color: var(--color-forest);
+    --secondary-color: var(--color-espresso);
+    --accent-color: var(--color-gold);
+    --accent-hover: #b8923d;
+    --background-color: var(--color-black);
+    --surface-color: rgba(255,255,255,0.03);   /* полупрозрачный фон для панелей на темном фоне */
+    --card-bg: var(--color-ivory);             /* для светлых карточек/форм (можно переключать на surface-color) */
+    --text-color: #efefe9;                     /* основной текст на темном фоне */
+    --text-on-card: #1f1f1f;                   /* текст для светлых карточек */
+    --border-color: rgba(255,255,255,0.08);
+    --muted-border: rgba(255,255,255,0.04);
+
+    /* Типографика и размеры */
+    --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-heading-weight: 700;
+    --font-body-weight: 400;
+    --base-font-size: 16px;
+    --h1-size: 2.5rem;
+    --h2-size: 1.8rem;
+
+    /* Отступы, радиусы */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 32px;
+
+    /* Тени и визуальные эффекты */
+    --shadow-soft: 0 6px 24px rgba(2,6,10,0.6);
+    --shadow-subtle: 0 2px 10px rgba(2,6,10,0.45);
+    --glass: rgba(255,255,255,0.04);
+
+    /* Переходы и анимации */
+    --transition-fast: 150ms;
+    --transition-default: 300ms;
+    --transition-smooth: 450ms;
+
+    /* Z-index helper */
+    --z-header: 1000;
+    --z-modal: 2000;
+
+    /* Совместимость и семантика */
+    --color-text: var(--text-color);   /* алиас под старое имя */
+    --bg-dark: var(--color-espresso);  /* тёмный фон */
+    --bg-darker: #1a1410;              /* ещё темнее для градаций */
+
+    --success-color: #4caf50;          /* успех */
+    --error-color: #f44336;            /* ошибка */
+    --muted-color: var(--color-muted); /* приглушённый текст/подзаголовки */
+}

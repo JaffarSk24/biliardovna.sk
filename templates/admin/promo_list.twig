@@ -1,0 +1,64 @@
+{% extends "base.twig" %}
+
+{% block title %}Admin: Promos{% endblock %}
+
+{% block styles %}
+{{ parent() }}
+<style>
+.admin-list { max-width: 1200px; margin: 40px auto; padding: 24px; background: #1f1b15; border-radius: 12px; }
+.admin-list h2 { margin: 0 0 20px; }
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid #3a3125; }
+.admin-table th { background: #2b241c; font-weight: bold; }
+.admin-table tr:hover { background: #2b241c; }
+.btn { padding: 8px 14px; border-radius: 6px; text-decoration: none; display: inline-block; margin-right: 8px; }
+.btn-primary { background: #D4AF37; color: #1f1b15; }
+.btn-secondary { background: #3a3125; color: #fff; }
+.status-badge { padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; }
+.status-draft { background: #555; }
+.status-published { background: #28a745; }
+.status-archived { background: #6c757d; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-list">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Promos</h2>
+    <a href="/admin/promo/new" class="btn btn-primary">+ Create New</a>
+  </div>
+  
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Slug</th>
+        <th>Coupon</th>
+        <th>Lang</th>
+        <th>Status</th>
+        <th>Auto Apply</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.title }}</td>
+        <td>{{ item.slug }}</td>
+        <td><code>{{ item.coupon_code }}</code></td>
+        <td>{{ item.language|upper }}</td>
+        <td><span class="status-badge status-{{ item.status }}">{{ item.status }}</span></td>
+        <td>{{ item.auto_apply ? '✓' : '—' }}</td>
+        <td>
+          <a href="/admin/promo/edit?id={{ item.id }}" class="btn btn-secondary">Edit</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" style="text-align: center; opacity: 0.6;">No promos yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
