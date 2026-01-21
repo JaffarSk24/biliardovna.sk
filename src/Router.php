@@ -29,14 +29,33 @@ class Router
         } else {
             $this->language = $default;
 
-            // 2. Auto-redirect ONLY on Root URL ('/')
-            if ($uri === '/' || $uri === '') {
+            // 2. Auto-redirect based on Browser Language (on first visit, any page)
+            // Only for GET requests to avoid losing POST data
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $cookieLang = $_COOKIE['app_lang'] ?? null;
                 $redirectLang = null;
 
+                // Priority: Cookie -> Browser
                 if ($cookieLang && in_array($cookieLang, $supported) && $cookieLang !== $default) {
-                    $redirectLang = $cookieLang;
-                } elseif (!$cookieLang) {
+                    // If cookie says 'en' but we are on default URL (implied 'sk'), redirect to /en/current-page
+                    // EXCEPT if the user explicitly navigated to the default URL? 
+                    // Usually, if cookie exists, we want to enforce it.
+                    // But maybe user wants to switch back to SK? 
+                    // If user clicked language switcher, cookie is updated.
+                    // If user manually types URL, we should probably respect cookie?
+                    // Let's stick to the "First Visit" logic mainly, or if cookie differs from current URL context.
+                    // Actually, simpler logic: If NO cookie is set, we check browser.
+                    // If cookie IS set, we assume routing handled it or we are already in correct place?
+                    // The Router strips prefix. If we are here ($urlLang is null), we are in Default Mode.
+                    // If cookie is 'ru', we should probably be in /ru/ mode.
+
+                    // However, to be safe and avoid loops/flickering if logic is complex, 
+                    // let's stick to the User's request: "check browser language on first visit".
+                    // "First visit" usually means NO cookie.
+                    // So we mainly care about `if (!$cookieLang)`.
+                }
+
+                if (!$cookieLang) {
                     // No cookie -> Check Browser Header
                     $browserLang = $this->getBrowserLanguage($supported);
                     if ($browserLang && $browserLang !== $default) {
@@ -45,8 +64,20 @@ class Router
                 }
 
                 if ($redirectLang) {
+                    // Prevent redirect loop if we are somehow already on the target (shouldn't happen here as $urlLang is null)
+
+                    // Build target URL: /lang + current URI
+                    // $uri from start of method is parsed path. We should use $_SERVER['REQUEST_URI'] to keep query params.
+                    $currentUri = $_SERVER['REQUEST_URI'];
+
+                    // Ensure we don't double slashes
+                    $targetUrl = '/' . $redirectLang . '/' . ltrim($currentUri, '/');
+
+                    // Clean up potential double slashes if URI was '/'
+                    $targetUrl = preg_replace('#^/+#', '/', $targetUrl);
+
                     header("HTTP/1.1 302 Found");
-                    header("Location: /{$redirectLang}");
+                    header("Location: " . $targetUrl);
                     exit;
                 }
             }
