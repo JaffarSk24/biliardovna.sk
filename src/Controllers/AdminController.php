@@ -229,7 +229,8 @@ class AdminController extends Controller
 
         $this->render('admin/bookings.twig', [
             'tabs' => $tabs,
-            'page_title' => 'Manage Bookings'
+            'page_title' => 'Manage Bookings',
+            'current_time' => new \DateTime('now', new \DateTimeZone('Europe/Bratislava'))
         ]);
     }
 
@@ -585,7 +586,42 @@ class AdminController extends Controller
         $end = $_GET['end'] ?? date('Y-m-d');
         $granularity = $_GET['granularity'] ?? 'total'; // total, day, week, month
 
+        // Paging Params
+        $page = (int)($_GET['page'] ?? 1);
+        if ($page < 1) $page = 1;
+        $perPage = 50;
+
         $reportData = $this->getReportData($type, $start, $end, $granularity);
+
+        // Handle Pagination for Total View (Slice the rows, keep totals)
+        $pagination = null;
+        if ($granularity === 'total' && !empty($reportData['grouped_data'])) {
+            // There should be only one group for 'total' granularity
+            $groupKey = array_key_first($reportData['grouped_data']);
+            $allRows = $reportData['grouped_data'][$groupKey]['rows'] ?? [];
+            $totalRows = count($allRows);
+
+            if ($totalRows > 0) {
+                $totalPages = ceil($totalRows / $perPage);
+
+                // Slice rows for current page
+                $offset = ($page - 1) * $perPage;
+                $slicedRows = array_slice($allRows, $offset, $perPage);
+
+                // Replace rows in display data
+                $reportData['grouped_data'][$groupKey]['rows'] = $slicedRows;
+
+                // Allow template to show "Showing X-Y of Z"
+                $pagination = [
+                    'current_page' => $page,
+                    'total_pages' => $totalPages,
+                    'total_rows' => $totalRows,
+                    'from' => $offset + 1,
+                    'to' => min($offset + $perPage, $totalRows),
+                    'per_page' => $perPage
+                ];
+            }
+        }
 
         $this->render('admin/report_preview.twig', [
             'report_type' => $type,
@@ -595,7 +631,9 @@ class AdminController extends Controller
             'headers' => $reportData['headers'],
             'grouped_data' => $reportData['grouped_data'] ?? [], // New structure
             'grand_total' => $reportData['grand_total'] ?? [],
-            'page_title' => 'Report Preview'
+            'report_title' => $reportData['report_title'] ?? 'Report Preview',
+            'page_title' => 'Report Preview',
+            'pagination' => $pagination
         ]);
     }
 
@@ -665,6 +703,7 @@ class AdminController extends Controller
                 return "{$year}-W{$week} ({$weekStart} - {$weekEnd})";
             }
             if ($granularity === 'month') return date('Y-m', strtotime($date)); // 2024-01
+            if ($granularity === 'year') return date('Y', strtotime($date)); // 2024
             return 'All Data'; // Total
         };
 
@@ -699,20 +738,31 @@ class AdminController extends Controller
                 $data['headers'] = ['Table Name', 'Bookings Count', 'Total Duration', 'Total Revenue'];
 
                 $sql = "
-                    SELECT
-                        b.booking_date,
-                        r.name as resource,
-                        b.start_time,
+                    SELECT 
+                        b.booking_date, 
+                        r.name as resource, 
+                        b.start_time, 
                         b.end_time,
-                        b.price,
-                        b.status
+                        b.price, 
+                        b.status,
+                        s.slug as service_name
                     FROM bookings b
                     LEFT JOIN resources r ON b.resource_id = r.id
+                    LEFT JOIN services s ON b.service_id = s.id
                     WHERE b.booking_date BETWEEN ? AND ?
                     AND b.status = 'completed'
                     ORDER BY b.booking_date DESC
                 ";
             }
+
+            // Report Title Mapping
+            $titles = [
+                'bookings' => 'Booking Reports',
+                'finance' => 'Financial Reports',
+                'promo' => 'Promo Code Reports',
+                'tables' => 'Tables Occupancy'
+            ];
+            $data['report_title'] = $titles[$type] ?? 'Report Preview';
 
             $stmt = $db->prepare($sql);
             $stmt->execute([$start, $end]);
@@ -720,27 +770,39 @@ class AdminController extends Controller
 
             // Grouping Logic
             $groups = [];
-            $grandTotal = ['count' => 0, 'price' => 0, 'duration_minutes' => 0];
+            $grandTotal = ['count' => 0, 'price' => 0, 'duration_minutes' => 0, 'completed_count' => 0, 'average' => 0];
 
             foreach ($rows as $row) {
-                // Restore Logic: If cancelled, price is 0 for stats (Booking reports show them but price count 0)
+                // Formatting for Display (Cancelled = 0 visual, others = real price)
                 if (isset($row['status']) && $row['status'] === 'cancelled') {
                     $row['price'] = 0;
+                }
+
+                // Stats Calculation (Sums ONLY from Completed)
+                $priceForStats = 0;
+                $isCompleted = (isset($row['status']) && $row['status'] === 'completed');
+
+                if ($isCompleted) {
+                    $priceForStats = (float)($row['price'] ?? 0);
                 }
 
                 $key = $groupBy($row);
                 if (!isset($groups[$key])) {
                     $groups[$key] = [
                         'rows' => [],
-                        'subtotal' => ['count' => 0, 'price' => 0, 'duration_minutes' => 0],
-                        'buffer' => [] // Temporary storage for aggregation
+                        'subtotal' => [
+                            'count' => 0,
+                            'price' => 0,
+                            'duration_minutes' => 0,
+                            'completed_count' => 0
+                        ],
+                        'buffer' => []
                     ];
                 }
 
-                // Handling for Tables vs Others
                 if ($type === 'tables') {
-                    // Aggregate by Table Name
                     $table = $row['resource'] ?? 'Unknown';
+                    $service = $row['service_name'] ?? 'Other';
 
                     // Duration Calc
                     $startT = strtotime($row['booking_date'] . ' ' . $row['start_time']);
@@ -748,8 +810,11 @@ class AdminController extends Controller
                     $minutes = ($endT - $startT) / 60;
                     if ($minutes < 0) $minutes = 0;
 
-                    if (!isset($groups[$key]['buffer'][$table])) {
-                        $groups[$key]['buffer'][$table] = [
+                    if (!isset($groups[$key]['buffer'][$service])) {
+                        $groups[$key]['buffer'][$service] = [];
+                    }
+                    if (!isset($groups[$key]['buffer'][$service][$table])) {
+                        $groups[$key]['buffer'][$service][$table] = [
                             'resource' => $table,
                             'count' => 0,
                             'duration_minutes' => 0,
@@ -757,53 +822,91 @@ class AdminController extends Controller
                         ];
                     }
 
-                    $groups[$key]['buffer'][$table]['count']++;
-                    $groups[$key]['buffer'][$table]['duration_minutes'] += $minutes;
-                    $groups[$key]['buffer'][$table]['revenue'] += (float)$row['price'];
+                    $groups[$key]['buffer'][$service][$table]['count']++;
+                    $groups[$key]['buffer'][$service][$table]['duration_minutes'] += $minutes;
+                    $groups[$key]['buffer'][$service][$table]['revenue'] += (float)$row['price'];
 
-                    // Update Subtotals / Grand Total immediately
+                    // Update Date-Group Subtotals
                     $groups[$key]['subtotal']['duration_minutes'] += $minutes;
                     $grandTotal['duration_minutes'] += $minutes;
 
-                    // Note: count/price subtotal updated below generally? 
-                    // Let's do it specific here to avoid double logic
                     $groups[$key]['subtotal']['count']++;
                     $grandTotal['count']++;
 
                     $groups[$key]['subtotal']['price'] += (float)$row['price'];
                     $grandTotal['price'] += (float)$row['price'];
+
+                    $groups[$key]['subtotal']['completed_count']++;
+                    $grandTotal['completed_count']++;
                 } else {
-                    // Normal behavior for Bookings/Finance
+                    // Bookings / Finance / Promo
                     $groups[$key]['rows'][] = $row;
                     $groups[$key]['subtotal']['count']++;
-                    $groups[$key]['subtotal']['price'] += (float)$row['price'];
+                    $groups[$key]['subtotal']['price'] += $priceForStats;
+                    if ($isCompleted) {
+                        $groups[$key]['subtotal']['completed_count']++;
+                        $grandTotal['completed_count']++;
+                    }
 
                     $grandTotal['count']++;
-                    $grandTotal['price'] += (float)$row['price'];
+                    $grandTotal['price'] += $priceForStats;
                 }
             }
 
             // Post-Process Groups
-            foreach ($groups as &$g) {
-                // If tables, convert buffer to rows
+            foreach ($groups as $key => &$g) {
+                // Formatting for Tables Nested Structure
                 if ($type === 'tables' && !empty($g['buffer'])) {
-                    foreach ($g['buffer'] as $tableData) {
-                        $m = $tableData['duration_minutes'];
-                        $durStr = sprintf("%dh %02dm", floor($m / 60), $m % 60);
+                    foreach ($g['buffer'] as $serviceName => $tables) {
+                        $serviceSubtotal = [
+                            'count' => 0,
+                            'duration_minutes' => 0,
+                            'price' => 0,
+                            'completed_count' => 0, // All are completed in tables report
+                            'average' => 0
+                        ];
 
-                        $g['rows'][] = [
-                            'Table Name' => $tableData['resource'],
-                            'Bookings Count' => $tableData['count'],
-                            'Total Duration' => $durStr,
-                            'Total Revenue' => number_format($tableData['revenue'], 2, '.', '') . ' €'
+                        $serviceRows = [];
+
+                        foreach ($tables as $tableData) {
+                            $m = $tableData['duration_minutes'];
+                            $durStr = sprintf("%dh %02dm", floor($m / 60), $m % 60);
+
+                            $serviceRows[] = [
+                                'Table Name' => $tableData['resource'],
+                                'Bookings Count' => $tableData['count'],
+                                'Total Duration' => $durStr,
+                                'Total Revenue' => number_format($tableData['revenue'], 2, '.', '') . ' €'
+                            ];
+
+                            // Add to Service Subtotal
+                            $serviceSubtotal['count'] += $tableData['count'];
+                            $serviceSubtotal['completed_count'] += $tableData['count'];
+                            $serviceSubtotal['duration_minutes'] += $m;
+                            $serviceSubtotal['price'] += $tableData['revenue'];
+                        }
+
+                        // Avg check for service
+                        if ($serviceSubtotal['completed_count'] > 0) {
+                            $serviceSubtotal['average'] = $serviceSubtotal['price'] / $serviceSubtotal['completed_count'];
+                        }
+                        // Duration format for service
+                        $mSer = $serviceSubtotal['duration_minutes'];
+                        $serviceSubtotal['duration_formatted'] = sprintf("%dh %02dm", floor($mSer / 60), $mSer % 60);
+
+                        usort($serviceRows, function ($a, $b) {
+                            return strcmp($a['Table Name'], $b['Table Name']);
+                        });
+
+                        $g['services'][$serviceName] = [
+                            'rows' => $serviceRows,
+                            'subtotal' => $serviceSubtotal
                         ];
                     }
-                    // Sort rows by Table Name for clean look
-                    usort($g['rows'], function ($a, $b) {
-                        return strcmp($a['Table Name'], $b['Table Name']);
-                    });
 
-                    unset($g['buffer']); // Cleanup
+                    // Sort services by name
+                    ksort($g['services']);
+                    unset($g['buffer']);
                 } elseif ($type !== 'tables') {
                     // Format rows price for others
                     foreach ($g['rows'] as &$r) {
@@ -811,19 +914,28 @@ class AdminController extends Controller
                     }
                 }
 
-                // Format Subtotal Duration
+                // Duration Format for Date Group
                 if ($type === 'tables') {
                     $m = $g['subtotal']['duration_minutes'];
                     $g['subtotal']['duration_formatted'] = sprintf("%dh %02dm", floor($m / 60), $m % 60);
                 }
+
+                // Average Check for Date Group
+                $g['subtotal']['average'] = 0;
+                if ($g['subtotal']['completed_count'] > 0) {
+                    $g['subtotal']['average'] = $g['subtotal']['price'] / $g['subtotal']['completed_count'];
+                }
             }
             krsort($groups);
 
-            // Format Grand Total details
+            // Grand Total Formatting
             if ($type === 'tables') {
                 $m = $grandTotal['duration_minutes'];
                 $grandTotal['duration_formatted'] = sprintf("%dh %02dm", floor($m / 60), $m % 60);
-                // Keep price for tables as "Revenue"
+            }
+            $grandTotal['average'] = 0;
+            if ($grandTotal['completed_count'] > 0) {
+                $grandTotal['average'] = $grandTotal['price'] / $grandTotal['completed_count'];
             }
 
             $data['grouped_data'] = $groups;

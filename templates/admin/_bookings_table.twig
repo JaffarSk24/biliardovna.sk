@@ -1,3 +1,24 @@
+<style>
+    @keyframes pulse-yellow {
+        0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+        70% { box-shadow: 0 0 0 6px rgba(255, 193, 7, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+    }
+    .badge-playing {
+        background-color: #ffc107;
+        color: #000;
+        animation: pulse-yellow 2s infinite;
+        font-weight: bold;
+        border: 1px solid #ffc107;
+    }
+    .badge-finished {
+        background-color: #155724; /* Dark Green */
+        color: #fff;
+        font-weight: bold;
+        border: 1px solid #155724;
+    }
+</style>
+
 <div style="max-height: 70vh; overflow-y: auto;">
     <table class="data-table">
         <thead>
@@ -31,7 +52,23 @@
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge badge-{{ booking.status }}">{{ booking.status|capitalize }}</span>
+                    {# Custom Status Logic for Today/Confirmed #}
+                    {% if group == 'today' and booking.status == 'confirmed' and current_time is defined %}
+                        {% set startTs = date(booking.booking_date ~ ' ' ~ booking.start_time).timestamp %}
+                        {% set endTs = date(booking.booking_date ~ ' ' ~ booking.end_time).timestamp %}
+                        {% set nowTs = current_time.timestamp %}
+                        
+                        {% if nowTs >= startTs and nowTs <= endTs %}
+                            <span class="badge badge-playing">Playing Now</span>
+                        {% elseif nowTs > endTs %}
+                            <span class="badge badge-finished">Finished</span>
+                        {% else %}
+                            <span class="badge badge-confirmed">Confirmed</span>
+                        {% endif %}
+                    {% else %}
+                        {# Standard Status #}
+                         <span class="badge badge-{{ booking.status }}">{{ booking.status|capitalize }}</span>
+                    {% endif %}
                 </td>
                 <td>
                     <form method="POST" action="/admin/bookings/update" style="display: inline-flex; gap: 5px;">

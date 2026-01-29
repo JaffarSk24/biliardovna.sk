@@ -5,32 +5,29 @@
 {% block content %}
 <div class="report-preview-container">
     <div class="page-header">
-        <h1>{{ page_title }}</h1>
+        <h1>{{ report_title|default('Report Preview') }}</h1>
         <div class="actions">
-            <!-- Print / Save as PDF -->
-            <button class="btn btn-primary" onclick="window.print()">
+            <!-- Download CSV -->
+            <a href="/admin/reports/download?type={{ report_type }}&start={{ start_date }}&end={{ end_date }}&granularity={{ granularity }}" class="btn btn-secondary">
+                 <i class="fas fa-file-csv"></i> Download CSV
+            </a>
+            
+            <button onclick="window.print()" class="btn btn-primary">
                 <i class="fas fa-print"></i> Print / Save as PDF
             </button>
-            
-            <!-- Export CSV -->
-            <a href="/admin/reports/download?type={{ report_type }}&start={{ start_date }}&end={{ end_date }}&granularity={{ granularity }}" class="btn btn-secondary">
-                <i class="fas fa-file-csv"></i> Download CSV
-            </a>
         </div>
     </div>
 
     <!-- Meta Block - Styled as Admin Card -->
     <div class="admin-card report-meta">
-        <p><strong>Type:</strong> <span style="color: var(--color-gold);">{{ report_type|upper }}</span></p>
-        <p><strong>Period:</strong> {{ start_date }} - {{ end_date }}</p>
-        {% if granularity != 'total' %}
-            <p><strong>Granularity:</strong> {{ granularity|capitalize }}</p>
-        {% endif %}
+        <div><span class="label">Type:</span> <span class="value">{{ report_type|upper }}</span></div>
+        <div><span class="label">Period:</span> <span class="value">{{ start_date }} - {{ end_date }}</span></div>
+        <div><span class="label">Granularity:</span> <span class="value">{{ granularity|capitalize }}</span></div>
     </div>
 
     {% if grouped_data|length > 0 %}
         
-        <!-- Loop through Groups -->
+        <!-- Loop through Groups (Date/Week/Month) -->
         {% for groupName, group in grouped_data %}
             {% if granularity != 'total' %}
                 <!-- Spoiler Block for Granular Reports -->
@@ -47,20 +44,136 @@
                              {% endif %}
                              {% if group.subtotal.price is defined and group.subtotal.price > 0 %}
                                 <span class="badge badge-price">{{ group.subtotal.price|number_format(2) }} €</span>
+                                {% if group.subtotal.average > 0 %}
+                                    <span class="badge badge-avg" title="Average Check">Avg: {{ group.subtotal.average|number_format(2) }} €</span>
+                                {% endif %}
                              {% endif %}
                         </div>
                     </div>
                     
                     <div class="spoiler-content">
+                        
+                        <!-- Check for Nested Services (Tables Report) -->
+                        {% if group.services is defined %}
+                             {% for serviceName, serviceData in group.services %}
+                                <div class="report-group spoiler inner-spoiler collapsed" onclick="toggleSpoiler(this); event.stopPropagation();">
+                                    <div class="spoiler-header inner-header">
+                                        <div class="header-left">
+                                            <i class="fas fa-chevron-right chevron"></i>
+                                            <h4 class="group-title">{{ serviceName }}</h4>
+                                        </div>
+                                        <div class="header-right">
+                                            <span class="badge badge-count">Cnt: {{ serviceData.subtotal.count }}</span>
+                                            {% if serviceData.subtotal.duration_formatted is defined %}
+                                                <span class="badge badge-duration"><i class="far fa-clock"></i> {{ serviceData.subtotal.duration_formatted }}</span>
+                                            {% endif %}
+                                            {% if serviceData.subtotal.price is defined %}
+                                                <span class="badge badge-price">{{ serviceData.subtotal.price|number_format(2) }} €</span>
+                                                {% if serviceData.subtotal.average > 0 %}
+                                                    <span class="badge badge-avg" title="Avg Check">Avg: {{ serviceData.subtotal.average|number_format(2) }} €</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="spoiler-content">
+                                        <div class="table-responsive">
+                                            <table class="data-table">
+                                                <thead>
+                                                    <tr>
+                                                        {% for head in headers %}
+                                                            <th>{{ head }}</th>
+                                                        {% endfor %}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in serviceData.rows %}
+                                                        <tr>
+                                                            {% for cell in row %}
+                                                                <td>{{ cell }}</td>
+                                                            {% endfor %}
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                             {% endfor %}
+
+                        {% else %}
+                            <!-- Standard Flat Rows -->
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            {% for head in headers %}
+                                                <th>{{ head }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in group.rows %}
+                                            <tr>
+                                                {% for cell in row %}
+                                                    <td>{{ cell }}</td>
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            {% else %}
+                <!-- Standard Block for Total Report -->
+                <div class="report-group">
+                    <h3 class="group-title">{{ groupName }}</h3>
+                    
+                    {% if group.services is defined %}
+                         <!-- Total View but with Services Subgroups -->
+                         {% for serviceName, serviceData in group.services %}
+                             <div class="report-group inner-group">
+                                 <h4 style="color: var(--color-gold); margin: 15px 0 10px;">{{ serviceName }}</h4>
+                                 <div class="table-responsive">
+                                     <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                {% for head in headers %}
+                                                    <th>{{ head }}</th>
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for row in serviceData.rows %}
+                                                <tr>
+                                                    {% for cell in row %}
+                                                        <td>{{ cell }}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                     </table>
+                                 </div>
+                                 <div class="group-summary">
+                                    <span><strong>Count:</strong> {{ serviceData.subtotal.count }}</span>
+                                    <span><strong>Duration:</strong> {{ serviceData.subtotal.duration_formatted }}</span>
+                                    <span><strong>Revenue:</strong> {{ serviceData.subtotal.price|number_format(2) }} €</span>
+                                 </div>
+                             </div>
+                         {% endfor %}
+                    {% else %}
                         <div class="table-responsive">
                             <table class="data-table">
                                 <thead>
+                                    {% if headers is defined %}
                                     <tr>
                                         {% for head in headers %}
-                                            <!-- Simple logic to align Price/Money columns to right if needed, but generic TH is fine -->
                                             <th>{{ head }}</th>
                                         {% endfor %}
                                     </tr>
+                                    {% endif %}
                                 </thead>
                                 <tbody>
                                     {% for row in group.rows %}
@@ -70,46 +183,48 @@
                                             {% endfor %}
                                         </tr>
                                     {% endfor %}
-                                    <!-- No Subtotal Row in table for spoiler view, stats are in header -->
+                                
+                                    <!-- Subtotal Row -->
+                                    {% if group.subtotal and group.subtotal.count > 0 %}
+                                    <tr class="subtotal-row">
+                                        <td colspan="{{ headers|length - 2 }}" style="text-align: right; font-weight: bold; color: var(--color-muted);">Subtotal:</td>
+                                        <td style="font-weight: bold; padding-left: 15px;">{{ group.subtotal.count }}</td> 
+                                        <!-- Adjusted colspan to try to fit typical tables (Bookings/Finance/Promo) -->
+                                    </tr>
+                                    {% endif %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </div>
-            {% else %}
-                <!-- Standard Block for Total Report -->
-                <div class="report-group">
-                    <h3 class="group-title">{{ groupName }}</h3>
-                    
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    {% for head in headers %}
-                                        <th>{{ head }}</th>
-                                    {% endfor %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in group.rows %}
-                                    <tr>
-                                        {% for cell in row %}
-                                            <td>{{ cell }}</td>
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                                
-                                <!-- Subtotal Row -->
-                                {% if group.subtotal and group.subtotal.count > 0 %}
-                                <tr class="subtotal-row">
-                                    <td colspan="{{ headers|length - 2 }}" style="text-align: right; font-weight: bold; color: var(--color-muted);">Subtotal:</td>
-                                    <td style="font-weight: bold; padding-left: 15px;">{{ group.subtotal.count }}</td> 
-                                    <!-- Adjusted colspan to try to fit typical tables (Bookings/Finance/Promo) -->
-                                </tr>
+                    {% endif %}
+
+                    <!-- Pagination Controls -->
+                    {% if pagination and pagination.total_pages > 1 %}
+                    <div class="pagination-controls">
+                        <div class="pagination-info">
+                            Showing {{ pagination.from }} to {{ pagination.to }} of {{ pagination.total_rows }} entries
+                        </div>
+                        <div class="pagination-links">
+                            {% if pagination.current_page > 1 %}
+                                <a href="?type={{ report_type }}&start={{ start_date }}&end={{ end_date }}&granularity={{ granularity }}&page={{ pagination.current_page - 1 }}" class="btn btn-sm btn-secondary">&laquo; Prev</a>
+                            {% endif %}
+                            
+                            {% for i in 1..pagination.total_pages %}
+                                {% if i == pagination.current_page %}
+                                    <span class="btn btn-sm btn-primary active">{{ i }}</span>
+                                {% elseif i == 1 or i == pagination.total_pages or (i >= pagination.current_page - 2 and i <= pagination.current_page + 2) %}
+                                    <a href="?type={{ report_type }}&start={{ start_date }}&end={{ end_date }}&granularity={{ granularity }}&page={{ i }}" class="btn btn-sm btn-secondary">{{ i }}</a>
+                                {% elseif i == pagination.current_page - 3 or i == pagination.current_page + 3 %}
+                                    <span class="pagination-ellipsis">...</span>
                                 {% endif %}
-                            </tbody>
-                        </table>
+                            {% endfor %}
+
+                            {% if pagination.current_page < pagination.total_pages %}
+                                <a href="?type={{ report_type }}&start={{ start_date }}&end={{ end_date }}&granularity={{ granularity }}&page={{ pagination.current_page + 1 }}" class="btn btn-sm btn-secondary">Next &raquo;</a>
+                            {% endif %}
+                        </div>
                     </div>
+                    {% endif %}
 
                     <!-- Group Subtotal Block -->
                     {% if group.subtotal %}
@@ -120,6 +235,9 @@
                         {% endif %}
                         {% if group.subtotal.price is defined and group.subtotal.price > 0 %}
                             <span style="margin-left: 20px;"><strong>Total Value:</strong> {{ group.subtotal.price|number_format(2) }} €</span>
+                            {% if group.subtotal.average > 0 %}
+                                <span style="margin-left: 20px;"><strong>Avg Check:</strong> {{ group.subtotal.average|number_format(2) }} €</span>
+                            {% endif %}
                         {% endif %}
                     </div>
                     {% endif %}
@@ -150,6 +268,12 @@
                     <span class="label">Total Value</span>
                     <span class="value">{{ grand_total.price|number_format(2) }} €</span>
                 </div>
+                {% if grand_total.average > 0 %}
+                <div class="stat-item">
+                    <span class="label">Avg Check</span>
+                    <span class="value">{{ grand_total.average|number_format(2) }} €</span>
+                </div>
+                {% endif %}
                 {% endif %}
             </div>
         </div>
@@ -240,6 +364,11 @@
     color: #2ecc71;
     border: 1px solid rgba(46, 204, 113, 0.3);
 }
+.badge-avg {
+    background: rgba(155, 89, 182, 0.15); /* Purple tint */
+    color: #9b59b6;
+    border: 1px solid rgba(155, 89, 182, 0.3);
+}
 
 /* Collapsed State */
 .report-group.spoiler.collapsed .spoiler-content {
@@ -253,22 +382,92 @@
 .report-group.spoiler.expanded {
     background: rgba(255, 255, 255, 0.08); /* Slightly lighter active bg */
 }
-.report-group.spoiler.expanded .spoiler-content {
+.report-group.spoiler.expanded > .spoiler-content {
     display: block;
     padding: 20px;
     border-top: 1px solid var(--admin-border);
     animation: fadeIn 0.3s;
 }
-.report-group.spoiler.expanded .chevron {
+.report-group.spoiler.expanded > .spoiler-header .chevron {
     transform: rotate(90deg);
 }
-.report-group.spoiler.expanded .group-title {
+.report-group.spoiler.expanded > .spoiler-header .group-title {
     color: var(--color-gold);
+}
+
+/* Nested Spoiler Styles */
+.inner-spoiler {
+    margin-left: 20px;
+    margin-right: 0;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--color-gold);
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+.inner-header {
+    background: transparent !important;
+    padding: 10px 15px !important;
+}
+.inner-header h4.group-title {
+    font-size: 1rem;
+    color: #fff;
+    margin: 0;
+}
+.inner-spoiler.expanded {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+.inner-group {
+    margin-left: 20px;
+    margin-bottom: 20px;
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pagination Styles */
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    margin-top: -1px; /* Connect to table */
+    border: 1px solid var(--admin-border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+}
+.pagination-info {
+    font-size: 0.9em;
+    color: var(--color-muted);
+}
+.pagination-links {
+    display: flex;
+    gap: 5px;
+}
+.pagination-links .btn-sm {
+    padding: 5px 10px;
+    font-size: 0.85em;
+    min-width: 30px;
+    text-align: center;
+}
+.pagination-links .active {
+    background: var(--color-gold);
+    color: #000;
+    border-color: var(--color-gold);
+    cursor: default;
+}
+.pagination-ellipsis {
+    color: var(--color-muted);
+    padding: 5px;
+    align-self: flex-end;
+}
+@media (max-width: 768px) {
+    .pagination-controls {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
 }
 
 /* Button Styles to match site */
