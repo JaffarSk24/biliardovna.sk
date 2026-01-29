@@ -246,6 +246,14 @@ $router->post('/admin/promo/save', function () use ($language) {
     (new AdminPromoController($language))->save();
 });
 
+// Admin Reports
+$router->get('/admin/reports', function () use ($language) {
+    (new AdminController($language))->reports();
+});
+$router->get('/admin/reports/download', function () use ($language) {
+    (new AdminController($language))->downloadReport();
+});
+
 // Webhooks
 $router->post('/webhook/telegram', function () {
     (new TelegramController())->handleWebhook();

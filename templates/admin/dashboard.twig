@@ -1,19 +1,47 @@
 {% extends 'base_admin.twig' %}
 
 {% block content %}
+<div class="filter-bar admin-card" style="margin-bottom: 20px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
+    <h3 style="margin: 0; color: var(--color-gold); font-size: 1.1rem;">Statistics Period</h3>
+    <form method="GET" action="/admin" style="display: flex; gap: 10px; align-items: center;">
+        <div class="form-group" style="margin: 0;">
+            <input type="date" name="start" value="{{ start_date }}" required style="padding: 8px; width: 140px;">
+        </div>
+        <span style="color: var(--color-muted);">-</span>
+        <div class="form-group" style="margin: 0;">
+            <input type="date" name="end" value="{{ end_date }}" required style="padding: 8px; width: 140px;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="padding: 8px 20px;">Filter</button>
+    </form>
+</div>
+
 <div class="dashboard-stats">
     <div class="stat-card" style="border-color: var(--color-gold);">
-        <h3>Revenue <small>(Last 30 Days)</small></h3>
-        <div style="text-align: center; padding: 20px;">
+        <h3>Revenue</h3>
+        <div style="text-align: center; padding: 20px 20px 0 20px;">
             <span style="display: block; font-size: 2.5em; font-weight: bold; color: var(--color-gold);">
                 {{ revenue|number_format(2, '.', ' ') }} €
             </span>
             <span style="color: var(--color-muted);">From completed bookings</span>
         </div>
+        
+        <!-- Revenue Breakdown -->
+        {% if revenue_breakdown %}
+        <div style="margin-top: 20px; border-top: 1px solid var(--admin-border); padding-top: 15px;">
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                {% for slug, amount in revenue_breakdown %}
+                <li style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9em;">
+                    <span style="text-transform: capitalize; color: var(--color-text);">{{ slug }}</span>
+                    <span style="color: var(--color-gold); font-weight: 600;">{{ amount|number_format(2, '.', ' ') }} €</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
     </div>
 
     <div class="stat-card">
-        <h3>Booking Status <small>(Last 30 Days)</small></h3>
+        <h3>Booking Status</h3>
         <div class="stat-grid">
             <div class="stat-item success">
                 <span class="count">{{ stats.completed|default(0) }}</span>
@@ -35,19 +63,29 @@
     </div>
 
     <div class="stat-card">
-        <h3>Popularity <small>(Last 30 Days)</small></h3>
+        <h3>Popularity</h3>
         <ul class="popularity-list">
             {% for game, count in popularity %}
+                {% set percent = total_popularity > 0 ? ((count / total_popularity) * 100)|round(1) : 0 %}
                 <li>
                     <div class="game-info">
                         <span class="game-name">{{ game|capitalize }}</span>
-                        <span class="game-count">{{ count }} from complete bookings</span>
+                        <span class="game-count">{{ count }} from completed bookings</span>
                     </div>
-                    <div class="progress-bar">
-                        {% if total_popularity > 0 %}
-                            <div class="fill" style="width: {{ (count / total_popularity) * 100 }}%;"></div>
-                        {% else %}
-                            <div class="fill" style="width: 0%;"></div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            {% if total_popularity > 0 %}
+                                <div class="fill" style="width: {{ percent }}%;">
+                                    {% if percent >= 15 %}
+                                        <span class="percent-label inside">{{ percent }}%</span>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="fill" style="width: 0%;"></div>
+                            {% endif %}
+                        </div>
+                        {% if percent < 15 %}
+                            <span class="percent-label outside">{{ percent }}%</span>
                         {% endif %}
                     </div>
                 </li>
@@ -110,8 +148,7 @@
     margin-bottom: 20px;
 }
 .stat-card h3 small {
-    font-size: 0.6em;
-    color: var(--color-muted);
+    display: none; /* Hide any small text if remains */
 }
 .stat-grid {
     display: grid;
@@ -140,36 +177,71 @@
     margin: 0;
 }
 .popularity-list li {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
 }
 .popularity-list .game-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.9em;
+    font-size: 0.95em;
 }
 .popularity-list .game-name {
     font-weight: bold;
+    color: var(--color-text);
 }
 .popularity-list .game-count {
     color: var(--color-muted);
-    white-space: nowrap;
+    font-size: 0.85em;
 }
+
+/* Progress Bar Container */
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between bar and outside percentage */
+}
+
+/* The Bar Itself */
 .progress-bar {
-    width: 100%;
-    height: 8px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 4px;
+    flex-grow: 1; /* Take remaining space */
+    height: 24px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
     overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.1);
 }
+
 .progress-bar .fill {
     height: 100%;
     background: var(--color-gold);
-    border-radius: 4px;
-    transition: width 0.3s ease;
+    border-radius: 12px;
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0px; /* Allow 0 width */
+}
+
+/* Percentage Labels */
+.percent-label {
+    font-weight: bold;
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+
+.percent-label.inside {
+    color: var(--color-espresso);
+    padding-right: 10px;
+}
+
+.percent-label.outside {
+    color: var(--color-gold); /* Gold color for outside text */
+    min-width: 40px; /* Prevent jitter */
+    text-align: right;
 }
 </style>
 {% endblock %}

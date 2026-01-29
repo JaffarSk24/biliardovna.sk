@@ -88,6 +88,20 @@ class NotificationService
             curl_close($ch);
 
             if ($result !== false) {
+                // Parse response to get message_id
+                $response = json_decode($result, true);
+                if (($response['ok'] ?? false) && isset($response['result']['message_id'])) {
+                    $msgId = $response['result']['message_id'];
+                    $chatId = $response['result']['chat']['id'];
+
+                    try {
+                        $db = \App\Database\Database::getInstance();
+                        $logStmt = $db->prepare("INSERT INTO telegram_messages (booking_id, chat_id, message_id) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE created_at=NOW()");
+                        $logStmt->execute([$booking['id'], $chatId, $msgId]);
+                    } catch (\Throwable $e) {
+                        // ignore logging error, message was sent
+                    }
+                }
                 $success = true;
             }
         }
@@ -125,7 +139,7 @@ class NotificationService
     /**
      * Format message for Telegram
      */
-    private function formatTelegramMessage(array $booking, string $type): string
+    public function formatTelegramMessage(array $booking, string $type): string
     {
         $customerLanguage = $booking['language'] ?? 'sk';
         // Force Slovak for admin notifications
@@ -134,6 +148,7 @@ class NotificationService
         $icons = [
             'new' => '🔔',
             'confirmed' => '✅',
+            'auto_confirmed' => '✅',
             'cancelled' => '❌',
             'completed' => '🎉'
         ];
@@ -150,9 +165,13 @@ class NotificationService
         ];
         $flag = $flags[$customerLanguage] ?? '🌐';
 
-        $title = $type === 'new'
-            ? $this->trans('notification_new_booking')
-            : $this->trans('notification_booking_update');
+        if ($type === 'auto_confirmed') {
+            $title = "Rezervácia #{$booking['id']} bola automaticky potvrdená.";
+        } else {
+            $title = $type === 'new'
+                ? $this->trans('notification_new_booking')
+                : $this->trans('notification_booking_update');
+        }
 
         // Format date as dd.mm.yyyy
         $date = date('d.m.Y', strtotime($booking['booking_date']));

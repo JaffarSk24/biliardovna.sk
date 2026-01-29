@@ -48,32 +48,56 @@ class AdminController extends Controller
     {
         $db = \App\Database\Database::getInstance();
 
-        // 1. Booking Stats (Last 30 Days)
+        // 0. Date Filters (Default: Last 30 Days)
+        $endDate = $_GET['end'] ?? date('Y-m-d');
+        $startDate = $_GET['start'] ?? date('Y-m-d', strtotime('-30 days'));
+
+        // Validate formats briefly (simple check, fallback to defaults if weird)
+        if (!strtotime($startDate)) $startDate = date('Y-m-d', strtotime('-30 days'));
+        if (!strtotime($endDate)) $endDate = date('Y-m-d');
+
+        // Ensure End Date includes the full day (e.g. if using datetime, but here we use DATE(column) logic usually)
+        // With simple string comparison '2023-10-10' matches '2023-10-10 00:00:00'.
+        // To include bookings on the end date up to 23:59:59, we typically add 1 day or use syntax: date <= '$endDate 23:59:59'.
+        // Let's use string comparison compatible with Y-m-d.
+
+        // 1. Booking Stats
         $stats = $db->query("
             SELECT status, COUNT(*) as count 
             FROM bookings 
-            WHERE booking_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+            WHERE booking_date >= '$startDate' AND booking_date <= '$endDate'
             GROUP BY status
         ")->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-        // 2. Game Popularity (Last 30 Days) - Completed only
+        // 2. Game Popularity (Completed only)
         $popularity = $db->query("
             SELECT s.slug, COUNT(*) as count
             FROM bookings b
             JOIN services s ON b.service_id = s.id
-            WHERE b.booking_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+            WHERE b.booking_date >= '$startDate' AND b.booking_date <= '$endDate'
             AND b.status = 'completed'
             GROUP BY s.slug
             ORDER BY count DESC
         ")->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-        // 3. Revenue (Last 30 Days) - Completed only
+        // 3. Revenue (Completed only)
         $revenue = $db->query("
             SELECT SUM(price) 
             FROM bookings 
             WHERE status = 'completed' 
-            AND booking_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+            AND booking_date >= '$startDate' AND booking_date <= '$endDate'
         ")->fetchColumn();
+
+        // 3.1 Revenue Breakdown
+        $revenueBreakdown = $db->query("
+            SELECT s.slug, SUM(b.price) as amount
+            FROM bookings b
+            JOIN services s ON b.service_id = s.id
+            WHERE b.status = 'completed'
+            AND b.booking_date >= '$startDate' AND b.booking_date <= '$endDate'
+            GROUP BY s.slug
+            ORDER BY amount DESC
+        ")->fetchAll(\PDO::FETCH_KEY_PAIR);
 
         $pendingBookings = $this->bookingModel->getPending();
         $pendingBookings = $this->formatBookings($pendingBookings);
@@ -84,29 +108,127 @@ class AdminController extends Controller
         $this->render('admin/dashboard.twig', [
             'stats' => $stats,
             'popularity' => $popularity,
-            'total_popularity' => $totalPopularity, // Pass total sum for 100% calculation
+            'total_popularity' => $totalPopularity,
             'revenue' => (float)$revenue,
+            'revenue_breakdown' => $revenueBreakdown, // Pass breakdown
             'pending_bookings' => $pendingBookings,
-            'page_title' => 'Admin Dashboard'
+            'page_title' => 'Admin Dashboard',
+            'start_date' => $startDate,
+            'end_date' => $endDate
         ]);
     }
 
     /**
      * List all bookings
      */
+    /**
+     * List all bookings (Refactored for Tabs)
+     */
+    /**
+     * List all bookings (Refactored for Tabs + Date Groups)
+     */
     public function listBookings(): void
     {
-        $status = $_GET['status'] ?? '';
-        $bookings = $this->bookingModel->getAllDesc(); // Need to implement this in Model or use logic here
+        // 1. Fetch all Services for Tabs (Force English for Admin)
+        $services = $this->serviceModel->getWithTranslations('en');
 
-        if ($status) {
-            $bookings = array_filter($bookings, fn($b) => $b['status'] === $status);
+        // 2. Fetch ALL bookings
+        $allBookings = $this->bookingModel->getAllDesc();
+        $allBookings = $this->formatBookings($allBookings);
+
+        // 3. Initialize Tabs Structure
+        $tabs = [];
+
+        // Dynamic Service Tabs (Active: Pending/Confirmed)
+        foreach ($services as $service) {
+            $tabs[$service['slug']] = [
+                'id' => $service['slug'],
+                'label' => $service['name'],
+                'bookings' => [
+                    'yesterday' => [],
+                    'today' => [],
+                    'tomorrow' => [],
+                    'later' => []
+                ]
+            ];
         }
 
-        $bookings = $this->formatBookings($bookings);
+        // Static Tabs (History)
+        $tabs['completed'] = [
+            'id' => 'completed',
+            'label' => 'Completed',
+            'bookings' => [] // Flat list
+        ];
+        $tabs['cancelled'] = [
+            'id' => 'cancelled',
+            'label' => 'Cancelled',
+            'bookings' => [] // Flat list
+        ];
+
+        // Date Helpers
+        $today = date('Y-m-d');
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+
+        // 4. Distribute Bookings
+        foreach ($allBookings as $booking) {
+            $status = $booking['status'];
+            $serviceSlug = $booking['service_slug'] ?? 'unknown';
+            $bDate = $booking['booking_date'];
+
+            // 1. Handle History (Flat List)
+            if ($status === 'completed') {
+                $tabs['completed']['bookings'][] = $booking;
+                continue;
+            } elseif ($status === 'cancelled') {
+                $tabs['cancelled']['bookings'][] = $booking;
+                continue;
+            }
+
+            // 2. Handle Active (Grouped List)
+            if (isset($tabs[$serviceSlug])) {
+                // Determine Date Group
+                if ($bDate === $today) {
+                    $group = 'today';
+                } elseif ($bDate === $tomorrow) {
+                    $group = 'tomorrow';
+                } elseif ($bDate < $today) {
+                    $group = 'yesterday';
+                } else {
+                    $group = 'later';
+                }
+
+                $tabs[$serviceSlug]['bookings'][$group][] = $booking;
+            }
+        }
+
+        // 5. Sort Bookings
+        foreach ($tabs as $slug => &$tabData) {
+            $isHistory = ($slug === 'completed' || $slug === 'cancelled');
+
+            if ($isHistory) {
+                // Sort Flat History (Newest First) -> Already DESC from DB usually, but ensures consistency
+                usort($tabData['bookings'], function ($a, $b) {
+                    $t1 = strtotime($a['booking_date'] . ' ' . $a['start_time']);
+                    $t2 = strtotime($b['booking_date'] . ' ' . $b['start_time']);
+                    return $t2 - $t1; // DESC
+                });
+            } else {
+                // Sort Grouped Service Tabs (Nearest First)
+                foreach ($tabData['bookings'] as $group => &$groupBookings) {
+                    if (empty($groupBookings)) continue;
+
+                    usort($groupBookings, function ($a, $b) {
+                        $t1 = strtotime($a['booking_date'] . ' ' . $a['start_time']);
+                        $t2 = strtotime($b['booking_date'] . ' ' . $b['start_time']);
+                        return $t1 - $t2; // ASC
+                    });
+                }
+            }
+        }
 
         $this->render('admin/bookings.twig', [
-            'bookings' => $bookings,
+            'tabs' => $tabs,
             'page_title' => 'Manage Bookings'
         ]);
     }
@@ -441,5 +563,347 @@ class AdminController extends Controller
         }
         header('Location: /admin/holidays');
         exit;
+    }
+
+    /**
+     * Reports Page
+     */
+    public function reports(): void
+    {
+        $this->render('admin/reports.twig', [
+            'page_title' => 'Reports'
+        ]);
+    }
+
+    /**
+     * View Report (Preview)
+     */
+    public function viewReport(): void
+    {
+        $type = $_GET['type'] ?? 'bookings';
+        $start = $_GET['start'] ?? date('Y-m-01');
+        $end = $_GET['end'] ?? date('Y-m-d');
+        $granularity = $_GET['granularity'] ?? 'total'; // total, day, week, month
+
+        $reportData = $this->getReportData($type, $start, $end, $granularity);
+
+        $this->render('admin/report_preview.twig', [
+            'report_type' => $type,
+            'start_date' => $start,
+            'end_date' => $end,
+            'granularity' => $granularity,
+            'headers' => $reportData['headers'],
+            'grouped_data' => $reportData['grouped_data'] ?? [], // New structure
+            'grand_total' => $reportData['grand_total'] ?? [],
+            'page_title' => 'Report Preview'
+        ]);
+    }
+
+    /**
+     * Download Report (CSV)
+     */
+    public function downloadReport(): void
+    {
+        $type = $_GET['type'] ?? 'bookings';
+        $start = $_GET['start'] ?? date('Y-m-01');
+        $end = $_GET['end'] ?? date('Y-m-d');
+        $granularity = $_GET['granularity'] ?? 'total';
+
+        $reportData = $this->getReportData($type, $start, $end, $granularity);
+
+        $filename = "report_{$type}_{$start}_{$end}.csv";
+
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        $output = fopen('php://output', 'w');
+        fputs($output, "\xEF\xBB\xBF"); // BOM
+
+        // Output Headers
+        fputcsv($output, $reportData['headers'], ",", "\"", "\\"); // Explicit escape char for PHP 8.1+
+
+        // Output Rows
+        foreach ($reportData['rows'] as $row) {
+            fputcsv($output, (array)$row, ",", "\"", "\\");
+        }
+
+        // Output Summary if exists (Finance)
+        if (!empty($reportData['summary'])) {
+            fputcsv($output, [], ",", "\"", "\\"); // Spacer
+            fputcsv($output, ['SUMMARY'], ",", "\"", "\\");
+            foreach ($reportData['summary'] as $label => $val) {
+                fputcsv($output, [$label, $val], ",", "\"", "\\");
+            }
+        }
+
+        fclose($output);
+        exit;
+    }
+
+    /**
+     * Helper to get report data
+     */
+    private function getReportData(string $type, string $start, string $end, string $granularity): array
+    {
+        $db = \App\Database\Database::getInstance();
+        $data = ['headers' => [], 'grouped_data' => [], 'grand_total' => []];
+
+        // Shared Date Logic for Grouping with Enhanced Formatting
+        $groupBy = function ($row) use ($granularity) {
+            $date = $row['booking_date'];
+            if ($granularity === 'day') return $date; // YYYY-MM-DD
+            if ($granularity === 'week') {
+                // Return "2026-W04 (20.01 - 26.01)"
+                $time = strtotime($date);
+                $year = date('Y', $time);
+                $week = date('W', $time);
+                $dto = new \DateTime();
+                $dto->setISODate($year, $week);
+                $weekStart = $dto->format('d.m');
+                $dto->modify('+6 days');
+                $weekEnd = $dto->format('d.m');
+                return "{$year}-W{$week} ({$weekStart} - {$weekEnd})";
+            }
+            if ($granularity === 'month') return date('Y-m', strtotime($date)); // 2024-01
+            return 'All Data'; // Total
+        };
+
+        if ($type === 'bookings' || $type === 'finance' || $type === 'tables') {
+
+            if ($type === 'bookings') {
+                // Show Email instead of Name for Customer column
+                $data['headers'] = ['Date', 'Time', 'Service', 'Table', 'Status', 'Customer (Email)', 'Price'];
+                $sql = "
+                    SELECT b.booking_date, b.start_time, s.slug as service, r.name as resource, b.status, b.customer_email as customer, b.price
+                    FROM bookings b
+                    LEFT JOIN services s ON b.service_id = s.id
+                    LEFT JOIN resources r ON b.resource_id = r.id
+                    WHERE b.booking_date BETWEEN ? AND ?
+                    ORDER BY b.booking_date DESC, b.start_time DESC
+                ";
+            } elseif ($type === 'finance') {
+                // Finance - Completed only
+                $data['headers'] = ['Date', 'Time', 'Service', 'Table', 'Price', 'Status'];
+                $sql = "
+                    SELECT b.booking_date, b.start_time, s.slug as service, r.name as resource, b.price, b.status
+                    FROM bookings b
+                    LEFT JOIN services s ON b.service_id = s.id
+                    LEFT JOIN resources r ON b.resource_id = r.id
+                    WHERE b.booking_date BETWEEN ? AND ?
+                    AND b.status = 'completed'
+                    ORDER BY b.booking_date DESC, b.start_time DESC
+                ";
+            } elseif ($type === 'tables') {
+                // Tables Occupancy
+                // Consolidated view: One row per table per group (Day/Week/Month).
+                $data['headers'] = ['Table Name', 'Bookings Count', 'Total Duration', 'Total Revenue'];
+
+                $sql = "
+                    SELECT
+                        b.booking_date,
+                        r.name as resource,
+                        b.start_time,
+                        b.end_time,
+                        b.price,
+                        b.status
+                    FROM bookings b
+                    LEFT JOIN resources r ON b.resource_id = r.id
+                    WHERE b.booking_date BETWEEN ? AND ?
+                    AND b.status = 'completed'
+                    ORDER BY b.booking_date DESC
+                ";
+            }
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$start, $end]);
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Grouping Logic
+            $groups = [];
+            $grandTotal = ['count' => 0, 'price' => 0, 'duration_minutes' => 0];
+
+            foreach ($rows as $row) {
+                // Restore Logic: If cancelled, price is 0 for stats (Booking reports show them but price count 0)
+                if (isset($row['status']) && $row['status'] === 'cancelled') {
+                    $row['price'] = 0;
+                }
+
+                $key = $groupBy($row);
+                if (!isset($groups[$key])) {
+                    $groups[$key] = [
+                        'rows' => [],
+                        'subtotal' => ['count' => 0, 'price' => 0, 'duration_minutes' => 0],
+                        'buffer' => [] // Temporary storage for aggregation
+                    ];
+                }
+
+                // Handling for Tables vs Others
+                if ($type === 'tables') {
+                    // Aggregate by Table Name
+                    $table = $row['resource'] ?? 'Unknown';
+
+                    // Duration Calc
+                    $startT = strtotime($row['booking_date'] . ' ' . $row['start_time']);
+                    $endT = strtotime($row['booking_date'] . ' ' . $row['end_time']);
+                    $minutes = ($endT - $startT) / 60;
+                    if ($minutes < 0) $minutes = 0;
+
+                    if (!isset($groups[$key]['buffer'][$table])) {
+                        $groups[$key]['buffer'][$table] = [
+                            'resource' => $table,
+                            'count' => 0,
+                            'duration_minutes' => 0,
+                            'revenue' => 0
+                        ];
+                    }
+
+                    $groups[$key]['buffer'][$table]['count']++;
+                    $groups[$key]['buffer'][$table]['duration_minutes'] += $minutes;
+                    $groups[$key]['buffer'][$table]['revenue'] += (float)$row['price'];
+
+                    // Update Subtotals / Grand Total immediately
+                    $groups[$key]['subtotal']['duration_minutes'] += $minutes;
+                    $grandTotal['duration_minutes'] += $minutes;
+
+                    // Note: count/price subtotal updated below generally? 
+                    // Let's do it specific here to avoid double logic
+                    $groups[$key]['subtotal']['count']++;
+                    $grandTotal['count']++;
+
+                    $groups[$key]['subtotal']['price'] += (float)$row['price'];
+                    $grandTotal['price'] += (float)$row['price'];
+                } else {
+                    // Normal behavior for Bookings/Finance
+                    $groups[$key]['rows'][] = $row;
+                    $groups[$key]['subtotal']['count']++;
+                    $groups[$key]['subtotal']['price'] += (float)$row['price'];
+
+                    $grandTotal['count']++;
+                    $grandTotal['price'] += (float)$row['price'];
+                }
+            }
+
+            // Post-Process Groups
+            foreach ($groups as &$g) {
+                // If tables, convert buffer to rows
+                if ($type === 'tables' && !empty($g['buffer'])) {
+                    foreach ($g['buffer'] as $tableData) {
+                        $m = $tableData['duration_minutes'];
+                        $durStr = sprintf("%dh %02dm", floor($m / 60), $m % 60);
+
+                        $g['rows'][] = [
+                            'Table Name' => $tableData['resource'],
+                            'Bookings Count' => $tableData['count'],
+                            'Total Duration' => $durStr,
+                            'Total Revenue' => number_format($tableData['revenue'], 2, '.', '') . ' €'
+                        ];
+                    }
+                    // Sort rows by Table Name for clean look
+                    usort($g['rows'], function ($a, $b) {
+                        return strcmp($a['Table Name'], $b['Table Name']);
+                    });
+
+                    unset($g['buffer']); // Cleanup
+                } elseif ($type !== 'tables') {
+                    // Format rows price for others
+                    foreach ($g['rows'] as &$r) {
+                        if (isset($r['price'])) $r['price'] = number_format((float)$r['price'], 2, '.', '') . ' €';
+                    }
+                }
+
+                // Format Subtotal Duration
+                if ($type === 'tables') {
+                    $m = $g['subtotal']['duration_minutes'];
+                    $g['subtotal']['duration_formatted'] = sprintf("%dh %02dm", floor($m / 60), $m % 60);
+                }
+            }
+            krsort($groups);
+
+            // Format Grand Total details
+            if ($type === 'tables') {
+                $m = $grandTotal['duration_minutes'];
+                $grandTotal['duration_formatted'] = sprintf("%dh %02dm", floor($m / 60), $m % 60);
+                // Keep price for tables as "Revenue"
+            }
+
+            $data['grouped_data'] = $groups;
+            $data['grand_total'] = $grandTotal;
+        } elseif ($type === 'promo') {
+            $data['headers'] = ['Date', 'Coupon Code', 'Type', 'Discount (%)', 'Saved Amount', 'Price Paid'];
+
+            // Promo Granularity: We need explicit usage log.
+            // Since we don't have a separate `coupon_logs` table, we rely on `bookings` table.
+            // We use `booking_date` for granularity.
+
+            $sql = "
+                SELECT 
+                    b.booking_date,
+                    b.coupon_redeemed as code,
+                    c.type,
+                    c.discount_percent,
+                    b.price as paid_price
+                    -- We list individual usages now to support granularity/grouping
+                FROM bookings b
+                LEFT JOIN coupons c ON CONVERT(b.coupon_redeemed USING utf8mb4) = CONVERT(c.code USING utf8mb4)
+                WHERE b.booking_date BETWEEN ? AND ?
+                AND b.coupon_redeemed IS NOT NULL
+                AND b.coupon_redeemed != ''
+                AND b.status = 'completed' 
+                ORDER BY b.booking_date DESC
+            ";
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$start, $end]);
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $groups = [];
+            $grandTotal = ['count' => 0, 'price' => 0]; // Price here = Total Discounted Amount? Or Usage Count?
+            // User requested "Usage Count" and "Total Discounted".
+            // Let's track both. 'price' in grandTotal will represent 'Saved Amount'.
+            // But we also might want to track 'Paid Amount' context.
+            // Let's stick to: Count = count, Price = Saved Amount.
+
+            foreach ($rows as $row) {
+                // Calculate Saved Amount
+                $discountVal = 0;
+                $p = $row['discount_percent'];
+                $final = $row['paid_price'];
+
+                if ($p < 100 && $p > 0) {
+                    $original = $final / (1 - ($p / 100));
+                    $discountVal = $original - $final;
+                }
+
+                // Formatted row
+                $formattedRow = [
+                    'Date' => $row['booking_date'],
+                    'Code' => $row['code'],
+                    'Type' => $row['type'],
+                    'Discount' => $p . '%',
+                    'Saved' => number_format($discountVal, 2) . ' €',
+                    'Paid' => number_format($final, 2) . ' €'
+                ];
+
+                $key = $groupBy($row); // Use same group logic
+                if (!isset($groups[$key])) {
+                    $groups[$key] = ['rows' => [], 'subtotal' => ['count' => 0, 'price' => 0]];
+                    // price in subtotal = saved amount
+                }
+
+                $groups[$key]['rows'][] = $formattedRow;
+                $groups[$key]['subtotal']['count']++;
+                $groups[$key]['subtotal']['price'] += $discountVal;
+
+                $grandTotal['count']++;
+                $grandTotal['price'] += $discountVal;
+            }
+
+            krsort($groups);
+
+            $data['grouped_data'] = $groups;
+            $data['grand_total'] = $grandTotal;
+        }
+
+        return $data;
     }
 }

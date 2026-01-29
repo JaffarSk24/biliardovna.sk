@@ -55,7 +55,18 @@ try {
     $db->exec($sqlKey);
     echo "telegram_messages ensured.\n";
 
-    // 5. Inspect Coupons
+    // 5. Bookings Schema - Auto Confirm
+    echo "Checking bookings schema (is_auto_confirmed)...\n";
+    $stm = $db->query("SHOW COLUMNS FROM bookings LIKE 'is_auto_confirmed'");
+    $col = $stm->fetch();
+    if (!$col) {
+        $db->exec("ALTER TABLE bookings ADD COLUMN is_auto_confirmed TINYINT(1) DEFAULT 0");
+        echo "Added is_auto_confirmed column.\n";
+    } else {
+        echo "is_auto_confirmed exists.\n";
+    }
+
+    // 6. Inspect Coupons
     echo "\n--- COUPONS Data ---\n";
     $coupons = $db->query("SELECT * FROM coupons LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
     print_r($coupons);

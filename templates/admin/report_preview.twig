@@ -1,0 +1,463 @@
+{% extends "base_admin.twig" %}
+
+
+
+{% block content %}
+<div class="report-preview-container">
+    <div class="page-header">
+        <h1>{{ page_title }}</h1>
+        <div class="actions">
+            <!-- Print / Save as PDF -->
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print"></i> Print / Save as PDF
+            </button>
+            
+            <!-- Export CSV -->
+            <a href="/admin/reports/download?type={{ report_type }}&start={{ start_date }}&end={{ end_date }}&granularity={{ granularity }}" class="btn btn-secondary">
+                <i class="fas fa-file-csv"></i> Download CSV
+            </a>
+        </div>
+    </div>
+
+    <!-- Meta Block - Styled as Admin Card -->
+    <div class="admin-card report-meta">
+        <p><strong>Type:</strong> <span style="color: var(--color-gold);">{{ report_type|upper }}</span></p>
+        <p><strong>Period:</strong> {{ start_date }} - {{ end_date }}</p>
+        {% if granularity != 'total' %}
+            <p><strong>Granularity:</strong> {{ granularity|capitalize }}</p>
+        {% endif %}
+    </div>
+
+    {% if grouped_data|length > 0 %}
+        
+        <!-- Loop through Groups -->
+        {% for groupName, group in grouped_data %}
+            {% if granularity != 'total' %}
+                <!-- Spoiler Block for Granular Reports -->
+                <div class="report-group spoiler collapsed" onclick="toggleSpoiler(this)">
+                    <div class="spoiler-header">
+                        <div class="header-left">
+                            <i class="fas fa-chevron-right chevron"></i>
+                            <h3 class="group-title">{{ groupName }}</h3>
+                        </div>
+                        <div class="header-right">
+                             <span class="badge badge-count">Cnt: {{ group.subtotal.count }}</span>
+                             {% if group.subtotal.duration_formatted is defined %}
+                                <span class="badge badge-duration"><i class="far fa-clock"></i> {{ group.subtotal.duration_formatted }}</span>
+                             {% endif %}
+                             {% if group.subtotal.price is defined and group.subtotal.price > 0 %}
+                                <span class="badge badge-price">{{ group.subtotal.price|number_format(2) }} €</span>
+                             {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="spoiler-content">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        {% for head in headers %}
+                                            <!-- Simple logic to align Price/Money columns to right if needed, but generic TH is fine -->
+                                            <th>{{ head }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in group.rows %}
+                                        <tr>
+                                            {% for cell in row %}
+                                                <td>{{ cell }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                    <!-- No Subtotal Row in table for spoiler view, stats are in header -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Standard Block for Total Report -->
+                <div class="report-group">
+                    <h3 class="group-title">{{ groupName }}</h3>
+                    
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    {% for head in headers %}
+                                        <th>{{ head }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in group.rows %}
+                                    <tr>
+                                        {% for cell in row %}
+                                            <td>{{ cell }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                
+                                <!-- Subtotal Row -->
+                                {% if group.subtotal and group.subtotal.count > 0 %}
+                                <tr class="subtotal-row">
+                                    <td colspan="{{ headers|length - 2 }}" style="text-align: right; font-weight: bold; color: var(--color-muted);">Subtotal:</td>
+                                    <td style="font-weight: bold; padding-left: 15px;">{{ group.subtotal.count }}</td> 
+                                    <!-- Adjusted colspan to try to fit typical tables (Bookings/Finance/Promo) -->
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Group Subtotal Block -->
+                    {% if group.subtotal %}
+                    <div class="group-summary">
+                        <span><strong>Count:</strong> {{ group.subtotal.count }}</span>
+                        {% if group.subtotal.duration_formatted is defined %}
+                            <span style="margin-left: 20px;"><strong>Total Duration:</strong> {{ group.subtotal.duration_formatted }}</span>
+                        {% endif %}
+                        {% if group.subtotal.price is defined and group.subtotal.price > 0 %}
+                            <span style="margin-left: 20px;"><strong>Total Value:</strong> {{ group.subtotal.price|number_format(2) }} €</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <hr class="group-divider">
+            {% endif %}
+        {% endfor %}
+
+        <!-- Grand Total -->
+        {% if grand_total %}
+        <div class="admin-card grand-total-box">
+            <h3>Grand Total</h3>
+            <div class="total-stats">
+                <div class="stat-item">
+                    <span class="label">Total Count</span>
+                    <span class="value">{{ grand_total.count }}</span>
+                </div>
+                
+                {% if grand_total.duration_formatted is defined %}
+                <div class="stat-item">
+                    <span class="label">Total Duration</span>
+                    <span class="value">{{ grand_total.duration_formatted }}</span>
+                </div>
+                {% endif %}
+
+                {% if grand_total.price is defined %}
+                <div class="stat-item">
+                    <span class="label">Total Value</span>
+                    <span class="value">{{ grand_total.price|number_format(2) }} €</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+    {% else %}
+        <div class="empty-state admin-card">
+            <p>No data found for the selected period.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    function toggleSpoiler(element) {
+        if (!element.classList.contains('spoiler')) return;
+        
+        element.classList.toggle('collapsed');
+        element.classList.toggle('expanded');
+        
+        // Optional: Toggle content display directly if CSS doesn't handle it
+        // But we will handle it with CSS
+    }
+</script>
+
+<style>
+/* Spoiler Styles */
+.report-group.spoiler {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--admin-border);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Header */
+.spoiler-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.spoiler-header .header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.spoiler-header h3.group-title {
+    margin: 0;
+    padding: 0;
+    font-size: 1.1em;
+    border: none;
+    color: #fff;
+}
+
+.spoiler-header .chevron {
+    color: var(--color-muted);
+    transition: transform 0.3s;
+}
+
+/* Badges for stats in header */
+.header-right {
+    display: flex;
+    gap: 15px;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+.badge-count {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+}
+.badge-price {
+    background: rgba(255, 215, 0, 0.15); /* Gold tint */
+    color: var(--color-gold);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+.badge-duration {
+    background: rgba(46, 204, 113, 0.15); /* Green tint */
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+/* Collapsed State */
+.report-group.spoiler.collapsed .spoiler-content {
+    display: none;
+}
+.report-group.spoiler.collapsed .chevron {
+    transform: rotate(0deg);
+}
+
+/* Expanded State */
+.report-group.spoiler.expanded {
+    background: rgba(255, 255, 255, 0.08); /* Slightly lighter active bg */
+}
+.report-group.spoiler.expanded .spoiler-content {
+    display: block;
+    padding: 20px;
+    border-top: 1px solid var(--admin-border);
+    animation: fadeIn 0.3s;
+}
+.report-group.spoiler.expanded .chevron {
+    transform: rotate(90deg);
+}
+.report-group.spoiler.expanded .group-title {
+    color: var(--color-gold);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Button Styles to match site */
+.btn-secondary {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s;
+    height: 42px; /* Fixed height to match primary text lines? */
+    margin: 0; /* Removing any margin that might cause offset */
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+}
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    /* border: 1px solid var(--color-gold); */
+    height: 42px; /* Match height */
+}
+
+/* Actions formatting */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Spacing below header */
+    border-bottom: 1px solid var(--admin-border);
+    padding-bottom: 15px; /* Spacing inside header before border */
+}
+
+.page-header h1 {
+    margin: 0;
+}
+
+.page-header .actions {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Consistent gap */
+    /* If user wants extra bottom margin specifically on buttons, 
+       but they are inside the header bar, normally header bottom margin handles it. 
+       User said "add external margin bottom to buttons". 
+       Maybe they meant the buttons line should have spacing. 
+       The .page-header margin-bottom handles spacing from content. 
+       Let's stick to page-header spacing. */
+}
+
+.report-meta {
+    margin-bottom: 30px;
+}
+
+.report-group {
+    /* Base styles */
+}
+/* Legacy group styles provided in previous replacement are mostly for non-spoiler view now */
+.report-group:not(.spoiler) {
+    margin-bottom: 40px;
+}
+.report-group:not(.spoiler) .group-title {
+    color: var(--color-gold);
+    border-bottom: 1px solid var(--admin-border);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.group-summary {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    margin-top: 5px;
+    border-radius: 4px;
+    text-align: right;
+    color: var(--color-muted);
+}
+.group-summary strong {
+    color: #fff;
+}
+
+.group-divider {
+    border: 0;
+    border-top: 1px dashed var(--admin-border);
+    margin: 30px 0;
+    opacity: 0.5;
+}
+
+.grand-total-box {
+    background: linear-gradient(135deg, var(--color-forest), #000); /* Green/Forest Gradient */
+    border: 1px solid var(--color-gold);
+    text-align: center;
+    margin-top: 40px;
+    padding: 30px;
+}
+.grand-total-box h3 {
+    color: var(--color-gold);
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-transform: uppercase;
+}
+.total-stats {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+.stat-item .label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7); /* Lighter on dark/green bg */
+    text-transform: uppercase;
+}
+.stat-item .value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+
+/* Print Styles */
+@media print {
+    .report-group.spoiler .spoiler-content {
+        display: block !important; /* Always show content on print */
+    }
+    .report-group.spoiler {
+        border: none;
+        margin-bottom: 20px;
+    }
+    .spoiler-header {
+        background: none;
+        color: #000;
+        padding-left: 0;
+    }
+    .chevron { display: none; }
+    
+    .admin-sidebar, .admin-header, .actions, .admin-footer, .btn, .report-form {
+        display: none !important;
+    }
+    .admin-content, .admin-layout, .admin-main {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        display: block;
+        background: white; /* Print usually better on white? User didn't specify, but browsers force white often. */
+        color: black;
+    }
+    body {
+        background: white;
+        color: black;
+    }
+    .data-table th {
+        background: #eee;
+        color: black;
+        border: 1px solid #ccc;
+    }
+    .data-table td {
+        border: 1px solid #ccc;
+        color: black;
+    }
+    .group-title {
+        color: black;
+        border-bottom-color: black;
+    }
+    .grand-total-box {
+        background: white;
+        border: 2px solid black;
+        color: black;
+    }
+    .grand-total-box h3, .stat-item .value {
+        color: black;
+    }
+    .stat-item .label {
+        color: #666;
+    }
+    .report-meta {
+        border: 1px solid #ccc;
+        background: #f9f9f9;
+        color: black;
+    }
+}
+</style>
+{% endblock %}

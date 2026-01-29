@@ -2,71 +2,201 @@
 
 {% block content %}
 <div class="admin-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--admin-border); padding-bottom: 10px;">
-        <h3 style="color: var(--color-gold);">Manage Bookings</h3>
-        <div style="display: flex; gap: 10px;">
-            <a href="?status=pending" class="btn btn-primary" style="background: var(--admin-warning); color: #fff;">Pending</a>
-            <a href="?status=confirmed" class="btn btn-primary" style="background: var(--admin-success); color: #fff;">Confirmed</a>
-            <a href="?status=cancelled" class="btn btn-primary" style="background: var(--admin-danger); color: #fff;">Cancelled</a>
-            <a href="/admin/bookings" class="btn" style="background: #555; color: #fff;">All</a>
+    <div style="margin-bottom: 20px; border-bottom: 1px solid var(--admin-border); padding-bottom: 20px;">
+        <!-- Level 1 Tabs: Services/Status -->
+        <div class="tabs-container">
+            <ul class="admin-tabs-l1" role="tablist">
+                {% for slug, tab in tabs %}
+                    <li class="nav-item">
+                        <button class="nav-link-l1 {% if loop.first %}active{% endif %}" 
+                                data-target="{{ slug }}"
+                                type="button">
+                            {{ tab.label }}
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 
-    <div style="max-height: 70vh; overflow-y: auto;">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Date & Time</th>
-                    <th>Service</th>
-                    <th>Customer</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for booking in bookings %}
-                <tr>
-                    <td>#{{ booking.id }}</td>
-                    <td>
-                        {{ booking.booking_date|date('d.m.Y') }}<br>
-                        <small style="color: var(--color-muted);">{{ booking.start_time|slice(0,5) }} - {{ booking.end_time|slice(0,5) }}</small>
-                    </td>
-                    <td>{{ booking.formatted_service_name }} (Stôl {{ booking.formatted_table_number }})</td>
-                    <td>
-                        {{ booking.customer_name }}<br>
-                        <small style="color: var(--color-muted);">{{ booking.customer_phone }}</small>
-                    </td>
-                    <td>
-                        {{ booking.price }} €
-                        {% if booking.coupon_redeemed %}
-                            <br><small style="color: var(--admin-success);">Promo: {{ booking.coupon_redeemed }}</small>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <span class="badge badge-{{ booking.status }}">{{ booking.status|capitalize }}</span>
-                    </td>
-                    <td>
-                        <form method="POST" action="/admin/bookings/update" style="display: inline-flex; gap: 5px;">
-                            <input type="hidden" name="booking_id" value="{{ booking.id }}">
-                            {% if booking.status == 'pending' %}
-                                <button type="submit" name="status" value="confirmed" class="btn btn-sm btn-success">Approve</button>
-                                <button type="submit" name="status" value="cancelled" class="btn btn-sm btn-danger">Reject</button>
-                            {% elseif booking.status == 'confirmed' %}
-                                <button type="submit" name="status" value="completed" class="btn btn-sm btn-primary">Complete</button>
-                                <button type="submit" name="status" value="cancelled" class="btn btn-sm btn-danger">Cancel</button>
-                            {% endif %}
-                        </form>
-                    </td>
-                </tr>
+    <div class="tab-content-container">
+        {% for slug, tab in tabs %}
+            <div class="tab-pane-l1 {% if loop.first %}active{% endif %}" id="{{ slug }}">
+                
+                <!-- Level 2 Tabs: Date Groups (Only if bookings is array of groups) -->
+                {% set isGrouped = tab.bookings.today is defined %}
+                
+                {% if isGrouped %}
+                    <!-- Date Tabs -->
+                    <div class="sub-tabs-wrapper">
+                        <ul class="admin-tabs-l2" role="tablist">
+                            {% for groupName in ['yesterday', 'today', 'tomorrow', 'later'] %}
+                                <li class="nav-item">
+                                    <button class="nav-link-l2 {% if groupName == 'today' %}active{% endif %}" 
+                                            data-target="{{ slug }}-{{ groupName }}"
+                                            type="button">
+                                        {{ groupName|capitalize }}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Date Panes -->
+                    {% for groupName, bookings in tab.bookings %}
+                        <div class="tab-pane-l2 {% if groupName == 'today' %}active{% endif %}" id="{{ slug }}-{{ groupName }}">
+                            {% include 'admin/_bookings_table.twig' with {'bookings': bookings, 'group': groupName} %}
+                        </div>
+                    {% endfor %}
+
                 {% else %}
-                <tr>
-                    <td colspan="7" style="text-align: center; padding: 20px;">No bookings found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    <!-- Fallback for flat array (if any logic remains flat) -->
+                    {% include 'admin/_bookings_table.twig' with {'bookings': tab.bookings} %}
+                {% endif %}
+                
+            </div>
+        {% endfor %}
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Generic Tab Switcher that works for L1 and L2
+        function setupTabs(linkSelector, paneSelector) {
+            const links = document.querySelectorAll(linkSelector);
+            const panes = document.querySelectorAll(paneSelector);
+
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.dataset.target;
+                    
+                    // Deactivate siblings
+                    const parentList = link.closest('ul');
+                    parentList.querySelectorAll(linkSelector).forEach(l => l.classList.remove('active'));
+                    
+                    // Activate clicked
+                    link.classList.add('active');
+
+                    // Find the container of panes that corresponds to this level
+                    // For L1: globally unique IDs.
+                    // For L2: globally unique IDs (slug-group).
+                    // We just need to hide all *sibling* panes.
+                    // But "sibling panes" are not always direct DOM siblings.
+                    
+                    // Simple approach: Toggle ID visibility.
+                    // But we must deselect the *current active pane* in the same scope.
+                    // How to find scope?
+                    
+                    // Let's use specific logic for L1 and L2 to be safe.
+                });
+            });
+        }
+
+        // Level 1 Switcher
+        document.querySelectorAll('.nav-link-l1').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 1. Toggle Button Class
+                document.querySelectorAll('.nav-link-l1').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // 2. Toggle Pane Visibility via ID
+                const targetId = btn.dataset.target;
+                document.querySelectorAll('.tab-pane-l1').forEach(p => p.classList.remove('active'));
+                const targetPane = document.getElementById(targetId);
+                targetPane?.classList.add('active');
+
+                // 3. Force "Today" Sub-tab Activation
+                // This resets the view to "Today" whenever a game tab is clicked
+                if (targetPane) {
+                    const todayBtn = targetPane.querySelector(`.nav-link-l2[data-target="${targetId}-today"]`);
+                    const todayPane = document.getElementById(`${targetId}-today`);
+                    
+                    if (todayBtn && todayPane) {
+                        // Deactivate siblings in this pane
+                        targetPane.querySelectorAll('.nav-link-l2').forEach(b => b.classList.remove('active'));
+                        targetPane.querySelectorAll('.tab-pane-l2').forEach(p => p.classList.remove('active'));
+                        
+                        // Activate Today
+                        todayBtn.classList.add('active');
+                        todayPane.classList.add('active');
+                    }
+                }
+
+                // 4. Save State only for L1
+                localStorage.setItem('activeAdminTabL1', targetId);
+            });
+        });
+
+        // Level 2 Switcher (Scoped per Service Tab)
+        document.querySelectorAll('.nav-link-l2').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.dataset.target; // e.g., pool-today
+                const wrapper = btn.closest('.tab-pane-l1'); // Find parent L1 Pane
+                
+                // 1. Toggle Buttons *within this L1 Pane*
+                wrapper.querySelectorAll('.nav-link-l2').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // 2. Toggle Panes *within this L1 Pane*
+                wrapper.querySelectorAll('.tab-pane-l2').forEach(p => p.classList.remove('active'));
+                document.getElementById(targetId)?.classList.add('active');
+            });
+        });
+
+        // Restore L1 State
+        const storedL1 = localStorage.getItem('activeAdminTabL1');
+        if (storedL1) {
+            const btn = document.querySelector(`.nav-link-l1[data-target="${storedL1}"]`);
+            if (btn) btn.click();
+        }
+    });
+</script>
+
+<style>
+    /* L1 Tabs (Services) */
+    .admin-tabs-l1 {
+        list-style: none; margin: 0; padding: 0; display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .nav-link-l1 {
+        display: block; padding: 12px 28px;
+        background: rgba(26, 20, 16, 0.6);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: var(--color-text); font-weight: 600; font-size: 1.1rem;
+        border-radius: 4px; cursor: pointer; text-transform: capitalize;
+    }
+    .nav-link-l1:hover, .nav-link-l1.active {
+        background: var(--color-gold); color: var(--color-espresso); border-color: var(--color-gold);
+    }
+    
+    .tab-pane-l1 { display: none; }
+    .tab-pane-l1.active { display: block; animation: fadeIn 0.3s; }
+
+    /* L2 Tabs (Dates) */
+    .sub-tabs-wrapper {
+        margin: 20px 0 15px 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .admin-tabs-l2 {
+        list-style: none; margin: 0; padding: 0; display: flex; gap: 5px;
+    }
+    .nav-link-l2 {
+        padding: 6px 16px; font-size: 0.9rem;
+        background: transparent; border: 1px solid rgba(255,255,255,0.2);
+        color: rgba(255,255,255,0.7); border-radius: 20px;
+        cursor: pointer; transition: all 0.2s;
+    }
+    .nav-link-l2:hover {
+        background: rgba(255,255,255,0.1); color: #fff;
+    }
+    .nav-link-l2.active {
+        background: rgba(255,255,255,0.9); color: #000; font-weight: 700; border-color: #fff;
+    }
+
+    .tab-pane-l2 { display: none; }
+    .tab-pane-l2.active { display: block; animation: fadeIn 0.2s; }
+
+    @keyframes fadeIn { from { opacity: 0; margin-top: 5px; } to { opacity: 1; margin-top: 0; } }
+</style>
 {% endblock %}

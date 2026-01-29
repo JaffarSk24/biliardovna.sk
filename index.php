@@ -365,6 +365,17 @@ $router->get('/admin/holidays', function () use ($language) {
     $controller->manageHolidays();
 });
 
+// Admin Reports
+$router->get('/admin/reports', function () use ($language) {
+    (new AdminController($language))->reports();
+});
+$router->get('/admin/reports/view', function () use ($language) {
+    (new AdminController($language))->viewReport();
+});
+$router->get('/admin/reports/download', function () use ($language) {
+    (new AdminController($language))->downloadReport();
+});
+
 // Admin Blocking
 $router->get('/admin/blocking', function () use ($language) {
     $controller = new AdminController($language);

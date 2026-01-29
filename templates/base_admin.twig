@@ -22,6 +22,7 @@
                 <ul>
                     <li><a href="/admin">Dashboard</a></li>
                     <li><a href="/admin/bookings">Bookings</a></li>
+                    <li><a href="/admin/reports">Reports</a></li>
                     <li><a href="/admin/blocking">Date Blocking</a></li>
                     <li><a href="/admin/popup">Popup Settings</a></li>
                     <li><a href="/admin/holidays">Holidays</a></li>
@@ -46,6 +47,16 @@
     </div>
 
     <script src="/public/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.admin-sidebar nav a').forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
