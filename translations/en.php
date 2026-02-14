@@ -385,6 +385,7 @@ return [
     'email_subject_pending' => 'Your booking request - Biliardovna.sk',
     'email_subject_confirmed' => 'Booking confirmed - Biliardovna.sk',
     'email_subject_cancelled' => 'Booking cancelled - Biliardovna.sk',
+    'email_subject_conflict' => 'Booking cancelled (Slot taken) - Biliardovna.sk',
     'email_greeting' => 'Hello',
     'email_booking_received' => 'Your booking has been received and is awaiting confirmation.',
     'email_booking_confirmed' => 'Your booking has been confirmed! We look forward to seeing you at the specified date and time. We recommend arriving at least 15 minutes early. In case of delay, time will not be compensated.',

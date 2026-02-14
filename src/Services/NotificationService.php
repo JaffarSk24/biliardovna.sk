@@ -137,6 +137,20 @@ class NotificationService
     }
 
     /**
+     * Send Conflict Notification (Slot taken)
+     */
+    public function sendConflictNotification(array $booking, bool $isAuto = false): void
+    {
+        // 1. Telegram
+        $this->sendTelegramNotification($booking, 'conflict');
+
+        // 2. Email
+        if (!empty($booking['customer_email'])) {
+            $this->sendEmailNotification($booking, 'conflict');
+        }
+    }
+
+    /**
      * Format message for Telegram
      */
     public function formatTelegramMessage(array $booking, string $type): string
@@ -150,7 +164,8 @@ class NotificationService
             'confirmed' => '✅',
             'auto_confirmed' => '✅',
             'cancelled' => '❌',
-            'completed' => '🎉'
+            'completed' => '🎉',
+            'conflict' => '⚠️'
         ];
 
         $icon = $icons[$type] ?? '📋';
@@ -167,6 +182,8 @@ class NotificationService
 
         if ($type === 'auto_confirmed') {
             $title = "Rezervácia #{$booking['id']} bola automaticky potvrdená.";
+        } elseif ($type === 'conflict') {
+            $title = "Rezervácia #{$booking['id']} bola ZRUŠENÁ (Slot obsadený).";
         } else {
             $title = $type === 'new'
                 ? $this->trans('notification_new_booking')
@@ -207,6 +224,11 @@ class NotificationService
 
         $message = "{$icon} <b>{$title}</b>\n";
         $message .= "🆔 ID: {$booking['id']}\n\n";
+
+        if ($type === 'conflict') {
+            $message .= "⚠️ <b>Dôvod:</b> Termín bol obsadený inou rezerváciou.\n\n";
+        }
+
         $message .= "📅 {$this->trans('notification_date')}: {$date}\n";
         $message .= "🕐 {$this->trans('notification_time')}: {$startTime} - {$endTime}\n\n";
         $message .= "🎯 {$this->trans('notification_service')}: {$serviceName}\n";
@@ -259,7 +281,8 @@ class NotificationService
         $templateMap = [
             'pending' => 'booking_confirmation',
             'confirmed' => 'confirmed',
-            'cancelled' => 'cancelled'
+            'cancelled' => 'cancelled',
+            'conflict' => 'conflict'
         ];
 
         $template = $templateMap[$status] ?? 'booking_confirmation';
@@ -268,7 +291,8 @@ class NotificationService
         $subjects = [
             'pending' => $this->trans('email_subject_pending'),
             'confirmed' => $this->trans('email_subject_confirmed'),
-            'cancelled' => $this->trans('email_subject_cancelled')
+            'cancelled' => $this->trans('email_subject_cancelled'),
+            'conflict' => $this->trans('email_subject_conflict')
         ];
 
         $subject = $subjects[$status] ?? $this->trans('email_subject_pending');
@@ -430,6 +454,67 @@ class NotificationService
 
         $language = $booking['language'] ?? 'sk';
         $siteUrl = $_ENV['APP_URL'] . ($language !== 'sk' ? '/' . $language : '');
+
+        // Conflict Message Logic
+        if ($template === 'conflict') {
+            $conflictMessage = "Bohužiaľ, tento termín už bol rezervovaný iným hráčom. Vaša rezervácia bola automaticky zrušená.";
+            $chooseAnother = "Prosím, vyberte si iný voľný termín:";
+            $btnText = "Vybrať nový termín";
+            $detailsLabel = ['id' => 'ID', 'date' => 'Dátum', 'time' => 'Čas', 'service' => 'Služba'];
+
+            if ($language === 'ru') {
+                $conflictMessage = "К сожалению, данное время уже было забронировано другим игроком. Ваше бронирование было автоматически отменено.";
+                $chooseAnother = "Пожалуйста, выберите другое доступное время игры:";
+                $btnText = "Выбрать новое время";
+                $detailsLabel = ['id' => 'ID', 'date' => 'Дата', 'time' => 'Время', 'service' => 'Услуга'];
+            } elseif ($language === 'en') {
+                $conflictMessage = "Unfortunately, this time slot has already been booked by another player. Your booking has been automatically cancelled.";
+                $chooseAnother = "Please choose another available game time:";
+                $btnText = "Choose new time";
+                $detailsLabel = ['id' => 'ID', 'date' => 'Date', 'time' => 'Time', 'service' => 'Service'];
+            } elseif ($language === 'uk') {
+                $conflictMessage = "На жаль, цей час вже був заброньований іншим гравцем. Ваше бронювання було автоматично скасовано.";
+                $chooseAnother = "Будь ласка, оберіть інший вільний час гри:";
+                $btnText = "Обрати новий час";
+                $detailsLabel = ['id' => 'ID', 'date' => 'Дата', 'time' => 'Час', 'service' => 'Послуга'];
+            } elseif ($language === 'de') {
+                $conflictMessage = "Leider wurde dieser Zeitslot bereits von einem anderen Spieler gebucht. Ihre Buchung wurde automatisch storniert.";
+                $chooseAnother = "Bitte wählen Sie eine andere verfügbare Spielzeit:";
+                $btnText = "Neue Zeit wählen";
+                $detailsLabel = ['id' => 'ID', 'date' => 'Datum', 'time' => 'Zeit', 'service' => 'Service'];
+            }
+
+            $date = isset($booking['booking_date']) ? date('d.m.Y', strtotime($booking['booking_date'])) : '';
+            $startTime = isset($booking['start_time']) ? substr($booking['start_time'], 0, 5) : '';
+            $endTime = isset($booking['end_time']) ? substr($booking['end_time'], 0, 5) : '';
+            $serviceName = $booking['service_name'] ?? '';
+
+            return "
+            <html>
+            <head><meta charset='UTF-8'></head>
+            <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
+                    <h2 style='color: #c0392b;'>❌ {$conflictMessage}</h2>
+                    <p>{$greeting} {$booking['customer_name']},</p>
+                    <p>{$conflictMessage}</p>
+                    <div style='background: #fef2f2; border-left: 4px solid #c0392b; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                        <p style='margin: 5px 0;'><strong>{$detailsLabel['id']}:</strong> {$booking['id']}</p>
+                        <p style='margin: 5px 0;'><strong>{$detailsLabel['date']}:</strong> {$date}</p>
+                        <p style='margin: 5px 0;'><strong>{$detailsLabel['time']}:</strong> {$startTime} - {$endTime}</p>
+                        <p style='margin: 5px 0;'><strong>{$detailsLabel['service']}:</strong> {$serviceName}</p>
+                        <p style='margin: 5px 0;'><strong>Status:</strong> ❌</p>
+                    </div>
+                    <p>{$chooseAnother}</p>
+                    <p style='margin: 25px 0;'>
+                        <a href='{$siteUrl}' style='display: inline-block; padding: 14px 28px; background: #2c3e50; color: white; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;'>{$btnText}</a>
+                    </p>
+                    <p style='margin-top: 30px;'>{$thanks},<br><strong><a href='{$siteUrl}' style='color: #2c3e50; text-decoration: none;'>{$team}</a></strong></p>
+                </div>
+            </body>
+            </html>";
+        }
+
+        $language = $booking['language'] ?? 'sk';
 
         // Review request
         if ($template === 'review_request') {

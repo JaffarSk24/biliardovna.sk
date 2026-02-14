@@ -384,6 +384,7 @@ return [
     'email_subject_pending' => 'Заявка на бронювання - Biliardovna.sk',
     'email_subject_confirmed' => 'Бронювання підтверджено - Biliardovna.sk',
     'email_subject_cancelled' => 'Бронювання скасовано - Biliardovna.sk',
+    'email_subject_conflict' => 'Бронювання скасовано (Слот зайнятий) - Biliardovna.sk',
     'email_greeting' => 'Доброго дня',
     'email_booking_received' => 'Ваше бронювання отримано і очікує підтвердження.',
     'email_booking_confirmed' => 'Ваше бронювання підтверджено! Ми чекаємо на вас у зазначену дату та час. Рекомендуємо прийти щонайменше за 15 хвилин. У разі запізнення час не компенсується.',

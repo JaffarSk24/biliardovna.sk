@@ -384,6 +384,7 @@ return [
     'email_subject_pending' => 'Žiadosť o rezerváciu - Biliardovna.sk',
     'email_subject_confirmed' => 'Rezervácia potvrdená - Biliardovna.sk',
     'email_subject_cancelled' => 'Rezervácia zrušená - Biliardovna.sk',
+    'email_subject_conflict' => 'Rezervácia zrušená (Termín obsadený) - Biliardovna.sk',
     'email_greeting' => 'Dobrý deň',
     'email_booking_received' => 'Vaša rezervácia bola prijatá a čaká na potvrdenie.',
     'email_booking_confirmed' => 'Vaša rezervácia bola potvrdená! Tešíme sa na vás v uvedenom dátume a čase. Odporúčame prísť aspoň 15 minút vopred. V prípade meškania sa čas nekompenzuje.',

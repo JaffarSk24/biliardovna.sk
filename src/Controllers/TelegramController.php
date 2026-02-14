@@ -56,21 +56,38 @@ class TelegramController extends Controller
         }
 
         if (strpos($data, 'confirm_') === 0) {
-            $this->handleBookingAction($data, 'confirm_', 'confirmed', '✅ Potvrdené!', $token, $chatId, $messageId, $callbackQuery['message']['text'], $callbackQuery['id']);
+            $bookingId = (int)str_replace('confirm_', '', $data);
+            $bookingService = new BookingService();
+            // Use attemptConfirmation for conflict check
+            $result = $bookingService->attemptConfirmation($bookingId, false);
+
+            if ($result['success']) {
+                $this->updateTelegramMessageText($bookingId, '✅ Potvrdené!', $token, $chatId, $messageId, $callbackQuery['message']['text']);
+            } else {
+                // Determine failure reason
+                if (!empty($result['conflict'])) {
+                    $this->updateTelegramMessageText($bookingId, '❌ Zrušené (Termín obsadený)!', $token, $chatId, $messageId, $callbackQuery['message']['text']);
+                    // Also trigger alert/answerCallbackQuery with text?
+                } else {
+                    $this->updateTelegramMessageText($bookingId, '⚠️ Chyba: ' . ($result['error'] ?? 'Unknown'), $token, $chatId, $messageId, $callbackQuery['message']['text']);
+                }
+            }
         } elseif (strpos($data, 'cancel_') === 0) {
-            $this->handleBookingAction($data, 'cancel_', 'cancelled', '❌ Zrušené!', $token, $chatId, $messageId, $callbackQuery['message']['text'], $callbackQuery['id']);
+            $bookingId = (int)str_replace('cancel_', '', $data);
+            $bookingService = new BookingService();
+            $bookingService->updateStatus($bookingId, 'cancelled');
+            $this->updateTelegramMessageText($bookingId, '❌ Zrušené!', $token, $chatId, $messageId, $callbackQuery['message']['text']);
         }
     }
 
-    private function handleBookingAction($data, $prefix, $status, $newStatusText, $token, $chatId, $messageId, $originalText, $callbackQueryId)
+    private function updateTelegramMessageText($bookingId, $headers, $token, $chatId, $messageId, $originalText)
     {
-        $bookingId = (int)str_replace($prefix, '', $data);
-
-        $bookingService = new BookingService();
-        $bookingService->updateStatus($bookingId, $status);
+        // ... (Logic to update all messages for this booking) ...
+        // We need to implement this helper or adapt existing handleBookingAction
+        // Since handleBookingAction was doing BOTH update and message text, we split it.
 
         $lines = explode("\n", $originalText);
-        $lines[0] = $newStatusText;
+        $lines[0] = $headers;
         $newText = implode("\n", $lines);
 
         // 1. Get all messages associated with this booking
@@ -101,27 +118,19 @@ class TelegramController extends Controller
                 'chat_id' => $msg['chat_id'],
                 'message_id' => $msg['message_id'],
                 'text' => $newText,
-                'parse_mode' => 'HTML'
+                'parse_mode' => 'HTML',
+                'reply_markup' => json_encode(['inline_keyboard' => []]) // Remove buttons
             ];
 
-            if ($status === 'confirmed') {
-                $editData['reply_markup'] = json_encode([
-                    'inline_keyboard' => [[
-                        ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $bookingId]
-                    ]]
-                ]);
-            }
-
-            $this->sendMessage('editMessageText', $token, $editData);
+            $ch = curl_init("https://api.telegram.org/bot{$token}/editMessageText");
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_exec($ch);
+            curl_close($ch);
         }
-
-        $answerData = [
-            'callback_query_id' => $callbackQueryId,
-            'text' => $status === 'confirmed' ? 'Rezervácia potvrdená ✅' : 'Rezervácia zrušená ❌'
-        ];
-
-        $this->sendMessage('answerCallbackQuery', $token, $answerData);
     }
+
 
     private function handleMessage($message, $token, $allowedChats, $logFile)
     {
@@ -215,6 +224,17 @@ class TelegramController extends Controller
 
                 $booking['service_name'] = $serviceName;
 
+                // Get table number from resource name
+                $resourceStmt = $conn->prepare("SELECT name FROM resources WHERE id = ?");
+                $resourceStmt->execute([$booking['resource_id']]);
+                $resourceName = $resourceStmt->fetchColumn();
+
+                // Extract table number from name (e.g., "Pool - Stôl 2" -> "2")
+                $tableNumber = $booking['resource_id']; // fallback to resource_id
+                if ($resourceName && preg_match('/(\d+)/', $resourceName, $matches)) {
+                    $tableNumber = $matches[1];
+                }
+
                 // Calculate original price if coupon was used
                 $originalPrice = null;
                 $discountPercent = null;
@@ -257,7 +277,7 @@ class TelegramController extends Controller
                 $messageText .= "📅 Dátum: {$date}\n";
                 $messageText .= "🕐 Čas: {$startTime} - {$endTime}\n\n";
                 $messageText .= "🎯 Služba: {$booking['service_name']}\n";
-                $messageText .= "🎱 Stôl č.: {$booking['resource_id']}\n\n";
+                $messageText .= "🎱 Stôl č.: {$tableNumber}\n\n";
                 $messageText .= "{$flag} Jazyk: {$booking['language']}\n";
                 $messageText .= "👤 Meno: {$booking['customer_name']}\n";
                 $messageText .= "📞 Telefón: {$booking['customer_phone']}\n\n";

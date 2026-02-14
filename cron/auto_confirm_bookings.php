@@ -4,6 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Dotenv\Dotenv;
 use App\Services\NotificationService;
+use App\Services\BookingService;
 use App\Database\Database;
 
 // Load environment variables
@@ -41,6 +42,7 @@ $sql = "
     WHERE status = 'pending' 
     AND created_at <= ? 
     AND (is_auto_confirmed IS NULL OR is_auto_confirmed = 0)
+    ORDER BY created_at ASC
 ";
 
 $stmt = $db->prepare($sql);
@@ -52,34 +54,45 @@ if (empty($bookings)) {
     exit(0);
 }
 
-$notificationService = new NotificationService();
+// We need BookingService
+$bookingService = new BookingService();
 $count = 0;
 
 foreach ($bookings as $booking) {
-    echo date('Y-m-d H:i:s') . " - Auto-confirming booking #{$booking['id']}...\n";
+    echo date('Y-m-d H:i:s') . " - Processing booking #{$booking['id']}...\n";
 
-    // 1. Update Booking Status
-    $updateSql = "UPDATE bookings SET status = 'confirmed', is_auto_confirmed = 1, updated_at = NOW() WHERE id = ?";
-    $updateStmt = $db->prepare($updateSql);
-    $updateStmt->execute([$booking['id']]);
+    // Attempt Confirmation (checks for conflicts)
+    // Pass isAuto = true
+    $result = $bookingService->attemptConfirmation($booking['id'], true);
 
-    // 2. Send Confirmation Email
-    // Re-fetch booking to get fresh data if needed, or just modify array
-    $booking['status'] = 'confirmed';
-    $notificationService->sendEmailNotification($booking, 'confirmed');
+    if ($result['success']) {
+        echo " -> Confirmed.\n";
 
-    // 3. Update Telegram Message (Simulate Admin Click)
-    updateTelegramMessage($db, $booking);
+        // Mark as auto-confirmed in DB (attemptConfirmation sets status to confirmed, but doesn't set is_auto_confirmed flag)
+        // We should update the flag
+        $updateSql = "UPDATE bookings SET is_auto_confirmed = 1 WHERE id = ?";
+        $updateStmt = $db->prepare($updateSql);
+        $updateStmt->execute([$booking['id']]);
 
-    $count++;
+        // Cleanup Old Telegram Message (Remove buttons / Update text)
+        updateTelegramMessage($db, $booking, 'confirmed');
+        $count++;
+    } else {
+        echo " -> Failed: " . ($result['error'] ?? 'Unknown error') . "\n";
+        if (!empty($result['conflict'])) {
+            echo " -> Conflict detected! Booking cancelled.\n";
+            // Cleanup Old Telegram Message (Update text to say cancelled)
+            updateTelegramMessage($db, $booking, 'conflict');
+        }
+    }
 }
 
-echo date('Y-m-d H:i:s') . " - Auto-confirmed {$count} booking(s).\n";
+echo date('Y-m-d H:i:s') . " - Processed bookings. Auto-confirmed count: {$count}.\n";
 
 /**
- * Helper to update Telegram message
+ * Helper to update OLD Upgrade/Confirm Telegram message to remove buttons
  */
-function updateTelegramMessage($db, $booking)
+function updateTelegramMessage($db, $booking, $status)
 {
     $bookingId = $booking['id'];
 
@@ -97,32 +110,25 @@ function updateTelegramMessage($db, $booking)
         $chatId = $msg['chat_id'];
         $messageId = $msg['message_id'];
 
-        // Construct new message text (Confirmed state)
-        // We can replicate NotificationService formatting or make a generic one.
-        // For consistency, let's look at how NotificationService formats 'confirmed'.
-        // It's private method, so we can't call it easily without refactoring.
-        // Hack: Use a simplified "Auto-Confirmed" text or instantiate Service properly?
-        // Service::formatTelegramMessage is private. 
-        // We'll manually construct a simpler update message or copy logic.
-        // Better: Make formatTelegramMessage public in NotificationService? 
-        // Or just append "✅ Confirmed (Auto)" to the existing text? 
-        // editMessageText requires full new text.
+        // We just want to remove buttons and maybe add a tag line.
+        // We cannot easily "edit" the text to match the new one as we don't have the full original text easily available 
+        // without reconstructing it or fetching it (which Telegram API doesn't easily let us do for bots without keeping state).
+        // BUT we know the structure.
 
-        // Use NotificationService to get consistent formatting with custom 'auto_confirmed' title
-        $notificationService = new \App\Services\NotificationService();
-        $newText = $notificationService->formatTelegramMessage($booking, 'auto_confirmed');
+        // Simpler approach: Just remove buttons.
+        $replyMarkup = json_encode(['inline_keyboard' => []]);
 
-        // Add footer text about auto-confirmation reason
-        $newText .= "\n\n<i>Zákazník mal 5 minút na čakanie a systém ju schválil autom.</i>";
-
-        $url = "https://api.telegram.org/bot{$token}/editMessageText";
+        $url = "https://api.telegram.org/bot{$token}/editMessageReplyMarkup";
         $postData = [
             'chat_id' => $chatId,
             'message_id' => $messageId,
-            'text' => $newText,
-            'parse_mode' => 'HTML',
-            'reply_markup' => json_encode(['inline_keyboard' => []]) // Remove buttons
+            'reply_markup' => $replyMarkup
         ];
+
+        // If we want to update text to reflect status (optional but nice)
+        // We'd need to assume the original text is "New Booking..."
+        // editMessageText requires text.
+        // Let's just remove buttons to prevent double-action.
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);

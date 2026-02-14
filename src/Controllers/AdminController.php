@@ -271,6 +271,33 @@ class AdminController extends Controller
                 }
             }
             $booking['formatted_service_name'] = $serviceName;
+
+            // Decode Extras
+            if (!empty($booking['extras'])) {
+                $booking['extras'] = json_decode($booking['extras'], true);
+            } else {
+                $booking['extras'] = [];
+            }
+
+            // Calculate Duration dynamically to ensure accuracy (handling midnight)
+            try {
+                $startObj = new \DateTime($booking['booking_date'] . ' ' . $booking['start_time']);
+                $endObj = new \DateTime($booking['booking_date'] . ' ' . $booking['end_time']);
+
+                // Handle Midnight (if end <= start, assume next day)
+                if ($endObj <= $startObj) {
+                    $endObj->modify('+1 day');
+                }
+
+                $diff = $endObj->diff($startObj); // logic: end - start
+                // Total hours (days*24 + h + i/60)
+                $calcHours = ($diff->days * 24) + $diff->h + ($diff->i / 60);
+
+                // Use calculated duration (fallback to 1 if weird)
+                $booking['duration_hours'] = $calcHours > 0 ? $calcHours : 1;
+            } catch (\Exception $e) {
+                $booking['duration_hours'] = 1;
+            }
         }
         return $bookings;
     }
@@ -320,28 +347,39 @@ class AdminController extends Controller
         }
 
         try {
-            // Update status via BookingService logic if available, or direct Model update
-            // Since we are unsure if BookingService is instantiated as property, we use Model
-            // Actually, best to use Model update and Notification service
+            $bookingService = new \App\Services\BookingService();
+            $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/admin/dashboard';
 
-            // NOTE: Assuming bookingService is available as per previous code observation
-            // If not, we might need to instantite it or use simpler logic.
-            // Let's use simple logic for now to avoid dependency hell if services are not ready.
+            // Remove existing query params to avoid stacking
+            $redirectUrl = strtok($redirectUrl, '?');
 
-            $db = \App\Database\Database::getInstance();
-            $stmt = $db->prepare("UPDATE bookings SET status = ? WHERE id = ?");
-            $result = $stmt->execute([$status, $bookingId]);
+            if ($status === 'confirmed') {
+                // Use attemptConfirmation to check for conflicts
+                $result = $bookingService->attemptConfirmation($bookingId, false); // false = manual
 
-            if ($result) {
-                // Ideally send notification here
-                // $this->notificationService->sendTelegramNotification($booking, $status);
-
-                // Redirect back
-                header('Location: ' . $_SERVER['HTTP_REFERER']);
-                exit;
+                if ($result['success']) {
+                    header('Location: ' . $redirectUrl . '?success=Booking confirmed');
+                } else {
+                    // Check if it was a conflict
+                    if (!empty($result['conflict'])) {
+                        $errorMsg = urlencode('CHYBA: Termín bol obsadený inou rezerváciou! Táto rezervácia bola automaticky zrušená.');
+                        header('Location: ' . $redirectUrl . '?error=' . $errorMsg);
+                    } else {
+                        $errorMsg = urlencode('Error: ' . ($result['error'] ?? 'Unknown error'));
+                        header('Location: ' . $redirectUrl . '?error=' . $errorMsg);
+                    }
+                }
             } else {
-                $this->json(['error' => 'Failed to update status'], 500);
+                // Just update status (cancelled, pending, etc.)
+                $success = $bookingService->updateStatus($bookingId, $status);
+
+                if ($success) {
+                    header('Location: ' . $redirectUrl . '?success=Status updated');
+                } else {
+                    header('Location: ' . $redirectUrl . '?error=Failed to update status');
+                }
             }
+            exit;
         } catch (\Exception $e) {
             $this->json(['error' => $e->getMessage()], 500);
         }
@@ -711,9 +749,9 @@ class AdminController extends Controller
 
             if ($type === 'bookings') {
                 // Show Email instead of Name for Customer column
-                $data['headers'] = ['Date', 'Time', 'Service', 'Table', 'Status', 'Customer (Email)', 'Price'];
+                $data['headers'] = ['Date', 'ID', 'Service', 'Table', 'Status', 'Customer (Email)', 'Price'];
                 $sql = "
-                    SELECT b.booking_date, b.start_time, s.slug as service, r.name as resource, b.status, b.customer_email as customer, b.price
+                    SELECT b.booking_date, b.id, s.slug as service, r.name as resource, b.status, b.customer_email as customer, b.price
                     FROM bookings b
                     LEFT JOIN services s ON b.service_id = s.id
                     LEFT JOIN resources r ON b.resource_id = r.id
@@ -1017,5 +1055,389 @@ class AdminController extends Controller
         }
 
         return $data;
+    }
+
+    /**
+     * API: Get Cafe Menu Items
+     */
+    public function getCafeMenu(): void
+    {
+        try {
+            $db = \App\Database\Database::getInstance();
+            $items = $db->query("SELECT * FROM cafe_items WHERE is_active = 1 ORDER BY category, name")->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Group by category
+            $grouped = [];
+            foreach ($items as $item) {
+                $grouped[$item['category']][] = $item;
+            }
+
+            $this->json(['success' => true, 'menu' => $grouped]);
+        } catch (\Exception $e) {
+            $this->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * API: Get Booking Extras
+     */
+    public function getBookingExtras(): void
+    {
+        $id = (int)($_GET['id'] ?? 0);
+        if (!$id) {
+            $this->json(['success' => false, 'error' => 'Invalid ID'], 400);
+            return;
+        }
+
+        try {
+            $db = \App\Database\Database::getInstance();
+            $stmt = $db->prepare("SELECT extras, price FROM bookings WHERE id = ?");
+            $stmt->execute([$id]);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$row) {
+                $this->json(['success' => false, 'error' => 'Booking not found'], 404);
+                return;
+            }
+
+            $extras = !empty($row['extras']) ? json_decode($row['extras'], true) : [];
+            $this->json(['success' => true, 'extras' => $extras, 'total_price' => $row['price']]);
+        } catch (\Exception $e) {
+            $this->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * API: Get Upsell Suggestions
+     */
+    public function getUpsellSuggestions(): void
+    {
+        $bookingId = (int)($_GET['id'] ?? 0);
+        if (!$bookingId) {
+            $this->json(['success' => false, 'error' => 'Missing ID'], 400);
+            return;
+        }
+
+        try {
+            $db = \App\Database\Database::getInstance();
+            $stmt = $db->prepare("SELECT booking_date, start_time, duration_hours FROM bookings WHERE id = ?");
+            $stmt->execute([$bookingId]);
+            $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$booking) {
+                $this->json(['success' => true, 'suggestions' => []]);
+                return;
+            }
+
+            $suggestions = [];
+            $hour = (int)substr($booking['start_time'], 0, 2);
+            $dayOfWeek = date('N', strtotime($booking['booking_date'])); // 1-7
+
+            // 1. Time-based Rules
+            if ($hour < 14) {
+                // Morning -> Coffee
+                $items = $db->query("SELECT * FROM cafe_items WHERE category = 'coffee' AND is_active = 1 LIMIT 2")->fetchAll(\PDO::FETCH_ASSOC);
+                foreach ($items as $item) {
+                    $item['suggestion_reason'] = '☀️ Morning Boost';
+                    $item['type'] = 'cafe';
+                    $suggestions[] = $item;
+                }
+            } elseif ($hour >= 17) {
+                // Evening -> Beer & Snacks
+                $beer = $db->query("SELECT * FROM cafe_items WHERE category = 'beer' AND is_active = 1 LIMIT 1")->fetchAll(\PDO::FETCH_ASSOC);
+                $snacks = $db->query("SELECT * FROM cafe_items WHERE category = 'snacks' AND is_active = 1 LIMIT 1")->fetchAll(\PDO::FETCH_ASSOC);
+
+                foreach (array_merge($beer, $snacks) as $item) {
+                    $item['suggestion_reason'] = $item['category'] === 'beer' ? '🍺 Evening Chill' : '🥜 Best with drinks';
+                    $item['type'] = 'cafe';
+                    $suggestions[] = $item;
+                }
+            }
+
+            // 2. Duration Rules (> 2 hours)
+            if ($booking['duration_hours'] >= 2 && $hour < 17) {
+                // Suggest Food if long booking and not yet evening (where snacks are already suggested)
+                $food = $db->query("SELECT * FROM cafe_items WHERE category IN ('snacks', 'food') AND is_active = 1 LIMIT 1")->fetchAll(\PDO::FETCH_ASSOC);
+                foreach ($food as $item) {
+                    $item['suggestion_reason'] = '🍔 Long Game Fuel';
+                    $item['type'] = 'cafe';
+                    $suggestions[] = $item;
+                }
+            }
+
+            // 3. Additional Services (Database Configured)
+            $services = $db->query("SELECT * FROM additional_services WHERE is_active = 1")->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($services as $service) {
+                $activeDays = !empty($service['active_days']) ? json_decode($service['active_days'], true) : null;
+                if ($activeDays && !in_array($dayOfWeek, $activeDays)) continue;
+
+                if (!empty($service['active_hours_start'])) {
+                    if ($booking['start_time'] < $service['active_hours_start'] || $booking['start_time'] > $service['active_hours_end']) continue;
+                }
+
+                $service['suggestion_reason'] = '✨ Special Offer';
+                $service['type'] = 'service';
+                $suggestions[] = $service;
+            }
+
+            $this->json(['success' => true, 'suggestions' => $suggestions]);
+        } catch (\Exception $e) {
+            $this->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * API: Update Booking Extras (Add/Remove items, Extend Time)
+     */
+    public function updateBookingExtras(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->json(['success' => false, 'error' => 'Method not allowed'], 405);
+            return;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $bookingId = (int)($input['booking_id'] ?? 0);
+        $action = $input['action'] ?? ''; // 'add_item', 'remove_item', 'update_qty', 'extend_time'
+
+        if (!$bookingId || !$action) {
+            $this->json(['success' => false, 'error' => 'Missing parameters'], 400);
+            return;
+        }
+
+        try {
+            $db = \App\Database\Database::getInstance();
+            $booking = $this->bookingModel->find($bookingId);
+            if (!$booking) {
+                $this->json(['success' => false, 'error' => 'Booking not found'], 404);
+                return;
+            }
+
+            $currentExtras = !empty($booking['extras']) ? json_decode($booking['extras'], true) : [];
+            if (!is_array($currentExtras)) $currentExtras = [];
+
+            $priceDelta = 0;
+            $updatedExtras = $currentExtras;
+
+
+            if ($action === 'check_availability') {
+                $hours = (int)($input['hours'] ?? 0);
+                if ($hours == 0) throw new \Exception("Invalid duration");
+
+                $startTimeObj = new \DateTime($booking['booking_date'] . ' ' . $booking['start_time']);
+
+                // Calculate new End Time (Handle Midnight)
+                $endTime = new \DateTime($booking['booking_date'] . ' ' . $booking['end_time']);
+                if ($endTime <= $startTimeObj) {
+                    $endTime->modify('+1 day');
+                }
+
+                $newEndTime = clone $endTime;
+                $newEndTime->modify(($hours > 0 ? "+" : "") . "{$hours} hours");
+
+                $resourceId = $booking['resource_id'];
+                $checkStart = $endTime->format('H:i');
+                $checkEnd = $newEndTime->format('H:i');
+
+                // Validate: New End Time must be > Start Time
+                // Check if new duration is at least 1 hour (as per user request "minimum 1 hour left")
+                $durationCheck = clone $startTimeObj;
+                $durationCheck->modify('+1 hour');
+
+                if ($newEndTime < $durationCheck) {
+                    $this->json(['success' => false, 'error' => 'Booking must be at least 1 hour']);
+                    return;
+                }
+
+                // DB Check Overlap (Only if extending)
+                if ($hours > 0) {
+                    $stmt = $db->prepare("SELECT count(*) FROM bookings WHERE resource_id = ? AND booking_date = ? AND status = 'confirmed' AND (
+                        (start_time < ? AND end_time > ?)
+                    )");
+                    $stmt->execute([$resourceId, $booking['booking_date'], $checkEnd, $checkStart]);
+                    $overlap = $stmt->fetchColumn();
+
+                    if ($overlap > 0) {
+                        $this->json(['success' => false, 'error' => 'Time slot is not available']);
+                    } else {
+                        $this->json(['success' => true, 'available' => true]);
+                    }
+                } else {
+                    // Reducing time -> Always available (checked min duration above)
+                    $this->json(['success' => true, 'available' => true]);
+                }
+                return; // Early return for check
+
+            } elseif ($action === 'extend_time') {
+                $hours = (int)($input['hours'] ?? 0);
+                if ($hours == 0) throw new \Exception("Invalid duration");
+
+                $startTimeObj = new \DateTime($booking['booking_date'] . ' ' . $booking['start_time']);
+
+                // Check again to be safe (Handle Midnight)
+                $endTime = new \DateTime($booking['booking_date'] . ' ' . $booking['end_time']);
+                if ($endTime <= $startTimeObj) {
+                    $endTime->modify('+1 day');
+                }
+
+                $newEndTime = clone $endTime;
+                $newEndTime->modify(($hours > 0 ? "+" : "") . "{$hours} hours");
+
+                $durationCheck = clone $startTimeObj;
+                $durationCheck->modify('+1 hour');
+
+                if ($newEndTime < $durationCheck) throw new \Exception("Booking must be at least 1 hour");
+
+                $pricingService = new \App\Services\PricingService();
+                $extPrice = 0;
+
+                if ($hours > 0) {
+                    $checkStart = $endTime->format('H:i');
+                    // Calculate Price for Extension
+                    $extPrice = $pricingService->calculatePrice($booking['service_id'], $booking['booking_date'], $checkStart, $hours);
+                } else {
+                    // Calculate Refund for Reduction
+                    // Refund for the LAST segment (from NewEndTime to OldEndTime)
+                    // Duration of refund is abs(hours)
+                    $refundStart = $newEndTime->format('H:i');
+                    $refundDuration = abs($hours);
+                    $refundAmount = $pricingService->calculatePrice($booking['service_id'], $booking['booking_date'], $refundStart, $refundDuration);
+                    $extPrice = -1 * $refundAmount;
+                }
+
+                // SECURITY FIX: Verify availability before extending!
+                // Only if extending (hours > 0)
+                if ($hours > 0) {
+                    $stmt = $db->prepare("SELECT count(*) FROM bookings WHERE resource_id = ? AND booking_date = ? AND status = 'confirmed' AND (
+                        (start_time < ? AND end_time > ?)
+                    )");
+
+                    // We need to check the NEW segment: OldEnd -> NewEnd
+                    $checkStart = $endTime->format('H:i');
+                    $checkEnd = $newEndTime->format('H:i');
+
+                    $stmt->execute([$booking['resource_id'], $booking['booking_date'], $checkEnd, $checkStart]);
+                    $overlap = $stmt->fetchColumn();
+
+                    if ($overlap > 0) {
+                        $this->json(['success' => false, 'error' => 'Conflict detected! The slot is already booked.']);
+                        return;
+                    }
+                }
+
+                $priceDelta = (float)$extPrice;
+
+                // Update Booking Time in DB
+                $newEndTimeStr = $newEndTime->format('H:i:s');
+
+                // Recalculate duration from scratch (Start vs NewEnd) to match UI logic
+                // Handle Midnight for calculation
+                $calcStart = clone $startTimeObj;
+                $calcEnd = clone $newEndTime;
+                if ($calcEnd <= $calcStart) {
+                    $calcEnd->modify('+1 day');
+                }
+                $diff = $calcEnd->diff($calcStart);
+                $newTotalDuration = ($diff->days * 24) + $diff->h + ($diff->i / 60);
+                if ($newTotalDuration < 1) $newTotalDuration = 1; // Safety fallback
+
+                $stmt = $db->prepare("UPDATE bookings SET end_time = ?, duration_hours = ? WHERE id = ?");
+                $stmt->execute([$newEndTimeStr, $newTotalDuration, $bookingId]);
+
+                // Add to Extras Log
+                $updatedExtras[] = [
+                    'type' => 'extension',
+                    'name' => ($hours > 0 ? "Extra Time (+{$hours}h)" : "Time Reduction ({$hours}h)"),
+                    'qty' => 1,
+                    'price' => $extPrice,
+                    'hours' => $hours, // Persist hours for revert logic
+                    'added_at' => date('Y-m-d H:i:s')
+                ];
+            } elseif ($action === 'add_item') {
+                $item = $input['item'] ?? [];
+                $qty = (int)($item['qty'] ?? 1);
+                if (!$item || $qty < 1) throw new \Exception("Invalid item");
+
+                // Check if already in extras (merge)
+                $found = false;
+                foreach ($updatedExtras as &$ex) {
+                    if (($ex['type'] ?? '') === 'cafe' && ($ex['item_id'] ?? 0) == $item['id']) {
+                        $ex['qty'] += $qty;
+                        $priceDelta += $ex['price'] * $qty; // Item price is unit price
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $updatedExtras[] = [
+                        'type' => 'cafe',
+                        'item_id' => $item['id'],
+                        'name' => $item['name'],
+                        'price' => (float)$item['price'],
+                        'qty' => $qty
+                    ];
+                    $priceDelta += (float)$item['price'] * $qty;
+                }
+            } elseif ($action === 'remove_item') {
+                $index = $input['index'] ?? -1;
+                if (isset($updatedExtras[$index])) {
+                    $ex = $updatedExtras[$index];
+                    $itemTotal = $ex['price'] * ($ex['qty'] ?? 1);
+                    $priceDelta -= $itemTotal;
+
+                    // REVERT TIME LOGIC
+                    if (($ex['type'] ?? '') === 'extension') {
+                        $hoursToRevert = (int)($ex['hours'] ?? 1); // Default to 1 if missing for old entries
+
+                        $endTime = new \DateTime($booking['booking_date'] . ' ' . $booking['end_time']);
+                        $endTime->modify("-{$hoursToRevert} hours"); // Subtract hours
+
+                        $newEndTimeStr = $endTime->format('H:i:s');
+
+                        // Recalculate duration absolute
+                        $startTimeObj = new \DateTime($booking['booking_date'] . ' ' . $booking['start_time']);
+                        $calcStart = clone $startTimeObj;
+                        $calcEnd = clone $endTime;
+                        if ($calcEnd <= $calcStart) {
+                            $calcEnd->modify('+1 day');
+                        }
+                        $diff = $calcEnd->diff($calcStart);
+                        $newDuration = ($diff->days * 24) + $diff->h + ($diff->i / 60);
+                        if ($newDuration < 1) $newDuration = 1; // Safety check/Constraint
+
+                        $stmt = $db->prepare("UPDATE bookings SET end_time = ?, duration_hours = ? WHERE id = ?");
+                        $stmt->execute([$newEndTimeStr, $newDuration, $bookingId]);
+                    }
+
+                    array_splice($updatedExtras, $index, 1);
+                }
+            } elseif ($action === 'update_qty') {
+                $index = $input['index'] ?? -1;
+                $change = (int)($input['change'] ?? 0);
+                if (isset($updatedExtras[$index])) {
+                    $ex = &$updatedExtras[$index];
+                    if (($ex['type'] ?? '') === 'cafe') {
+                        $oldQty = $ex['qty'];
+                        $newQty = $oldQty + $change;
+                        if ($newQty < 1) $newQty = 1; // Min 1
+
+                        $diff = $newQty - $oldQty;
+                        $ex['qty'] = $newQty;
+                        $priceDelta += $ex['price'] * $diff;
+                    }
+                }
+            }
+
+            // Update Booking Price & Extras
+            $newPrice = (float)$booking['price'] + $priceDelta;
+            $jsonExtras = json_encode($updatedExtras);
+
+            $stmt = $db->prepare("UPDATE bookings SET price = ?, extras = ? WHERE id = ?");
+            $stmt->execute([$newPrice, $jsonExtras, $bookingId]);
+
+            $this->json(['success' => true, 'new_price' => number_format($newPrice, 2, '.', ''), 'extras' => $updatedExtras]);
+        } catch (\Exception $e) {
+            $this->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
     }
 }

@@ -427,9 +427,30 @@ $router->post('/admin/holidays/add', function () use ($language) {
     (new AdminController($language))->addHoliday();
 });
 
+
 $router->post('/admin/holidays/delete', function () use ($language) {
     (new AdminController($language))->deleteHoliday();
 });
+
+// Admin API: Cafe POS & Extras
+$router->get('/admin/api/cafe-menu', function () use ($language) {
+    (new AdminController($language))->getCafeMenu();
+});
+
+$router->get('/admin/api/booking-extras', function () use ($language) {
+    (new AdminController($language))->getBookingExtras();
+});
+
+
+$router->post('/admin/api/update-extras', function () use ($language) {
+    (new AdminController($language))->updateBookingExtras();
+});
+
+$router->get('/admin/api/upsell-suggestions', function () use ($language) {
+    (new AdminController($language))->getUpsellSuggestions();
+});
+
+
 
 // Telegram webhook endpoint (for future implementation)
 $router->post('/webhook/telegram', function () {
@@ -468,26 +489,46 @@ $router->post('/webhook/telegram', function () {
                 $bookingId = (int)str_replace('confirm_', '', $data);
 
                 $bookingService = new \App\Services\BookingService();
-                $bookingService->updateStatus($bookingId, 'confirmed');
+                $result = $bookingService->attemptConfirmation($bookingId, false);
 
                 $originalText = $callbackQuery['message']['text'];
                 $lines = explode("\n", $originalText);
-                $lines[0] = '✅ Potvrdené!';
-                $newText = implode("\n", $lines);
+
+                if ($result['success']) {
+                    $lines[0] = '✅ Potvrdené!';
+                    $newText = implode("\n", $lines);
+                    $answerText = 'Rezervácia potvrdená ✅';
+
+                    $editData = [
+                        'chat_id' => $chatId,
+                        'message_id' => $messageId,
+                        'text' => $newText,
+                        'parse_mode' => 'HTML',
+                        'reply_markup' => json_encode([
+                            'inline_keyboard' => [[
+                                ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $bookingId]
+                            ]]
+                        ])
+                    ];
+                } else {
+                    if (!empty($result['conflict'])) {
+                        $lines[0] = '❌ Zrušené (Termín obsadený)!';
+                        $answerText = '❌ Termín obsadený! Rezervácia zrušená.';
+                    } else {
+                        $lines[0] = '⚠️ Chyba: ' . ($result['error'] ?? 'Unknown');
+                        $answerText = '⚠️ Chyba pri potvrdení';
+                    }
+                    $newText = implode("\n", $lines);
+
+                    $editData = [
+                        'chat_id' => $chatId,
+                        'message_id' => $messageId,
+                        'text' => $newText,
+                        'parse_mode' => 'HTML'
+                    ];
+                }
 
                 $url = "https://api.telegram.org/bot{$token}/editMessageText";
-                $editData = [
-                    'chat_id' => $chatId,
-                    'message_id' => $messageId,
-                    'text' => $newText,
-                    'parse_mode' => 'HTML',
-                    'reply_markup' => json_encode([
-                        'inline_keyboard' => [[
-                            ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $bookingId]
-                        ]]
-                    ])
-                ];
-
                 $ch = curl_init($url);
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
@@ -498,7 +539,7 @@ $router->post('/webhook/telegram', function () {
                 $answerUrl = "https://api.telegram.org/bot{$token}/answerCallbackQuery";
                 $answerData = [
                     'callback_query_id' => $callbackQuery['id'],
-                    'text' => 'Rezervácia potvrdená ✅'
+                    'text' => $answerText
                 ];
 
                 $ch = curl_init($answerUrl);
@@ -685,6 +726,17 @@ $router->post('/webhook/telegram', function () {
                     $service = $serviceStmt->fetch(\PDO::FETCH_ASSOC);
                     $booking['service_name'] = ucfirst($service['slug'] ?? 'Unknown');
 
+                    // Get table number from resource name
+                    $resourceStmt = $conn->prepare("SELECT name FROM resources WHERE id = ?");
+                    $resourceStmt->execute([$booking['resource_id']]);
+                    $resourceName = $resourceStmt->fetchColumn();
+
+                    // Extract table number from name (e.g., "Pool - Stôl 2" -> "2")
+                    $tableNumber = $booking['resource_id']; // fallback to resource_id
+                    if ($resourceName && preg_match('/(\d+)/', $resourceName, $matches)) {
+                        $tableNumber = $matches[1];
+                    }
+
                     // Calculate original price if coupon was used
                     $originalPrice = null;
                     $discountPercent = null;
@@ -727,7 +779,7 @@ $router->post('/webhook/telegram', function () {
                     $messageText .= "📅 Dátum: {$date}\n";
                     $messageText .= "🕐 Čas: {$startTime} - {$endTime}\n\n";
                     $messageText .= "🎯 Služba: {$booking['service_name']}\n";
-                    $messageText .= "🎱 Stôl č.: {$booking['resource_id']}\n\n";
+                    $messageText .= "🎱 Stôl č.: {$tableNumber}\n\n";
                     $messageText .= "{$flag} Jazyk: {$booking['language']}\n";
                     $messageText .= "👤 Meno: {$booking['customer_name']}\n";
                     $messageText .= "📞 Telefón: {$booking['customer_phone']}\n\n";

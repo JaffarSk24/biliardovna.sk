@@ -385,6 +385,7 @@ return [
     'email_subject_pending' => 'Ihre Buchungsanfrage - Biliardovna.sk',
     'email_subject_confirmed' => 'Buchung bestätigt - Biliardovna.sk',
     'email_subject_cancelled' => 'Buchung storniert - Biliardovna.sk',
+    'email_subject_conflict' => 'Buchung storniert (Slot belegt) - Biliardovna.sk',
     'email_greeting' => 'Guten Tag',
     'email_booking_received' => 'Ihre Buchung wurde erhalten und wartet auf Bestätigung.',
     'email_booking_confirmed' => 'Ihre Buchung wurde bestätigt! Wir freuen uns auf Sie zum angegebenen Datum und zur angegebenen Uhrzeit. Wir empfehlen, mindestens 15 Minuten früher zu kommen. Bei Verspätung wird die Zeit nicht kompensiert.',

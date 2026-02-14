@@ -181,13 +181,20 @@ class BookingService
     /**
      * Check if resource is available for a specific time slot
      */
+    /**
+     * Check if resource is available for a specific time slot
+     */
     private function isResourceAvailable(int $resourceId, string $date, string $startTime, string $endTime): bool
     {
+        error_log("DEBUG isResourceAvailable: Checking Resource $resourceId on $date from $startTime to $endTime");
+
         $bookings = $this->bookingModel->all([
             'resource_id' => $resourceId,
             'booking_date' => $date,
             'status' => 'confirmed'
         ]);
+
+        error_log("DEBUG isResourceAvailable: Found " . count($bookings) . " confirmed bookings.");
 
         $slotStart = strtotime($date . ' ' . $startTime);
         $slotEnd = strtotime($date . ' ' . $endTime);
@@ -206,12 +213,16 @@ class BookingService
                 $bookingEnd += 86400; // +1 day
             }
 
+            error_log("DEBUG Check overlap: Slot [$slotStart - $slotEnd] vs Booking #{$booking['id']} [$bookingStart - $bookingEnd]");
+
             // Overlap if: slot starts before booking ends AND slot ends after booking starts
             if ($slotStart < $bookingEnd && $slotEnd > $bookingStart) {
+                error_log("DEBUG Overlap DETECTED!");
                 return false; // Занято
             }
         }
 
+        error_log("DEBUG No overlap found. Available.");
         return true; // Свободно
     }
 
@@ -421,9 +432,160 @@ class BookingService
     }
 
     /**
+     * Attempt to confirm a booking (Manual or Auto)
+     * Uses MySQL GET_LOCK + transaction to prevent race conditions.
+     */
+    public function attemptConfirmation(int $bookingId, bool $isAuto = false): array
+    {
+        $db = \App\Database\Database::getInstance();
+
+        // 1. Load booking data first (before locking)
+        $booking = $this->bookingModel->find($bookingId);
+        if (!$booking) {
+            return ['success' => false, 'error' => 'Booking not found'];
+        }
+
+        if ($booking['status'] === 'confirmed') {
+            return ['success' => true, 'message' => 'Already confirmed'];
+        }
+
+        if ($booking['status'] === 'cancelled') {
+            return ['success' => false, 'error' => 'Booking is cancelled'];
+        }
+
+        // 2. Acquire a NAMED LOCK for this resource+date combination
+        //    This ensures only ONE process can confirm bookings for this slot at a time
+        $lockName = "booking_lock_{$booking['resource_id']}_{$booking['booking_date']}";
+        $lockStmt = $db->prepare("SELECT GET_LOCK(?, 10)");
+        $lockStmt->execute([$lockName]);
+        $lockResult = $lockStmt->fetchColumn();
+
+        if ($lockResult != 1) {
+            error_log("attemptConfirmation: Could not acquire lock for booking #{$bookingId}");
+            return ['success' => false, 'error' => 'Server busy, please try again'];
+        }
+
+        try {
+            // 3. Re-read the booking status (it may have changed while waiting for lock)
+            $stmt = $db->prepare("SELECT status FROM bookings WHERE id = ?");
+            $stmt->execute([$bookingId]);
+            $currentStatus = $stmt->fetchColumn();
+
+            if ($currentStatus === 'confirmed') {
+                $db->prepare("SELECT RELEASE_LOCK(?)")->execute([$lockName]);
+                return ['success' => true, 'message' => 'Already confirmed'];
+            }
+            if ($currentStatus === 'cancelled') {
+                $db->prepare("SELECT RELEASE_LOCK(?)")->execute([$lockName]);
+                return ['success' => false, 'error' => 'Booking is cancelled'];
+            }
+
+            // 4. Check for conflicting CONFIRMED bookings (we hold the lock, so no race)
+            $stmt = $db->prepare("SELECT id, start_time, end_time FROM bookings
+                WHERE resource_id = ? AND booking_date = ? AND status = 'confirmed'");
+            $stmt->execute([$booking['resource_id'], $booking['booking_date']]);
+            $confirmedBookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Check time overlap
+            $slotStart = strtotime($booking['booking_date'] . ' ' . $booking['start_time']);
+            $slotEnd = strtotime($booking['booking_date'] . ' ' . $booking['end_time']);
+            if ($slotEnd <= $slotStart) {
+                $slotEnd += 86400;
+            }
+
+            $hasConflict = false;
+            foreach ($confirmedBookings as $existing) {
+                $existStart = strtotime($booking['booking_date'] . ' ' . $existing['start_time']);
+                $existEnd = strtotime($booking['booking_date'] . ' ' . $existing['end_time']);
+                if ($existEnd <= $existStart) {
+                    $existEnd += 86400;
+                }
+                if ($slotStart < $existEnd && $slotEnd > $existStart) {
+                    $hasConflict = true;
+                    break;
+                }
+            }
+
+            if ($hasConflict) {
+                // 5a. Conflict! Cancel this booking
+                $stmt = $db->prepare("UPDATE bookings SET status = 'cancelled' WHERE id = ?");
+                $stmt->execute([$bookingId]);
+
+                // Release the lock
+                $db->prepare("SELECT RELEASE_LOCK(?)")->execute([$lockName]);
+
+                // Send conflict notification
+                $booking['status'] = 'cancelled';
+                $service = $this->serviceModel->getWithTranslations($booking['language'] ?? 'sk');
+                $serviceData = array_filter($service, fn($s) => $s['id'] == $booking['service_id']);
+                $booking['service_name'] = !empty($serviceData) ? reset($serviceData)['name'] : 'Unknown';
+
+                $resource = $this->resourceModel->find($booking['resource_id']);
+                $booking['resource_name'] = $resource['name'] ?? 'Unknown';
+
+                $notificationService = new NotificationService();
+                $notificationService->sendConflictNotification($booking, $isAuto);
+
+                return [
+                    'success' => false,
+                    'error' => 'Slot already taken. Booking cancelled.',
+                    'conflict' => true
+                ];
+            }
+
+            // 5b. No conflict — confirm the booking
+            $stmt = $db->prepare("UPDATE bookings SET status = 'confirmed' WHERE id = ?");
+            $stmt->execute([$bookingId]);
+
+            // Release the lock
+            $db->prepare("SELECT RELEASE_LOCK(?)")->execute([$lockName]);
+
+            // Send confirmation notifications
+            $this->sendStatusNotifications($bookingId, 'confirmed');
+
+            return ['success' => true];
+        } catch (\Exception $e) {
+            // Always release the lock on error
+            try {
+                $db->prepare("SELECT RELEASE_LOCK(?)")->execute([$lockName]);
+            } catch (\Exception $ignore) {
+            }
+
+            error_log("attemptConfirmation error: " . $e->getMessage());
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Send status change notifications (Telegram + Email)
+     */
+    private function sendStatusNotifications(int $bookingId, string $newStatus): void
+    {
+        if ($newStatus === 'completed') {
+            return; // No notifications for internal admin status
+        }
+
+        $booking = $this->bookingModel->find($bookingId);
+        if (!$booking) {
+            return;
+        }
+
+        $service = $this->serviceModel->getWithTranslations($booking['language'] ?? 'sk');
+        $serviceData = array_filter($service, fn($s) => $s['id'] == $booking['service_id']);
+        $booking['service_name'] = !empty($serviceData) ? reset($serviceData)['name'] : 'Unknown';
+
+        $notificationService = new NotificationService();
+        $notificationService->sendTelegramNotification($booking, $newStatus);
+
+        if (!empty($booking['customer_email'])) {
+            $notificationService->sendEmailNotification($booking, $newStatus);
+        }
+    }
+
+    /**
      * Update booking status and send notifications
      */
-    public function updateStatus(int $bookingId, string $newStatus): bool
+    public function updateStatus(int $bookingId, string $newStatus, bool $sendNotification = true): bool
     {
         $validStatuses = ['pending', 'confirmed', 'cancelled', 'completed'];
         if (!in_array($newStatus, $validStatuses)) {
@@ -441,7 +603,7 @@ class BookingService
         // Update status in database
         $result = $this->bookingModel->update($bookingId, ['status' => $newStatus]);
 
-        if ($result && $oldStatus !== $newStatus) {
+        if ($result && $oldStatus !== $newStatus && $sendNotification) {
             // Reload booking with updated data
             $booking = $this->bookingModel->find($bookingId);
 
@@ -450,15 +612,17 @@ class BookingService
             $serviceData = array_filter($service, fn($s) => $s['id'] == $booking['service_id']);
             $booking['service_name'] = !empty($serviceData) ? reset($serviceData)['name'] : 'Unknown';
 
-            // Send notifications
-            $notificationService = new NotificationService();
+            // Send notifications (NOT for 'completed' — internal admin status)
+            if ($newStatus !== 'completed') {
+                $notificationService = new NotificationService();
 
-            // Send Telegram notification
-            $notificationService->sendTelegramNotification($booking, $newStatus);
+                // Send Telegram notification
+                $notificationService->sendTelegramNotification($booking, $newStatus);
 
-            // Send email to customer
-            if (!empty($booking['customer_email'])) {
-                $notificationService->sendEmailNotification($booking, $newStatus);
+                // Send email to customer
+                if (!empty($booking['customer_email'])) {
+                    $notificationService->sendEmailNotification($booking, $newStatus);
+                }
             }
         }
 
