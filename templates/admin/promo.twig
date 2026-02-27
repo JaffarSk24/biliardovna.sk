@@ -33,7 +33,13 @@
                         <td>
                             <strong style="color: var(--color-gold); font-family: monospace; font-size: 1.1em;">{{ coupon.code }}</strong>
                         </td>
-                        <td>{{ coupon.discount_percent }}%</td>
+                        <td>
+                            {% if coupon.discount_amount %}
+                                {{ coupon.discount_amount }} €
+                            {% else %}
+                                {{ coupon.discount_percent }}%
+                            {% endif %}
+                        </td>
                         <td>
                             {% if coupon.type == 'standard' %}Standard
                             {% elseif coupon.type == 'multi_use' %}Multi-Use
@@ -89,13 +95,22 @@
                 <div class="row" style="display: flex; gap: 15px;">
                     <div class="col" style="flex: 1;">
                          <div class="form-group">
-                            <label>Discount (%)</label>
-                            <input type="number" name="discount" get="1" max="100" placeholder="10" required style="width: 100%;">
+                            <label>Discount Value</label>
+                            <input type="number" name="discount" step="0.01" min="0" placeholder="10" required style="width: 100%;">
                         </div>
                     </div>
                     <div class="col" style="flex: 1;">
                          <div class="form-group">
-                            <label>Type</label>
+                            <label>Discount Type</label>
+                            <select name="discount_type" style="width: 100%;">
+                                <option value="percent">Percent (%)</option>
+                                <option value="amount">Euro (€)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col" style="flex: 1;">
+                         <div class="form-group">
+                            <label>Coupon Type</label>
                             <select name="type" style="width: 100%;">
                                 <option value="standard">Standard</option>
                                 <option value="multi_use">Multi-Use</option>
@@ -140,9 +155,22 @@
                     <label>Prefix</label>
                     <input type="text" name="prefix" placeholder="e.g. VIP" style="width: 100%;">
                 </div>
-                 <div class="form-group">
-                    <label>Discount (%)</label>
-                    <input type="number" name="discount" placeholder="10" required style="width: 100%;">
+                 <div class="row" style="display: flex; gap: 15px;">
+                    <div class="col" style="flex: 1;">
+                        <div class="form-group">
+                            <label>Discount Value</label>
+                            <input type="number" name="discount" step="0.01" min="0" placeholder="10" required style="width: 100%;">
+                        </div>
+                    </div>
+                    <div class="col" style="flex: 1;">
+                         <div class="form-group">
+                            <label>Discount Type</label>
+                            <select name="discount_type" style="width: 100%;">
+                                <option value="percent">Percent (%)</option>
+                                <option value="amount">Euro (€)</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 
                  <div class="row" style="display: flex; gap: 15px;">
@@ -190,7 +218,15 @@ function editCoupon(btn) {
     // Populate form fields
     const form = document.querySelector('#tab-create form');
     form.querySelector('input[name="code"]').value = data.code;
-    form.querySelector('input[name="discount"]').value = data.discount_percent;
+    
+    if (data.discount_amount && parseFloat(data.discount_amount) > 0) {
+        form.querySelector('input[name="discount"]').value = data.discount_amount;
+        form.querySelector('select[name="discount_type"]').value = 'amount';
+    } else {
+        form.querySelector('input[name="discount"]').value = data.discount_percent;
+        form.querySelector('select[name="discount_type"]').value = 'percent';
+    }
+    
     form.querySelector('select[name="type"]').value = data.type;
     
     // Usage limit: null means unlimited (empty input)

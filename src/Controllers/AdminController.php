@@ -461,7 +461,12 @@ class AdminController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $code = strtoupper(trim($_POST['code'] ?? ''));
-            $discount = (int)$_POST['discount'];
+            $discountValue = (float)$_POST['discount'];
+            $discountType = $_POST['discount_type'] ?? 'percent'; // 'percent' or 'amount'
+
+            $discountPercent = ($discountType === 'percent') ? $discountValue : null;
+            $discountAmount = ($discountType === 'amount') ? $discountValue : null;
+
             $limitParam = $_POST['usage_limit'];
             $type = $_POST['type'] ?? 'standard';
             $validUntil = $_POST['valid_until'] ?? '';
@@ -473,11 +478,11 @@ class AdminController extends Controller
             // Date logic: empty -> 2099-12-31 (to avoid NULL schema error)
             $validDate = empty($validUntil) ? '2099-12-31' : $validUntil;
 
-            if ($code && $discount > 0) {
+            if ($code && $discountValue > 0) {
                 $db = \App\Database\Database::getInstance();
                 // Use ON DUPLICATE KEY UPDATE to avoid crash and fix existing broken entries
-                $stmt = $db->prepare("INSERT INTO coupons (code, discount_percent, usage_limit, type, valid_until) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE discount_percent = VALUES(discount_percent), usage_limit = VALUES(usage_limit), type = VALUES(type), valid_until = VALUES(valid_until)");
-                $stmt->execute([$code, $discount, $limit, $type, $validDate]);
+                $stmt = $db->prepare("INSERT INTO coupons (code, discount_percent, discount_amount, usage_limit, type, valid_until) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE discount_percent = VALUES(discount_percent), discount_amount = VALUES(discount_amount), usage_limit = VALUES(usage_limit), type = VALUES(type), valid_until = VALUES(valid_until)");
+                $stmt->execute([$code, $discountPercent, $discountAmount, $limit, $type, $validDate]);
             }
         }
         header('Location: /admin/promo');
@@ -487,10 +492,16 @@ class AdminController extends Controller
     public function generatePromo(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $amount = (int)$_POST['amount'];
-            $discount = (int)$_POST['discount'];
+            $amountVal = (int)$_POST['amount'];
+            $discountValue = (float)$_POST['discount'];
+            $discountType = $_POST['discount_type'] ?? 'percent'; // 'percent' or 'amount'
+
+            $discountPercent = ($discountType === 'percent') ? $discountValue : null;
+            $discountAmount = ($discountType === 'amount') ? $discountValue : null;
+
             $limitParam = $_POST['usage_limit'];
             $validUntil = $_POST['valid_until'] ?? '';
+            $type = ($discountType === 'amount') ? 'gift_card' : 'standard';
 
             // Logic: 0 or empty -> NULL (Unlimited)
             $limit = empty($limitParam) ? null : (int)$limitParam;
@@ -501,15 +512,15 @@ class AdminController extends Controller
 
             $prefix = strtoupper(trim($_POST['prefix'] ?? 'PROMO'));
 
-            if ($amount > 0 && $discount > 0) {
+            if ($amountVal > 0 && $discountValue > 0) {
                 $db = \App\Database\Database::getInstance();
-                $stmt = $db->prepare("INSERT INTO coupons (code, discount_percent, usage_limit, type, valid_until) VALUES (?, ?, ?, 'standard', ?) ON DUPLICATE KEY UPDATE discount_percent = VALUES(discount_percent), usage_limit = VALUES(usage_limit), valid_until = VALUES(valid_until)");
+                $stmt = $db->prepare("INSERT INTO coupons (code, discount_percent, discount_amount, usage_limit, type, valid_until) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE discount_percent = VALUES(discount_percent), discount_amount = VALUES(discount_amount), usage_limit = VALUES(usage_limit), type = VALUES(type), valid_until = VALUES(valid_until)");
 
-                for ($i = 0; $i < $amount; $i++) {
+                for ($i = 0; $i < $amountVal; $i++) {
                     $random = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
                     $code = $prefix . '-' . $random;
                     try {
-                        $stmt->execute([$code, $discount, $limit, $validDate]);
+                        $stmt->execute([$code, $discountPercent, $discountAmount, $limit, $type, $validDate]);
                     } catch (\Exception $e) {
                         // Ignore duplicates and continue
                     }

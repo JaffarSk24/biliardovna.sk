@@ -78,58 +78,98 @@ class BookingService
 
         // Apply coupon discount if provided
         $originalPrice = $price;
-        $discountPercent = 0;
+        $discountAmount = 0;
         $couponCode = null;
 
         if (!empty($data['coupon_code'])) {
             $db = \App\Database\Database::getInstance();
             // Fetch usage info
-            $stmt = $db->prepare("SELECT id, discount_percent, used, usage_limit, current_uses FROM coupons WHERE code = ?");
+            $stmt = $db->prepare("SELECT id, discount_percent, discount_amount, used, usage_limit, current_uses FROM coupons WHERE code = ?");
             $stmt->execute([$data['coupon_code']]);
             $coupon = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-            // Validation Logic:
-            // 1. Check if coupon exists
-            // 2. Check if usage_limit is set (NULL = unlimited)
-            // 3. If limit set, check if current_uses < limit
-            // 4. Fallback check for 'used' flag (legacy)
 
             $isValid = false;
 
             if ($coupon) {
-                if (is_null($coupon['usage_limit'])) {
-                    // Unlimited usage (assuming 'used' flag is ignored for unlimited, or we reset it?)
-                    // Let's assume unlimited ignores 'used' flag to be safe, or used flag is for "cancelled" coupons?
-                    // Standard logic: specific limit overrides used flag for counts, but used flag might prevent any usage?
-                    // Let's rely on standard logic: if usage_limit is NULL, it is unlimited.
-                    $isValid = true;
-                } else {
-                    // Limited usage
-                    $currentUses = (int)($coupon['current_uses'] ?? 0);
-                    $limit = (int)$coupon['usage_limit'];
-                    if ($currentUses < $limit) {
+                if (isset($coupon['discount_amount']) && $coupon['discount_amount'] > 0) {
+                    // Это подарочная карта (скидка в евро). Игнорируем usage_limit, проверяем остаток баланса и статус 'used'
+                    if ($coupon['used'] == 0 && $coupon['discount_amount'] > 0) {
                         $isValid = true;
+                    }
+                } else {
+                    // Обычный процентный купон
+                    if (is_null($coupon['usage_limit'])) {
+                        $isValid = true;
+                    } else {
+                        // Limited usage
+                        $currentUses = (int)($coupon['current_uses'] ?? 0);
+                        $limit = (int)$coupon['usage_limit'];
+                        if ($currentUses < $limit) {
+                            $isValid = true;
+                        }
                     }
                 }
             }
 
             if ($isValid) {
-                $discountPercent = (int)$coupon['discount_percent'];
-                $price = $price * (1 - $discountPercent / 100);
+                $discountPercent = isset($coupon['discount_percent']) ? (float)$coupon['discount_percent'] : 0;
+                $discountAmount = isset($coupon['discount_amount']) ? (float)$coupon['discount_amount'] : 0;
+
+                $usedAmount = 0;
+                $newDiscountAmount = $discountAmount;
+
+                if ($discountPercent > 0) {
+                    $price = $price * (1 - $discountPercent / 100);
+                } elseif ($discountAmount > 0) {
+                    // Используем ровно столько евро, сколько нужно для оплаты брони. Остаток сохраняем на купоне.
+                    if ($discountAmount >= $price) {
+                        $usedAmount = $price;
+                        $price = 0;
+                        $newDiscountAmount = $discountAmount - $usedAmount;
+                    } else {
+                        $usedAmount = $discountAmount;
+                        $price = $price - $usedAmount;
+                        $newDiscountAmount = 0;
+                    }
+                }
+
+                if ($price < 0) {
+                    $price = 0;
+                }
+
                 $couponCode = $data['coupon_code'];
 
-                // Increment usage
-                // Set 'used' to 1 ONLY if we hit the limit
-                $updateSql = "UPDATE coupons SET 
-                              current_uses = COALESCE(current_uses, 0) + 1, 
-                              used_at = NOW(),
-                              used = CASE 
-                                  WHEN usage_limit IS NOT NULL AND (COALESCE(current_uses, 0) + 1) >= usage_limit THEN 1 
-                                  ELSE 0 
-                              END
-                              WHERE id = ?";
-                $stmt = $db->prepare($updateSql);
-                $stmt->execute([$coupon['id']]);
+                // Обновление статуса купона в БД в зависимости от его типа
+                if ($discountPercent > 0) {
+                    $updateSql = "UPDATE coupons SET 
+                                  current_uses = COALESCE(current_uses, 0) + 1, 
+                                  used_at = NOW(),
+                                  used = CASE 
+                                      WHEN usage_limit IS NOT NULL AND (COALESCE(current_uses, 0) + 1) >= usage_limit THEN 1 
+                                      ELSE 0 
+                                  END
+                                  WHERE id = ?";
+                    $stmt = $db->prepare($updateSql);
+                    $stmt->execute([$coupon['id']]);
+                } elseif ($discountAmount > 0) {
+                    // Для подарочных карт (скидка в евро) обновляем остаток средств (`discount_amount`)
+                    $updateSql = "UPDATE coupons SET 
+                                  current_uses = COALESCE(current_uses, 0) + 1, 
+                                  used_at = NOW(),
+                                  discount_amount = :new_discount_amount,
+                                  used = CASE WHEN :check_discount_amount <= 0 THEN 1 ELSE 0 END
+                                  WHERE id = :id";
+                    $stmt = $db->prepare($updateSql);
+                    $stmt->execute([
+                        'new_discount_amount' => $newDiscountAmount,
+                        'check_discount_amount' => $newDiscountAmount,
+                        'id' => $coupon['id']
+                    ]);
+
+                    // Обновляем значение amount для отправки в админку или письма,
+                    // Переопределяем переменную, чтобы письмо показало именно списанную сумму, а не остаток или полный номинал.
+                    $discountAmount = $usedAmount;
+                }
 
                 // Verify update
                 error_log("Coupon {$couponCode} used (ID: {$coupon['id']})");
@@ -168,7 +208,8 @@ class BookingService
         // Add discount info for notifications
         if ($couponCode) {
             $booking['original_price'] = $originalPrice;
-            $booking['discount_percent'] = $discountPercent;
+            $booking['discount_percent'] = $discountPercent ?: null;
+            $booking['discount_amount'] = $discountAmount ?: null;
         }
 
         return [

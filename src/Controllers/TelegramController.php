@@ -238,13 +238,25 @@ class TelegramController extends Controller
                 // Calculate original price if coupon was used
                 $originalPrice = null;
                 $discountPercent = null;
+                $discountAmount = null;
+                $discountText = "";
+
                 if (!empty($booking['coupon_redeemed'])) {
-                    $couponStmt = $conn->prepare("SELECT discount_percent FROM coupons WHERE code = ?");
+                    $couponStmt = $conn->prepare("SELECT discount_percent, discount_amount FROM coupons WHERE code = ?");
                     $couponStmt->execute([$booking['coupon_redeemed']]);
                     $couponData = $couponStmt->fetch(\PDO::FETCH_ASSOC);
                     if ($couponData) {
-                        $discountPercent = (int)$couponData['discount_percent'];
-                        $originalPrice = $booking['price'] / (1 - $discountPercent / 100);
+                        $discountPercent = isset($couponData['discount_percent']) ? (float)$couponData['discount_percent'] : 0;
+                        $discountAmount = isset($couponData['discount_amount']) ? (float)$couponData['discount_amount'] : 0;
+
+                        // Пытаемся восстановить оригинальную цену по формуле
+                        if ($discountPercent > 0) {
+                            $originalPrice = $booking['price'] / (1 - $discountPercent / 100);
+                            $discountText = "-{$discountPercent}%";
+                        } elseif ($discountAmount > 0) {
+                            $originalPrice = (float)$booking['price'] + $discountAmount;
+                            $discountText = "-{$discountAmount} €";
+                        }
                     }
                 }
 
@@ -286,11 +298,11 @@ class TelegramController extends Controller
                     $messageText .= "📝 Poznámka: {$booking['notes']}\n\n";
                 }
 
-                if ($originalPrice && $discountPercent) {
-                    $messageText .= "💰 Spolu: <s>" . number_format($originalPrice, 2) . " €</s> → <b>{$booking['price']} €</b>\n";
-                    $messageText .= "🎟️ Promo kód: {$booking['coupon_redeemed']} (-{$discountPercent}%)\n";
+                if ($originalPrice !== null && $discountText !== "") {
+                    $messageText .= "💰 Spolu: <s>" . number_format($originalPrice, 2) . " €</s> → <b>" . number_format($booking['price'], 2) . " €</b>\n";
+                    $messageText .= "🎟️ Promo kód: {$booking['coupon_redeemed']} ({$discountText})\n";
                 } else {
-                    $messageText .= "💰 Spolu: {$booking['price']} €\n";
+                    $messageText .= "💰 Spolu: " . number_format($booking['price'], 2) . " €\n";
                 }
 
                 $messageText .= "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";

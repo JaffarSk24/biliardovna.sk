@@ -628,8 +628,23 @@ class NotificationService
                     <p style='margin: 5px 0;'><strong>{$dateLabel}:</strong> {$date}</p>
                     <p style='margin: 5px 0;'><strong>{$timeLabel}:</strong> {$startTime} - {$endTime}</p>
                     <p style='margin: 5px 0;'><strong>{$serviceLabel}:</strong> {$booking['service_name']}</p>
-                    <p style='margin: 5px 0;'><strong>{$tableLabel}:</strong> {$tableNumber}</p>
-                    <p style='margin: 5px 0;'><strong>{$totalLabel}:</strong> {$booking['price']} €</p>
+                    <p style='margin: 5px 0;'><strong>{$tableLabel}:</strong> {$tableNumber}</p>";
+
+        if (!empty($booking['coupon_redeemed'])) {
+            $originalPrice = isset($booking['original_price']) ? number_format($booking['original_price'], 2) : number_format($booking['price'], 2);
+            $discountText = "";
+            if (!empty($booking['discount_amount'])) {
+                $discountText = "(-" . number_format($booking['discount_amount'], 2) . " €)";
+            } elseif (!empty($booking['discount_percent'])) {
+                $discountText = "(-" . $booking['discount_percent'] . "%)";
+            }
+            $html .= "<p style='margin: 5px 0;'><strong>{$totalLabel}:</strong> <span style='text-decoration: line-through; color: #999;'>{$originalPrice} €</span> &rarr; <strong>" . number_format($booking['price'], 2) . " €</strong> {$discountText}</p>";
+            $html .= "<p style='margin: 5px 0;'><strong>" . $this->trans('notification_coupon') . ":</strong> {$booking['coupon_redeemed']}</p>";
+        } else {
+            $html .= "<p style='margin: 5px 0;'><strong>{$totalLabel}:</strong> " . number_format($booking['price'], 2) . " €</p>";
+        }
+
+        $html .= "
                     <p style='margin: 10px 0 5px 0;'><strong>Status:</strong> <span style='color: {$statusColor}; font-weight: bold;'>{$statusLabel}</span></p>
                 </div>";
 

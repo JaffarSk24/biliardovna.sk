@@ -150,7 +150,7 @@ class BookingController extends Controller
             $db = \App\Database\Database::getInstance();
 
             $stmt = $db->prepare("
-                SELECT id, type, discount_percent, used, valid_until, usage_limit, current_uses
+                SELECT id, type, discount_percent, discount_amount, used, valid_until, usage_limit, current_uses
                 FROM coupons 
                 WHERE code = ? 
                 AND (valid_until IS NULL OR valid_until >= CURDATE())
@@ -169,36 +169,38 @@ class BookingController extends Controller
             // Check usage limits
             $isLimitReached = false;
 
-            if (!is_null($coupon['usage_limit'])) {
-                $limit = (int)$coupon['usage_limit'];
-                $current = (int)($coupon['current_uses'] ?? 0);
-                if ($current >= $limit) {
+            if (isset($coupon['discount_amount']) && $coupon['discount_amount'] > 0) {
+                // Это подарочная карта (скидка в евро). Игнорируем usage_limit, проверяем остаток баланса и статус 'used'
+                if ($coupon['used'] == 1 || $coupon['discount_amount'] <= 0) {
                     $isLimitReached = true;
                 }
             } else {
-                // Unlimited, but maybe 'used' flag was manually set?
-                // Let's respect 'used' flag if usage_limit is NOT set, just in case legacy logic set used=1 for some reason.
-                // Actually, best to rely on Usage Limit concept. If usage_limit is NULL, it is unlimited.
+                // Обычный процентный купон
+                if (!is_null($coupon['usage_limit'])) {
+                    $limit = (int)$coupon['usage_limit'];
+                    $current = (int)($coupon['current_uses'] ?? 0);
+                    if ($current >= $limit) {
+                        $isLimitReached = true;
+                    }
+                } elseif ($coupon['used'] == 1) {
+                    $isLimitReached = true;
+                }
             }
-
-            // Legacy check for 'used' flag if usage_limit logic didn't trigger
-            // If usage_limit IS set, we trust current < limit.
-            // If usage_limit is NULL, we allow it.
-            // But what about the 'auto' / 'promo' types legacy check?
-            // "if ($coupon['type'] === 'auto' && $coupon['used'] >= 1)"
 
             // New unified check:
             if ($isLimitReached) {
                 $this->json([
                     'valid' => false,
-                    'message' => 'Coupon usage limit reached'
+                    'message' => 'Coupon usage limit reached or balance exhausted'
                 ]);
                 return;
             }
 
             $this->json([
                 'valid' => true,
-                'discount_percent' => (int)$coupon['discount_percent'],
+                'discount_percent' => isset($coupon['discount_percent']) ? (float)$coupon['discount_percent'] : null,
+                'discount_amount' => isset($coupon['discount_amount']) ? (float)$coupon['discount_amount'] : null,
+                'discount_type' => isset($coupon['discount_amount']) ? 'amount' : 'percent',
                 'message' => 'Coupon valid'
             ]);
         } catch (\Exception $e) {
@@ -240,6 +242,7 @@ class BookingController extends Controller
             'language' => $input['language'] ?? $_SESSION['language'] ?? 'sk',
             'coupon_code' => $input['coupon_code'] ?? null,
             'discount_percent' => isset($input['discount_percent']) ? (float)$input['discount_percent'] : null,
+            'discount_amount' => isset($input['discount_amount']) ? (float)$input['discount_amount'] : null,
             'original_price' => isset($input['original_price']) ? (float)$input['original_price'] : null
         ];
 

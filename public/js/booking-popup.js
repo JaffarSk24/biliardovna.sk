@@ -467,12 +467,23 @@ document.addEventListener('DOMContentLoaded', function() {
         priceDisplay.className = 'popup-price-display';
 
         if (appliedCoupon) {
-            const discountedPrice = price * (1 - appliedCoupon.discount / 100);
+            let discountedPrice = price;
+            let discountDisplay = '';
+            
+            if (appliedCoupon.discountType === 'amount') {
+                const usedAmount = Math.min(price, appliedCoupon.discountAmount);
+                discountedPrice = Math.max(0, price - usedAmount);
+                discountDisplay = `(-${usedAmount.toFixed(2)} €)`;
+            } else {
+                discountedPrice = price * (1 - appliedCoupon.discountPercent / 100);
+                discountDisplay = `(-${appliedCoupon.discountPercent}%)`;
+            }
+            
             priceDisplay.innerHTML = `
                 <strong>${tr('total', 'Итого')}:</strong>
                 <span style="text-decoration: line-through; color: var(--color-muted); margin-right: 10px;">${price.toFixed(2)} €</span>
                 <span style="color: var(--accent-color); font-size: 1.2em;">${discountedPrice.toFixed(2)} €</span>
-                <span style="color: #4caf50; margin-left: 10px;">(-${appliedCoupon.discount}%)</span>
+                <span style="color: #4caf50; margin-left: 10px;">${discountDisplay}</span>
             `;
         } else {
             priceDisplay.innerHTML = `<strong>${tr('total', 'Итого')}:</strong> ${price.toFixed(2)} €`;
@@ -522,7 +533,12 @@ document.addEventListener('DOMContentLoaded', function() {
           const data = await response.json();
 
           if (data.valid) {
-            appliedCoupon = { code, discount: data.discount_percent };
+            appliedCoupon = { 
+                code, 
+                discountPercent: data.discount_percent,
+                discountAmount: data.discount_amount,
+                discountType: data.discount_type 
+            };
             couponMessage.textContent = msgValid || 'Код действителен! Скидка применена';
             couponMessage.className = 'coupon-message valid';
             couponInput.disabled = true;
@@ -616,10 +632,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (appliedCoupon) {
             data.coupon_code = appliedCoupon.code;
-            data.discount_percent = appliedCoupon.discount;
+            if (appliedCoupon.discountType === 'amount') {
+                data.discount_amount = appliedCoupon.discountAmount;
+            } else {
+                data.discount_percent = appliedCoupon.discountPercent;
+            }
             const currentTotal = selectedSlots.reduce((sum, s) => sum + s.price, 0);
             data.original_price = currentTotal;
-            data.final_price = currentTotal * (1 - appliedCoupon.discount / 100);
+            
+            if (appliedCoupon.discountType === 'amount') {
+                data.final_price = Math.max(0, currentTotal - appliedCoupon.discountAmount);
+            } else {
+                data.final_price = currentTotal * (1 - appliedCoupon.discountPercent / 100);
+            }
         }
 
         fetch('/api/booking/create', {

@@ -18,7 +18,7 @@ if (!isset($_SESSION['access_granted'])) {
         header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
     }
-    
+
     echo '<!DOCTYPE html>
     <html>
     <head>
@@ -108,219 +108,219 @@ $router = new Router();
 $language = $router->getLanguage();
 
 // Public routes - Homepage
-$router->get('/', function() use ($language) {
+$router->get('/', function () use ($language) {
     $controller = new PageController($language);
     $controller->home();
 });
 
 // Booking page
-$router->get('/rezervacia', function() use ($language) {
+$router->get('/rezervacia', function () use ($language) {
     $controller = new BookingController($language);
     $controller->index();
 });
 
-$router->get('/booking', function() use ($language) {
+$router->get('/booking', function () use ($language) {
     $controller = new BookingController($language);
     $controller->index();
 });
 
 // Public routes - Static pages (SK without prefix)
-$router->get('/biliard-a-hry', function() use ($language) {
+$router->get('/biliard-a-hry', function () use ($language) {
     $controller = new PageController($language);
     $controller->games();
 });
 
-$router->get('/cennik', function() use ($language) {
+$router->get('/cennik', function () use ($language) {
     $controller = new PageController($language);
     $controller->pricing();
 });
 
-$router->get('/akcie', function() use ($language) {
+$router->get('/akcie', function () use ($language) {
     $controller = new PageController($language);
     $controller->deals();
 });
 
-$router->get('/kaviaren', function() use ($language) {
+$router->get('/kaviaren', function () use ($language) {
     $controller = new PageController($language);
     $controller->cafe();
 });
 
-$router->get('/kontakt', function() use ($language) {
+$router->get('/kontakt', function () use ($language) {
     $controller = new PageController($language);
     $controller->contact();
 });
 
 // Blog routes
-$router->get('/blog', function() use ($router, $language) {
+$router->get('/blog', function () use ($router, $language) {
     $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
     $twig = new \Twig\Environment($loader, [
         'cache' => false,
         'debug' => (bool)($_ENV['APP_DEBUG'] ?? false),
     ]);
-    
+
     // Load translations
     $translationsFile = __DIR__ . '/translations/' . $language . '.php';
     $translations = file_exists($translationsFile) ? require $translationsFile : [];
-    
+
     // Add globals
     $twig->addGlobal('router', $router);
     $twig->addGlobal('language', $language);
     $twig->addGlobal('translations', $translations);
-    
+
     // Add url function
     $twig->addFunction(new \Twig\TwigFunction('url', function (string $path, ?string $lang = null) use ($router) {
         return $router->url($path, $lang);
     }));
-    
+
     // Add trans filter
     $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) use ($translations) {
         return $translations[$key] ?? $key;
     }));
-    
+
     $controller = new \App\Controllers\BlogController($twig, $router);
     $controller->index();
 });
 
-$router->get('/blog/{slug}', function($slug) use ($router, $language) {
+$router->get('/blog/{slug}', function ($slug) use ($router, $language) {
     $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
     $twig = new \Twig\Environment($loader, [
         'cache' => false,
         'debug' => (bool)($_ENV['APP_DEBUG'] ?? false),
     ]);
-    
+
     // Load translations
     $translationsFile = __DIR__ . '/translations/' . $language . '.php';
     $translations = file_exists($translationsFile) ? require $translationsFile : [];
-    
+
     // Add globals
     $twig->addGlobal('router', $router);
     $twig->addGlobal('language', $language);
     $twig->addGlobal('translations', $translations);
-    
+
     // Add url function
     $twig->addFunction(new \Twig\TwigFunction('url', function (string $path, ?string $lang = null) use ($router) {
         return $router->url($path, $lang);
     }));
-    
+
     // Add trans filter
     $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) use ($translations) {
         return $translations[$key] ?? $key;
     }));
-    
+
     $controller = new \App\Controllers\BlogController($twig, $router);
     $controller->show($slug);
 });
 
 // Public routes - Static pages (EN/RU/UA/DE with prefix - using English slugs)
-$router->get('/games', function() use ($language) {
+$router->get('/games', function () use ($language) {
     $controller = new PageController($language);
     $controller->games();
 });
 
-$router->get('/pricing', function() use ($language) {
+$router->get('/pricing', function () use ($language) {
     $controller = new PageController($language);
     $controller->pricing();
 });
 
-$router->get('/deals', function() use ($language) {
+$router->get('/deals', function () use ($language) {
     $controller = new PageController($language);
     $controller->deals();
 });
 
-$router->get('/cafe', function() use ($language) {
+$router->get('/cafe', function () use ($language) {
     $controller = new PageController($language);
     $controller->cafe();
 });
 
-$router->get('/contact', function() use ($language) {
+$router->get('/contact', function () use ($language) {
     $controller = new PageController($language);
     $controller->contact();
 });
 
 // Booking API routes
-$router->get('/api/slots', function() use ($language) {
+$router->get('/api/slots', function () use ($language) {
     $controller = new BookingController($language);
     $controller->getAvailableSlots();
 });
 
-$router->get('/api/price', function() use ($language) {
+$router->get('/api/price', function () use ($language) {
     $controller = new BookingController($language);
     $controller->calculatePrice();
 });
 
-$router->get('/api/resources-availability', function() use ($language) {
+$router->get('/api/resources-availability', function () use ($language) {
     $controller = new BookingController($language);
     $controller->getResourcesAvailability();
 });
 
-$router->get('/api/coupon/validate', function() use ($language) {
+$router->get('/api/coupon/validate', function () use ($language) {
     $controller = new BookingController($language);
     $controller->validateCoupon();
 });
 
-$router->post('/api/booking/create', function() use ($language) {
+$router->post('/api/booking/create', function () use ($language) {
     $controller = new BookingController($language);
     $controller->create();
 });
 
-$router->post('/booking/submit', function() use ($language) {
+$router->post('/booking/submit', function () use ($language) {
     $controller = new BookingController($language);
     $controller->submit();
 });
 
-$router->get('/booking/success', function() use ($language) {
+$router->get('/booking/success', function () use ($language) {
     $controller = new BookingController($language);
     $controller->success();
 });
 
-$router->get('/booking/cancel', function() use ($language) {
+$router->get('/booking/cancel', function () use ($language) {
     $controller = new BookingController($language);
     $controller->cancel();
 });
 
 // Review page
-$router->get('/review', function() use ($language) {
+$router->get('/review', function () use ($language) {
     $controller = new \App\Controllers\ReviewController($language);
     $controller->show();
 });
 
 // Admin routes
-$router->get('/admin/login', function() use ($language) {
+$router->get('/admin/login', function () use ($language) {
     $controller = new AuthController($language);
     $controller->showLogin();
 });
 
-$router->post('/admin/login', function() use ($language) {
+$router->post('/admin/login', function () use ($language) {
     $controller = new AuthController($language);
     $controller->login();
 });
 
-$router->get('/admin/logout', function() use ($language) {
+$router->get('/admin/logout', function () use ($language) {
     $controller = new AuthController($language);
     $controller->logout();
 });
 
-$router->get('/admin', function() use ($language) {
+$router->get('/admin', function () use ($language) {
     $controller = new AdminController($language);
     $controller->dashboard();
 });
 
-$router->get('/admin/bookings', function() use ($language) {
+$router->get('/admin/bookings', function () use ($language) {
     $controller = new AdminController($language);
     $controller->listBookings();
 });
 
-$router->post('/admin/bookings/update', function() use ($language) {
+$router->post('/admin/bookings/update', function () use ($language) {
     $controller = new AdminController($language);
     $controller->updateBookingStatus();
 });
 
-$router->get('/admin/holidays', function() use ($language) {
+$router->get('/admin/holidays', function () use ($language) {
     $controller = new AdminController($language);
     $controller->manageHolidays();
 });
 
-$router->get('/admin/promo', function() use ($router, $language) {
+$router->get('/admin/promo', function () use ($router, $language) {
     $pdo = \App\Database\Database::getInstance();
 
     $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
@@ -334,14 +334,20 @@ $router->get('/admin/promo', function() use ($router, $language) {
     $twig->addFunction(new \Twig\TwigFunction('url', function (string $path, ?string $lang = null) use ($router) {
         return $router->url($path, $lang);
     }));
-    $twig->addFunction(new \Twig\TwigFunction('t', function ($key) { return $key; }));
-    $twig->addFilter(new \Twig\TwigFilter('t', function ($key) { return $key; }));
-    $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) { return $key; }));
+    $twig->addFunction(new \Twig\TwigFunction('t', function ($key) {
+        return $key;
+    }));
+    $twig->addFilter(new \Twig\TwigFilter('t', function ($key) {
+        return $key;
+    }));
+    $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) {
+        return $key;
+    }));
 
     adminPromoList($pdo, $twig);
 });
 
-$router->get('/admin/promo/new', function() use ($router, $language) {
+$router->get('/admin/promo/new', function () use ($router, $language) {
     $pdo = \App\Database\Database::getInstance();
 
     $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
@@ -355,14 +361,20 @@ $router->get('/admin/promo/new', function() use ($router, $language) {
     $twig->addFunction(new \Twig\TwigFunction('url', function (string $path, ?string $lang = null) use ($router) {
         return $router->url($path, $lang);
     }));
-    $twig->addFunction(new \Twig\TwigFunction('t', function ($key) { return $key; }));
-    $twig->addFilter(new \Twig\TwigFilter('t', function ($key) { return $key; }));
-    $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) { return $key; }));
+    $twig->addFunction(new \Twig\TwigFunction('t', function ($key) {
+        return $key;
+    }));
+    $twig->addFilter(new \Twig\TwigFilter('t', function ($key) {
+        return $key;
+    }));
+    $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) {
+        return $key;
+    }));
 
     adminPromoForm($pdo, $twig);
 });
 
-$router->get('/admin/promo/edit', function() use ($router, $language) {
+$router->get('/admin/promo/edit', function () use ($router, $language) {
     $pdo = \App\Database\Database::getInstance();
 
     $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
@@ -376,14 +388,20 @@ $router->get('/admin/promo/edit', function() use ($router, $language) {
     $twig->addFunction(new \Twig\TwigFunction('url', function (string $path, ?string $lang = null) use ($router) {
         return $router->url($path, $lang);
     }));
-    $twig->addFunction(new \Twig\TwigFunction('t', function ($key) { return $key; }));
-    $twig->addFilter(new \Twig\TwigFilter('t', function ($key) { return $key; }));
-    $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) { return $key; }));
+    $twig->addFunction(new \Twig\TwigFunction('t', function ($key) {
+        return $key;
+    }));
+    $twig->addFilter(new \Twig\TwigFilter('t', function ($key) {
+        return $key;
+    }));
+    $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) {
+        return $key;
+    }));
 
     adminPromoForm($pdo, $twig);
 });
 
-$router->post('/admin/promo/save', function() use ($router, $language) {
+$router->post('/admin/promo/save', function () use ($router, $language) {
     $pdo = \App\Database\Database::getInstance();
 
     $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
@@ -397,56 +415,62 @@ $router->post('/admin/promo/save', function() use ($router, $language) {
     $twig->addFunction(new \Twig\TwigFunction('url', function (string $path, ?string $lang = null) use ($router) {
         return $router->url($path, $lang);
     }));
-    $twig->addFunction(new \Twig\TwigFunction('t', function ($key) { return $key; }));
-    $twig->addFilter(new \Twig\TwigFilter('t', function ($key) { return $key; }));
-    $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) { return $key; }));
+    $twig->addFunction(new \Twig\TwigFunction('t', function ($key) {
+        return $key;
+    }));
+    $twig->addFilter(new \Twig\TwigFilter('t', function ($key) {
+        return $key;
+    }));
+    $twig->addFilter(new \Twig\TwigFilter('trans', function ($key) {
+        return $key;
+    }));
 
     adminPromoSave($pdo, $twig);
 });
 
 // Telegram webhook endpoint (for future implementation)
-$router->post('/webhook/telegram', function() {
+$router->post('/webhook/telegram', function () {
     $logFile = __DIR__ . '/telegram_debug.log';
     file_put_contents($logFile, date('Y-m-d H:i:s') . "\n" . file_get_contents('php://input') . "\n\n", FILE_APPEND);
     $token = $_ENV['TELEGRAM_BOT_TOKEN'] ?? null;
     $secret = $_ENV['TELEGRAM_WEBHOOK_SECRET'] ?? null;
     $allowedChats = array_map('trim', explode(',', $_ENV['TELEGRAM_ALLOWED_CHATS'] ?? ''));
-    
+
     if (!$token) {
         http_response_code(500);
         exit;
     }
-    
+
     if ($secret && ($_GET['secret'] ?? '') !== $secret) {
         http_response_code(403);
         exit;
     }
-    
+
     $update = json_decode(file_get_contents('php://input'), true);
-    
+
     if (isset($update['callback_query'])) {
         $callbackQuery = $update['callback_query'];
         $data = $callbackQuery['data'];
         $messageId = $callbackQuery['message']['message_id'];
         $chatId = $callbackQuery['message']['chat']['id'];
-        
+
         // Check access
         if (!in_array((string)$chatId, $allowedChats, true)) {
             http_response_code(403);
             exit;
         }
-        
+
         if (strpos($data, 'confirm_') === 0) {
             $bookingId = (int)str_replace('confirm_', '', $data);
-            
+
             $bookingService = new \App\Services\BookingService();
             $bookingService->updateStatus($bookingId, 'confirmed');
-            
+
             $originalText = $callbackQuery['message']['text'];
             $lines = explode("\n", $originalText);
             $lines[0] = '✅ Potvrdené!';
             $newText = implode("\n", $lines);
-            
+
             $url = "https://api.telegram.org/bot{$token}/editMessageText";
             $editData = [
                 'chat_id' => $chatId,
@@ -459,20 +483,20 @@ $router->post('/webhook/telegram', function() {
                     ]]
                 ])
             ];
-            
+
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_exec($ch);
             curl_close($ch);
-            
+
             $answerUrl = "https://api.telegram.org/bot{$token}/answerCallbackQuery";
             $answerData = [
                 'callback_query_id' => $callbackQuery['id'],
                 'text' => 'Rezervácia potvrdená ✅'
             ];
-            
+
             $ch = curl_init($answerUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
@@ -481,15 +505,15 @@ $router->post('/webhook/telegram', function() {
             curl_close($ch);
         } elseif (strpos($data, 'cancel_') === 0) {
             $bookingId = (int)str_replace('cancel_', '', $data);
-            
+
             $bookingService = new \App\Services\BookingService();
             $bookingService->updateStatus($bookingId, 'cancelled');
-            
+
             $originalText = $callbackQuery['message']['text'];
             $lines = explode("\n", $originalText);
             $lines[0] = '❌ Zrušené!';
             $newText = implode("\n", $lines);
-            
+
             $url = "https://api.telegram.org/bot{$token}/editMessageText";
             $editData = [
                 'chat_id' => $chatId,
@@ -497,20 +521,20 @@ $router->post('/webhook/telegram', function() {
                 'text' => $newText,
                 'parse_mode' => 'HTML'
             ];
-            
+
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_exec($ch);
             curl_close($ch);
-            
+
             $answerUrl = "https://api.telegram.org/bot{$token}/answerCallbackQuery";
             $answerData = [
                 'callback_query_id' => $callbackQuery['id'],
                 'text' => 'Rezervácia zrušená ❌'
             ];
-            
+
             $ch = curl_init($answerUrl);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
@@ -518,18 +542,17 @@ $router->post('/webhook/telegram', function() {
             curl_exec($ch);
             curl_close($ch);
         }
-        
     } elseif (isset($update['message'])) {
         $message = $update['message'];
         $chatId = $message['chat']['id'];
         $text = $message['text'] ?? '';
-        
+
         // Check access
         if (!in_array((string)$chatId, $allowedChats, true)) {
             http_response_code(403);
             exit;
         }
-        
+
         if ($text === '?') {
             $url = "https://api.telegram.org/bot{$token}/sendMessage";
             $data = [
@@ -537,7 +560,7 @@ $router->post('/webhook/telegram', function() {
                 'text' => 'Zadajte číslo rezervácie:',
                 'reply_markup' => json_encode(['force_reply' => true])
             ];
-            
+
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -551,7 +574,7 @@ $router->post('/webhook/telegram', function() {
                 'text' => 'Zadajte promo kód:',
                 'reply_markup' => json_encode(['force_reply' => true])
             ];
-            
+
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -560,10 +583,10 @@ $router->post('/webhook/telegram', function() {
             curl_close($ch);
         } elseif (isset($message['reply_to_message']) && $message['reply_to_message']['text'] === 'Zadajte promo kód:') {
             $couponCode = trim($text);
-            
+
             try {
                 $conn = \App\Database\Database::getInstance();
-                
+
                 $stmt = $conn->prepare("SELECT id, type, discount_percent, used FROM coupons WHERE code = ?");
                 $stmt->execute([$couponCode]);
                 $coupon = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -575,18 +598,18 @@ $router->post('/webhook/telegram', function() {
                 } else {
                     $stmt = $conn->prepare("UPDATE coupons SET used = used + 1 WHERE id = ?");
                     $stmt->execute([$coupon['id']]);
-                    
+
                     $typeLabel = $coupon['type'] === 'promo' ? '🎁 Promo' : '⭐ Za recenziu';
                     $responseText = "✅ Promo kód <code>{$couponCode}</code> bol úspešne uplatnený!\n\n{$typeLabel}\nZľava: {$coupon['discount_percent']}%";
                 }
-                
+
                 $url = "https://api.telegram.org/bot{$token}/sendMessage";
                 $data = [
                     'chat_id' => $chatId,
                     'text' => $responseText,
                     'parse_mode' => 'HTML'
                 ];
-                
+
                 $ch = curl_init($url);
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -595,13 +618,13 @@ $router->post('/webhook/telegram', function() {
                 curl_close($ch);
             } catch (\Exception $e) {
                 file_put_contents($logFile, "Coupon Error: " . $e->getMessage() . "\n", FILE_APPEND);
-                
+
                 $url = "https://api.telegram.org/bot{$token}/sendMessage";
                 $data = [
                     'chat_id' => $chatId,
                     'text' => "❌ Chyba: " . $e->getMessage()
                 ];
-                
+
                 $ch = curl_init($url);
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -611,35 +634,46 @@ $router->post('/webhook/telegram', function() {
             }
         } elseif (isset($message['reply_to_message']) && $message['reply_to_message']['text'] === 'Zadajte číslo rezervácie:') {
             $bookingId = (int)trim($text);
-            
+
             file_put_contents($logFile, "Searching for booking ID: {$bookingId}\n", FILE_APPEND);
-            
+
             try {
                 file_put_contents($logFile, "Step 1: Getting DB connection\n", FILE_APPEND);
                 $conn = \App\Database\Database::getInstance();
-                
+
                 file_put_contents($logFile, "Step 2: Preparing query\n", FILE_APPEND);
                 $stmt = $conn->prepare("
                     SELECT b.* 
                     FROM bookings b 
                     WHERE b.id = ?
                 ");
-                
+
                 file_put_contents($logFile, "Step 3: Executing query\n", FILE_APPEND);
                 $stmt->execute([$bookingId]);
-                
+
                 file_put_contents($logFile, "Step 4: Fetching result\n", FILE_APPEND);
                 $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
-                
+
                 file_put_contents($logFile, "Step 5: Result = " . json_encode($booking) . "\n", FILE_APPEND);
-                
+
                 if ($booking) {
                     // Get service slug
                     $serviceStmt = $conn->prepare("SELECT slug FROM services WHERE id = ?");
                     $serviceStmt->execute([$booking['service_id']]);
                     $service = $serviceStmt->fetch(\PDO::FETCH_ASSOC);
                     $booking['service_name'] = ucfirst($service['slug'] ?? 'Unknown');
-                    
+
+                    // Get table number from resource name
+                    $resourceStmt = $conn->prepare("SELECT name FROM resources WHERE id = ?");
+                    $resourceStmt->execute([$booking['resource_id']]);
+                    $resourceName = $resourceStmt->fetchColumn();
+
+                    // Extract table number from name (e.g., "Pool - Stôl 2" -> "2")
+                    $tableNumber = $booking['resource_id']; // fallback to resource_id
+                    if ($resourceName && preg_match('/(\d+)/', $resourceName, $matches)) {
+                        $tableNumber = $matches[1];
+                    }
+
                     // Calculate original price if coupon was used
                     $originalPrice = null;
                     $discountPercent = null;
@@ -652,45 +686,45 @@ $router->post('/webhook/telegram', function() {
                             $originalPrice = $booking['price'] / (1 - $discountPercent / 100);
                         }
                     }
-                    
+
                     $statusIcons = [
                         'pending' => '🔔',
                         'confirmed' => '✅',
                         'cancelled' => '❌',
                         'completed' => '🎉'
                     ];
-                    
+
                     $statusTitles = [
                         'pending' => 'Nová rezervácia!',
                         'confirmed' => 'Potvrdené!',
                         'cancelled' => 'Zrušené!',
                         'completed' => 'Dokončené!'
                     ];
-                    
+
                     $status = $booking['status'];
                     $icon = $statusIcons[$status] ?? '📋';
                     $title = $statusTitles[$status] ?? 'Rezervácia';
-                    
+
                     $flags = ['sk' => '🇸🇰', 'ru' => '🇷🇺', 'en' => '🇬🇧', 'uk' => '🇺🇦', 'de' => '🇩🇪'];
                     $flag = $flags[$booking['language']] ?? '🌐';
-                    
+
                     $date = date('d.m.Y', strtotime($booking['booking_date']));
                     $startTime = substr($booking['start_time'], 0, 5);
                     $endTime = substr($booking['end_time'], 0, 5);
-                    
+
                     $messageText = "{$icon} <b>{$title}</b>\n\n";
                     $messageText .= "📅 Dátum: {$date}\n";
                     $messageText .= "🕐 Čas: {$startTime} - {$endTime}\n\n";
                     $messageText .= "🎯 Služba: {$booking['service_name']}\n";
-                    $messageText .= "🎱 Stôl č.: {$booking['resource_id']}\n\n";
+                    $messageText .= "🎱 Stôl č.: {$tableNumber}\n\n";
                     $messageText .= "{$flag} Jazyk: {$booking['language']}\n";
                     $messageText .= "👤 Meno: {$booking['customer_name']}\n";
                     $messageText .= "📞 Telefón: {$booking['customer_phone']}\n\n";
-                    
+
                     if (!empty($booking['notes'])) {
                         $messageText .= "📝 Poznámka: {$booking['notes']}\n\n";
                     }
-                    
+
                     // Price with discount info
                     if ($originalPrice && $discountPercent) {
                         $messageText .= "💰 Spolu: <s>" . number_format($originalPrice, 2) . " €</s> → <b>{$booking['price']} €</b>\n";
@@ -698,9 +732,9 @@ $router->post('/webhook/telegram', function() {
                     } else {
                         $messageText .= "💰 Spolu: {$booking['price']} €\n";
                     }
-                    
+
                     $messageText .= "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
-                    
+
                     $replyMarkup = null;
                     if ($status === 'pending') {
                         $replyMarkup = json_encode([
@@ -716,18 +750,18 @@ $router->post('/webhook/telegram', function() {
                             ]]
                         ]);
                     }
-                    
+
                     $url = "https://api.telegram.org/bot{$token}/sendMessage";
                     $data = [
                         'chat_id' => $chatId,
                         'text' => $messageText,
                         'parse_mode' => 'HTML'
                     ];
-                    
+
                     if ($replyMarkup) {
                         $data['reply_markup'] = $replyMarkup;
                     }
-                    
+
                     $ch = curl_init($url);
                     curl_setopt($ch, CURLOPT_POST, 1);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -740,7 +774,7 @@ $router->post('/webhook/telegram', function() {
                         'chat_id' => $chatId,
                         'text' => "❌ Rezervácia č.: {$bookingId} nebola nájdená"
                     ];
-                    
+
                     $ch = curl_init($url);
                     curl_setopt($ch, CURLOPT_POST, 1);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -753,7 +787,7 @@ $router->post('/webhook/telegram', function() {
             }
         }
     }
-    
+
     echo json_encode(['ok' => true]);
 });
 
