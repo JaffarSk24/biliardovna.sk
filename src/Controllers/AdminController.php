@@ -353,12 +353,18 @@ class AdminController extends Controller
             // Remove existing query params to avoid stacking
             $redirectUrl = strtok($redirectUrl, '?');
 
-            if ($status === 'confirmed') {
+            if ($status === 'confirmed' || $status === 'restore') {
+                if ($status === 'restore') {
+                    $db = \App\Database\Database::getInstance();
+                    $db->prepare("UPDATE bookings SET status = 'pending' WHERE id = ?")->execute([$bookingId]);
+                }
+
                 // Use attemptConfirmation to check for conflicts
                 $result = $bookingService->attemptConfirmation($bookingId, false); // false = manual
 
                 if ($result['success']) {
-                    header('Location: ' . $redirectUrl . '?success=Booking confirmed');
+                    $msg = $status === 'restore' ? 'Booking restored and confirmed' : 'Booking confirmed';
+                    header('Location: ' . $redirectUrl . '?success=' . urlencode($msg));
                 } else {
                     // Check if it was a conflict
                     if (!empty($result['conflict'])) {

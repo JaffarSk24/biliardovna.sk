@@ -29,6 +29,7 @@
                 <th>Customer</th>
                 <th>Price</th>
                 <th>Status</th>
+                <th>Cafe</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -76,6 +77,17 @@
                     {% endif %}
                 </td>
                 <td>
+                    {% if booking.status == 'confirmed' %}
+                        <!-- Extras / POS Button -->
+                        <button type="button" class="btn btn-sm btn-info btn-extras" 
+                                data-id="{{ booking.id }}" 
+                                data-duration="{{ booking.duration_hours|default(1) }}"
+                                title="Cafe & Extras">
+                            ☕
+                        </button>
+                    {% endif %}
+                </td>
+                <td>
                     <form method="POST" action="/admin/bookings/update" style="display: inline-flex; gap: 5px;">
                         <input type="hidden" name="booking_id" value="{{ booking.id }}">
                         
@@ -92,22 +104,22 @@
                                 &#10005;
                             </button>
                         {% elseif booking.status == 'confirmed' %}
-                            <!-- Extras / POS Button -->
-                            <button type="button" class="btn btn-sm btn-info btn-extras" 
-                                    data-id="{{ booking.id }}" 
-                                    data-duration="{{ booking.duration_hours|default(1) }}"
-                                    title="Cafe & Extras">
-                                ☕
-                            </button>
-                            
                             <button type="submit" name="status" value="completed" 
-                                    class="btn btn-sm btn-primary" title="Complete (Guest Arrived)">
+                                    class="btn btn-sm btn-primary" title="Complete (Guest Arrived)"
+                                    onclick="return confirm('Mark this booking as Done?');">
                                 &#10003; Done
                             </button>
                             <button type="submit" name="status" value="cancelled" 
                                     class="btn btn-sm btn-danger" title="Cancel Booking"
                                     onclick="return confirm('Cancel this confirmed booking?');">
                                 Cancel
+                            </button>
+                        {% elseif booking.status in ['completed', 'cancelled'] %}
+                            <button type="submit" name="status" value="restore" 
+                                    class="btn btn-sm btn-secondary" title="Restore Booking"
+                                    style="background-color: #6c757d; border-color: #6c757d; color: white;"
+                                    onclick="return confirm('Restore this booking back to confimed?');">
+                                &#8617; Restore
                             </button>
                         {% endif %}
                     </form>
@@ -117,7 +129,7 @@
             {# User said: "All selected indicated as text under reservation". #}
             {% if booking.extras is defined and booking.extras is not empty %}
             <tr>
-                <td colspan="7" style="padding-top: 0; padding-bottom: 10px; border-top: none;">
+                <td colspan="8" style="padding-top: 0; padding-bottom: 10px; border-top: none;">
                     <div style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 4px; font-size: 0.85em; margin-left: 40px;">
                         <strong>Extras:</strong>
                         {% set extraTotal = 0 %}
