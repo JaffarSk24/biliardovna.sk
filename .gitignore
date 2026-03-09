@@ -6,3 +6,10 @@ logs/
 .idea/
 .vscode/
 public/storage
+
+# Dev/tech utilities (local scripts, not for production)
+generate_gift_cards.php
+gift_cards.md
+seed_cafe.php
+test_parallel_confirm.php
+migrations/schema/010_cafe_and_upselling.sql
