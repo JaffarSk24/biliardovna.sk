@@ -278,7 +278,7 @@ return [
     'booking_error' => 'Fehler beim Senden der Buchung',
     'booking_success_title' => 'Vielen Dank!',
     'booking_success_message' => 'Ihre Buchung wurde erfolgreich erstellt',
-    'success_wait_confirmation' => 'Warten Sie auf einen Anruf vom Clubadministrator zur Bestätigung Ihrer Buchung',
+    'success_wait_confirmation' => 'Bitte warten Sie auf die Buchungsbestätigung per E-Mail',
     'close' => 'Schließen',
 
     // Resources (tables)
@@ -382,7 +382,7 @@ return [
     'notification_table' => 'Tisch №',
     'notification_language' => 'Sprache',
     'notification_coupon' => 'Promo-Code',
-    'email_subject_pending' => 'Ihre Buchungsanfrage - Biliardovna.sk',
+    'email_subject_pending' => 'Buchung bestätigt - Biliardovna.sk',
     'email_subject_confirmed' => 'Buchung bestätigt - Biliardovna.sk',
     'email_subject_cancelled' => 'Buchung storniert - Biliardovna.sk',
     'email_subject_conflict' => 'Buchung storniert (Slot belegt) - Biliardovna.sk',

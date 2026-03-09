@@ -96,37 +96,8 @@
     </div>
 </div>
 
-<div class="admin-card mt-4">
-    <h3>Newest Pending Bookings</h3>
-    {% if pending_bookings %}
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Service</th>
-                    <th>Customer</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for booking in pending_bookings %}
-                <tr>
-                    <td>{{ booking.booking_date|date('d.m.Y') }}</td>
-                    <td>{{ booking.start_time|slice(0,5) }}</td>
-                    <td>{{ booking.service_name }}</td>
-                    <td>{{ booking.customer_name }}</td>
-                    <td>
-                        <a href="/admin/bookings?status=pending" class="btn btn-sm btn-primary">Review</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p style="text-align: center; padding: 20px; color: var(--color-muted);">No pending bookings.</p>
-    {% endif %}
-</div>
+
+
 
 <style>
 .dashboard-stats {

@@ -92,18 +92,8 @@
                         <input type="hidden" name="booking_id" value="{{ booking.id }}">
                         
 
-                        {# Status Actions based on current status #}
-                        {% if booking.status == 'pending' %}
-                            <button type="submit" name="status" value="confirmed" 
-                                    class="btn btn-sm btn-success" title="Approve">
-                                &#10003;
-                            </button>
-                            <button type="submit" name="status" value="cancelled" 
-                                    class="btn btn-sm btn-danger" title="Reject"
-                                    onclick="return confirm('Reject this booking?');">
-                                &#10005;
-                            </button>
-                        {% elseif booking.status == 'confirmed' %}
+                    {# Status Actions based on current status #}
+                        {% if booking.status == 'confirmed' %}
                             <button type="submit" name="status" value="completed" 
                                     class="btn btn-sm btn-primary" title="Complete (Guest Arrived)"
                                     onclick="return confirm('Mark this booking as Done?');">

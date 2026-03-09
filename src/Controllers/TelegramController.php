@@ -55,24 +55,7 @@ class TelegramController extends Controller
             exit;
         }
 
-        if (strpos($data, 'confirm_') === 0) {
-            $bookingId = (int)str_replace('confirm_', '', $data);
-            $bookingService = new BookingService();
-            // Use attemptConfirmation for conflict check
-            $result = $bookingService->attemptConfirmation($bookingId, false);
-
-            if ($result['success']) {
-                $this->updateTelegramMessageText($bookingId, '✅ Potvrdené!', $token, $chatId, $messageId, $callbackQuery['message']['text']);
-            } else {
-                // Determine failure reason
-                if (!empty($result['conflict'])) {
-                    $this->updateTelegramMessageText($bookingId, '❌ Zrušené (Termín obsadený)!', $token, $chatId, $messageId, $callbackQuery['message']['text']);
-                    // Also trigger alert/answerCallbackQuery with text?
-                } else {
-                    $this->updateTelegramMessageText($bookingId, '⚠️ Chyba: ' . ($result['error'] ?? 'Unknown'), $token, $chatId, $messageId, $callbackQuery['message']['text']);
-                }
-            }
-        } elseif (strpos($data, 'cancel_') === 0) {
+        if (strpos($data, 'cancel_') === 0) {
             $bookingId = (int)str_replace('cancel_', '', $data);
             $bookingService = new BookingService();
             $bookingService->updateStatus($bookingId, 'cancelled');
@@ -308,14 +291,7 @@ class TelegramController extends Controller
                 $messageText .= "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 
                 $replyMarkup = null;
-                if ($status === 'pending') {
-                    $replyMarkup = json_encode([
-                        'inline_keyboard' => [[
-                            ['text' => '✅ Potvrdiť', 'callback_data' => 'confirm_' . $bookingId],
-                            ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $bookingId]
-                        ]]
-                    ]);
-                } elseif ($status === 'confirmed') {
+                if (in_array($status, ['confirmed', 'pending'])) {
                     $replyMarkup = json_encode([
                         'inline_keyboard' => [[
                             ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $bookingId]

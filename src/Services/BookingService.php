@@ -191,7 +191,7 @@ class BookingService
             'end_time' => $data['end_time'],
             'duration_hours' => $durationHours,
             'price' => $price,
-            'status' => 'pending',
+            'status' => 'confirmed',
             'cancellation_token' => bin2hex(random_bytes(32)),
             'notes' => $data['notes'] ?? null,
             'coupon_redeemed' => $couponCode,

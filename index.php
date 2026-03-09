@@ -533,8 +533,9 @@ $router->post('/webhook/telegram', function () {
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_exec($ch);
+                $resEdit = curl_exec($ch);
                 curl_close($ch);
+                file_put_contents(__DIR__ . '/telegram_debug.log', "EDIT RESPONSE: " . $resEdit . "\n", FILE_APPEND);
 
                 $answerUrl = "https://api.telegram.org/bot{$token}/answerCallbackQuery";
                 $answerData = [
@@ -546,8 +547,9 @@ $router->post('/webhook/telegram', function () {
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_exec($ch);
+                $resAnswer = curl_exec($ch);
                 curl_close($ch);
+                file_put_contents(__DIR__ . '/telegram_debug.log', "ANSWER RESPONSE: " . $resAnswer . "\n", FILE_APPEND);
             } elseif (strpos($data, 'cancel_') === 0) {
                 $bookingId = (int)str_replace('cancel_', '', $data);
 

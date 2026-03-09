@@ -252,10 +252,10 @@ class BookingController extends Controller
             if ($result['success']) {
                 $booking = $result['booking'];
 
-                $this->notificationService->sendTelegramNotification($booking, 'new');
+                $this->notificationService->sendTelegramNotification($booking, 'confirmed');
 
                 if (!empty($booking['customer_email'])) {
-                    $this->notificationService->sendEmailNotification($booking);
+                    $this->notificationService->sendEmailNotification($booking, 'confirmed');
                 }
 
                 $this->json([
@@ -320,7 +320,7 @@ class BookingController extends Controller
 
         if ($result['success']) {
             $booking = $result['booking'];
-            $this->notificationService->sendTelegramNotification($booking, 'new');
+            $this->notificationService->sendTelegramNotification($booking, 'confirmed');
 
             if (isset($_POST['ajax'])) {
                 $this->json($result);

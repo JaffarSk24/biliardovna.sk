@@ -99,9 +99,6 @@ class AdminController extends Controller
             ORDER BY amount DESC
         ")->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-        $pendingBookings = $this->bookingModel->getPending();
-        $pendingBookings = $this->formatBookings($pendingBookings);
-
         // Calculate total popularity for progress bars (100% base)
         $totalPopularity = array_sum($popularity);
 
@@ -110,8 +107,8 @@ class AdminController extends Controller
             'popularity' => $popularity,
             'total_popularity' => $totalPopularity,
             'revenue' => (float)$revenue,
-            'revenue_breakdown' => $revenueBreakdown, // Pass breakdown
-            'pending_bookings' => $pendingBookings,
+            'revenue_breakdown' => $revenueBreakdown,
+            'pending_bookings' => [], // Pending no longer used — bookings auto-confirmed
             'page_title' => 'Admin Dashboard',
             'start_date' => $startDate,
             'end_date' => $endDate

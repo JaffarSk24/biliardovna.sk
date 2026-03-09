@@ -50,10 +50,9 @@ class NotificationService
             'parse_mode' => 'HTML'
         ];
 
-        if ($type === 'new') {
+        if ($type === 'new' || $type === 'confirmed') {
             $data['reply_markup'] = json_encode([
                 'inline_keyboard' => [[
-                    ['text' => '✅ Potvrdiť', 'callback_data' => 'confirm_' . $booking['id']],
                     ['text' => '❌ Zrušiť', 'callback_data' => 'cancel_' . $booking['id']]
                 ]]
             ]);
@@ -600,8 +599,8 @@ class NotificationService
             'cancelled' => $this->trans('status_cancelled')
         ];
 
-        $statusColor = $statusColors[$booking['status']] ?? '#ff9800';
-        $statusLabel = $statusLabels[$booking['status']] ?? $this->trans('status_pending');
+        $statusColor = $statusColors[$booking['status']] ?? '#4caf50';
+        $statusLabel = $statusLabels[$booking['status']] ?? $this->trans('status_confirmed');
 
         $html = "
         <html>
@@ -615,11 +614,7 @@ class NotificationService
                 <p>{$message}</p>";
 
         if ($booking['status'] === 'pending') {
-            $html .= "
-                <p style='margin: 15px 0;'>
-                    <strong>{$this->trans('email_pending_wait_call')}</strong><br>
-                    {$this->trans('email_pending_not_valid')}
-                </p>";
+            // Pending block is no longer used (bookings are auto-confirmed)
         }
 
         $html .= "
