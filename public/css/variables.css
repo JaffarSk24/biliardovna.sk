@@ -13,7 +13,7 @@
     --secondary-color: var(--color-espresso);
     --accent-color: var(--color-gold);
     --accent-hover: #b8923d;
-    --background-color: var(--color-black);
+    --background-color: var(--color-espresso);
     --surface-color: rgba(255,255,255,0.03);   /* полупрозрачный фон для панелей на темном фоне */
     --card-bg: var(--color-ivory);             /* для светлых карточек/форм (можно переключать на surface-color) */
     --text-color: #efefe9;                     /* основной текст на темном фоне */
