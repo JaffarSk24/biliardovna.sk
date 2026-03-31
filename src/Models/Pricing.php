@@ -8,6 +8,12 @@ class Pricing extends Model
     
     public function getPriceForSlot(int $serviceId, int $dayOfWeek, string $time, bool $isHoliday = false): ?float
     {
+        // For holidays, we use Saturday (6) pricing as requested
+        if ($isHoliday) {
+            $dayOfWeek = 6;
+            $isHoliday = false; // We use regular Saturday prices
+        }
+
         $sql = "
             SELECT price_per_hour
             FROM pricing
