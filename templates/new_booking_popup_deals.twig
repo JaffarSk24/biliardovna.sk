@@ -21,19 +21,17 @@
         <svg class="service-icon"><use href="#icon-shuffleboard"></use></svg>
         <span>{{ t.service_shuffleboard_name|default('Shuffleboard') }}</span>
       </button>
-      {# <button type="button" class="service-tab" data-service="4" data-icon="icon-football">
+      <button type="button" class="service-tab" data-service="4" data-icon="icon-football">
         <svg class="service-icon"><use href="#icon-football"></use></svg>
         <span>{{ t.games_foosball_title|default('Stolný futbal') }}</span>
-      </button> #}
+      </button>
     </div>
 
     <!-- Hidden select used to synchronize with booking-popup.js -->
     <select id="popup-service" style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;">
       <option value="">{{ t.select_service|default('Выберите услугу') }}</option>
       {% for service in services %}
-        {% if service.id != 4 %}
           <option value="{{ service.id }}">{{ service.name }}</option>
-        {% endif %}
       {% endfor %}
     </select>
 

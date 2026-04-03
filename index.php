@@ -403,8 +403,9 @@ $router->post('/admin/popup/save', function () use ($language) {
 $router->get('/api/blocked-dates', function () {
     $db = \App\Database\Database::getInstance();
     $dates = $db->query("SELECT date FROM calendar_blocked_dates ORDER BY date ASC")->fetchAll(\PDO::FETCH_COLUMN);
+    $holidays = $db->query("SELECT holiday_date FROM holidays ORDER BY holiday_date ASC")->fetchAll(\PDO::FETCH_COLUMN);
     header('Content-Type: application/json');
-    echo json_encode(['dates' => $dates]);
+    echo json_encode(['dates' => $dates, 'holidays' => $holidays]);
 });
 
 $router->get('/admin/promo', function () use ($language) {

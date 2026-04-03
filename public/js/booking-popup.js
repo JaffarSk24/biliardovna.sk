@@ -69,6 +69,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function isDateAllowed(dateStr) {
       if (!dateStr) return false;
       if (window.dealDateRestriction === 'weekdays') {
+        // Block holidays
+        if (typeof holidayDates !== 'undefined' && holidayDates.includes(dateStr)) {
+          return false;
+        }
+        
         const [y, m, d] = dateStr.split('-').map(Number); // local date (no TZ pitfalls)
         const dt = new Date(y, m - 1, d);
         const dow = dt.getDay(); // 0 Sun, 6 Sat
@@ -224,10 +229,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fetch blocked dates once
     let blockedDates = [];
+    let holidayDates = [];
     fetch('/api/blocked-dates')
         .then(r => r.json())
         .then(data => {
             if (data.dates) blockedDates = data.dates;
+            if (data.holidays) holidayDates = data.holidays;
         })
         .catch(err => console.error('Error fetching blocked dates:', err));
 

@@ -158,19 +158,19 @@ class PageController extends Controller
                 'price_evening' => '8',
                 'price_holiday' => '10',
                 'tables_count' => 6
-            ]
-            /*[
+            ],
+            [
                 'id' => 4,
                 'name' => $translations['service_table-football_name'] ?? 'Stolný futbal',
                 'short_description' => $translations['service_table-football_short'] ?? 'Stolný futbal',
                 'full_description' => $translations['service_table-football_full'] ?? '',
                 'image' => '/public/images/football.webp',
-                'price_morning' => '4',
-                'price_afternoon' => '5',
-                'price_evening' => '6',
-                'price_holiday' => '8',
+                'price_morning' => '5',
+                'price_afternoon' => '6',
+                'price_evening' => '8',
+                'price_holiday' => '10',
                 'tables_count' => 2
-            ]*/
+            ]
         ];
 
         $services[] = [
