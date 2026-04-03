@@ -73,24 +73,19 @@
                                 <span>{{ 'holidays'|trans }}</span>
                                 <span>5,00 €/{{ 'hour'|trans }}</span>
                             </div>
-                        {# {% elseif service.id == 4 %}
+                        {% elseif service.id == 4 %}
                             <div class="pricing-row">
-                                <span>16:00 - 19:00</span>
-                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                                <span>{{ 'pricing_monday'|trans }} - {{ 'pricing_thursday'|trans }}</span>
+                                <span>4,00 €/{{ 'hour'|trans }}</span>
                             </div>
                             <div class="pricing-row">
-                                <span>19:00 - 20:00</span>
-                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
-                            </div>
-                            <div class="pricing-row">
-                                <span>20:00 - 00:00</span>
-                                <span>4,00 - 6,00 €/{{ 'hour'|trans }}</span>
+                                <span>{{ 'pricing_friday'|trans }} - {{ 'pricing_sunday'|trans }}</span>
+                                <span>4,00 - 5,00 €/{{ 'hour'|trans }}</span>
                             </div>
                             <div class="pricing-row highlight">
                                 <span>{{ 'holidays'|trans }}</span>
-                                <span>6,50 - 7,00 €/{{ 'hour'|trans }}</span>
+                                <span>5,00 €/{{ 'hour'|trans }}</span>
                             </div>
-                        #}
                         {% elseif service.id == 5 %}
                             <div class="pricing-row">
                                 <span>{{ 'pricing_monday'|trans }} - {{ 'pricing_thursday'|trans }}</span>
