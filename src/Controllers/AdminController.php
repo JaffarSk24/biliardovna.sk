@@ -690,7 +690,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Download Report (CSV)
+     * Download Report (XLSX)
      */
     public function downloadReport(): void
     {
@@ -701,32 +701,108 @@ class AdminController extends Controller
 
         $reportData = $this->getReportData($type, $start, $end, $granularity);
 
-        $filename = "report_{$type}_{$start}_{$end}.csv";
+        $filename = "report_{$type}_{$start}_{$end}.xlsx";
 
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-
-        $output = fopen('php://output', 'w');
-        fputs($output, "\xEF\xBB\xBF"); // BOM
-
-        // Output Headers
-        fputcsv($output, $reportData['headers'], ",", "\"", "\\"); // Explicit escape char for PHP 8.1+
-
-        // Output Rows
-        foreach ($reportData['rows'] as $row) {
-            fputcsv($output, (array)$row, ",", "\"", "\\");
+        $excelData = [];
+        
+        // Add title and meta
+        $excelData[] = ['<b>' . strtoupper($type) . ' REPORT</b>'];
+        $excelData[] = ['<b>Period</b>', $start . ' - ' . $end];
+        $excelData[] = ['<b>Granularity</b>', ucfirst($granularity)];
+        $excelData[] = [];
+        
+        $headers = $reportData['headers'];
+        
+        if (!empty($reportData['grouped_data'])) {
+            foreach ($reportData['grouped_data'] as $groupName => $group) {
+                // For non-total granularity, add Group Title
+                if ($granularity !== 'total') {
+                    $excelData[] = ['<b>' . $groupName . '</b>'];
+                }
+                
+                if (isset($group['services'])) {
+                    // Tables / nested mode
+                    foreach ($group['services'] as $serviceName => $serviceData) {
+                        $excelData[] = ['<center><b>' . $serviceName . '</b></center>'];
+                        
+                        // Header
+                        $boldHeaders = array_map(fn($h) => '<b>'.$h.'</b>', $headers);
+                        $excelData[] = $boldHeaders;
+                        
+                        // Rows
+                        foreach ($serviceData['rows'] as $row) {
+                            $excelData[] = array_values((array)$row);
+                        }
+                        
+                        // Subtotal
+                        if (isset($serviceData['subtotal'])) {
+                            $sub = $serviceData['subtotal'];
+                            $rowLen = count($headers);
+                            $subRow = array_fill(0, $rowLen, '');
+                            $subRow[0] = '<b>Subtotal:</b>';
+                            $subRow[1] = '<b>' . $sub['count'] . '</b>';
+                            if (isset($sub['duration_formatted'])) {
+                                $subRow[2] = '<b>' . $sub['duration_formatted'] . '</b>';
+                            }
+                            if (isset($sub['price']) && $sub['price'] > 0) {
+                                $subRow[3] = '<b>' . number_format($sub['price'], 2) . ' €</b>';
+                            }
+                            $excelData[] = $subRow;
+                        }
+                        $excelData[] = []; // spacer
+                    }
+                } else {
+                    // Regular flat mode inside a group
+                    $boldHeaders = array_map(fn($h) => '<b>'.$h.'</b>', $headers);
+                    $excelData[] = $boldHeaders;
+                    
+                    if (!empty($group['rows'])) {
+                        foreach ($group['rows'] as $row) {
+                            $excelData[] = array_values((array)$row);
+                        }
+                    }
+                }
+                
+                // Group Subtotal
+                if (isset($group['subtotal']) && $granularity !== 'total') {
+                    $sub = $group['subtotal'];
+                    $rowLen = count($headers);
+                    $subRow = array_fill(0, $rowLen, '');
+                    $subRow[0] = '<b>Group Total:</b>';
+                    $subRow[1] = '<b>' . $sub['count'] . '</b>';
+                    
+                    $subInfo = [];
+                    if (isset($sub['duration_formatted'])) $subInfo[] = "Duration: " . $sub['duration_formatted'];
+                    if (isset($sub['price']) && $sub['price'] > 0) $subInfo[] = "Value: " . number_format($sub['price'], 2) . ' €';
+                    if (isset($sub['average']) && $sub['average'] > 0) $subInfo[] = "Avg: " . number_format($sub['average'], 2) . ' €';
+                    
+                    if (!empty($subInfo)) {
+                        $subRow[2] = '<b>' . implode(" | ", $subInfo) . '</b>';
+                    }
+                    $excelData[] = $subRow;
+                    $excelData[] = []; // spacer
+                }
+            }
         }
-
-        // Output Summary if exists (Finance)
-        if (!empty($reportData['summary'])) {
-            fputcsv($output, [], ",", "\"", "\\"); // Spacer
-            fputcsv($output, ['SUMMARY'], ",", "\"", "\\");
-            foreach ($reportData['summary'] as $label => $val) {
-                fputcsv($output, [$label, $val], ",", "\"", "\\");
+        
+        // Grand Total
+        if (!empty($reportData['grand_total'])) {
+            $gt = $reportData['grand_total'];
+            $excelData[] = [];
+            $excelData[] = ['<b>GRAND TOTAL</b>'];
+            $excelData[] = ['Total Count', $gt['count']];
+            if (isset($gt['duration_formatted'])) {
+                $excelData[] = ['Total Duration', $gt['duration_formatted']];
+            }
+            if (isset($gt['price'])) {
+                $excelData[] = ['Total Value', number_format($gt['price'], 2) . ' €'];
+            }
+            if (isset($gt['average']) && $gt['average'] > 0) {
+                $excelData[] = ['Avg Check', number_format($gt['average'], 2) . ' €'];
             }
         }
 
-        fclose($output);
+        \Shuchkin\SimpleXLSXGen::fromArray($excelData)->downloadAs($filename);
         exit;
     }
 

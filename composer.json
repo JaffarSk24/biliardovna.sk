@@ -1,4 +1,3 @@
-
 {
     "name": "biliardovna/booking-system",
     "description": "Complete booking system for Biliardovna.sk",
@@ -9,7 +8,8 @@
         "vlucas/phpdotenv": "^5.5",
         "ext-pdo": "*",
         "ext-json": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "shuchkin/simplexlsxgen": "^1.5"
     },
     "autoload": {
         "psr-4": {
