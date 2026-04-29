@@ -13,3 +13,4 @@ gift_cards.md
 seed_cafe.php
 test_parallel_confirm.php
 migrations/schema/010_cafe_and_upselling.sql
+ftp_credentials.txt

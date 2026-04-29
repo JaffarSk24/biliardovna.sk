@@ -836,6 +836,7 @@ class AdminController extends Controller
         };
 
         if ($type === 'bookings' || $type === 'finance' || $type === 'tables') {
+            $sql = ''; // Initialize to prevent IDE warnings
 
             if ($type === 'bookings') {
                 // Show Email instead of Name for Customer column
