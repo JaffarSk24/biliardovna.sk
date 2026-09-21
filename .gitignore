@@ -14,3 +14,7 @@ seed_cafe.php
 test_parallel_confirm.php
 migrations/schema/010_cafe_and_upselling.sql
 ftp_credentials.txt
+
+# Локальный архив истории работы (переписки, планы, отчёты).
+# Содержит FTP/DB-креды в транскриптах — на сервер и в репозиторий не выкладывать.
+_antigravity/
