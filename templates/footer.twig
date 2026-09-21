@@ -87,7 +87,15 @@
 
         <div class="footer-bottom">
             <div class="footer-legal">
-                <p>&copy; {{ "now"|date("Y") }} Dagny s.r.o. {{ translations.footer_rights|default('Všetky práva vyhradené') }}.</p>
+                {% set credits = {
+                    'sk': { label: 'Tvorba webu:', url: 'https://whiteeagles.sk/sk/' },
+                    'ru': { label: 'Разработка сайта:', url: 'https://whiteeagles.sk/ru/' },
+                    'uk': { label: 'Розробка сайту:', url: 'https://whiteeagles.sk/ru/' },
+                    'en': { label: 'Website by', url: 'https://whiteeagles.sk/en/' },
+                    'de': { label: 'Website erstellt von', url: 'https://whiteeagles.sk/en/' }
+                } %}
+                {% set credit = credits[language] ?? credits['sk'] %}
+                <p>&copy; {{ "now"|date("Y") }} Dagny s.r.o. {{ translations.footer_rights|default('Všetky práva vyhradené') }}.<span class="footer-credit">{{ credit.label }} <a href="{{ credit.url }}" target="_blank" rel="noopener">White Eagles &amp; Co.</a></span></p>
                 <div class="footer-legal-links">
                     <a href="{{ language == 'sk' ? '/ochrana-osobnych-udajov' : '/' ~ language ~ '/privacy' }}">{{ translations.footer_privacy|default('Ochrana osobných údajov') }}</a>
                     <a href="{{ language == 'sk' ? '/vop' : '/' ~ language ~ '/terms' }}">{{ translations.footer_terms|default('VOP') }}</a>
