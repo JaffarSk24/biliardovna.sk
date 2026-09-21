@@ -112,19 +112,27 @@ footer .container {
     color: var(--accent-color);
 }
 
-.footer-credit::before {
-    content: "·";
-    margin: 0 8px;
-}
-
 .footer-credit a {
-    color: inherit;
+    color: var(--text-color);
+    font-weight: 600;
     text-decoration: none;
     transition: color var(--transition-fast);
 }
 
 .footer-credit a:hover {
     color: var(--accent-color);
+}
+
+/* Три колонки: копирайт слева, подпись строго по центру, ссылки справа */
+@media (min-width: 768px) {
+    .footer-legal {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+    }
+
+    .footer-legal-links {
+        justify-self: end;
+    }
 }
 
 /* Footer Social Icons */
@@ -171,12 +179,4 @@ footer .container {
         text-align: center;
     }
 
-    .footer-credit {
-        display: block;
-        margin-top: 6px;
-    }
-
-    .footer-credit::before {
-        content: none;
-    }
 }

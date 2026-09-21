@@ -3,5 +3,5 @@
 @import url('base.css');
 @import url('utilities.css');
 @import url('header.css');
-@import url('footer.css');
+@import url('footer.css?v=2');
 @import url('booking.css');

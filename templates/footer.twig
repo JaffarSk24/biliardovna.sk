@@ -95,7 +95,8 @@
                     'de': { label: 'Website erstellt von', url: 'https://whiteeagles.sk/en/' }
                 } %}
                 {% set credit = credits[language] ?? credits['sk'] %}
-                <p>&copy; {{ "now"|date("Y") }} Dagny s.r.o. {{ translations.footer_rights|default('Všetky práva vyhradené') }}.<span class="footer-credit">{{ credit.label }} <a href="{{ credit.url }}" target="_blank" rel="noopener">White Eagles &amp; Co.</a></span></p>
+                <p>&copy; {{ "now"|date("Y") }} Dagny s.r.o. {{ translations.footer_rights|default('Všetky práva vyhradené') }}.</p>
+                <p class="footer-credit">{{ credit.label }} <a href="{{ credit.url }}" target="_blank" rel="noopener">White Eagles &amp; Co.</a></p>
                 <div class="footer-legal-links">
                     <a href="{{ language == 'sk' ? '/ochrana-osobnych-udajov' : '/' ~ language ~ '/privacy' }}">{{ translations.footer_privacy|default('Ochrana osobných údajov') }}</a>
                     <a href="{{ language == 'sk' ? '/vop' : '/' ~ language ~ '/terms' }}">{{ translations.footer_terms|default('VOP') }}</a>
