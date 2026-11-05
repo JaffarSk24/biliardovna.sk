@@ -191,19 +191,19 @@ return [
     'contact_transport_title' => 'Как добраться',
     'contact_public_transport' => 'Общественный транспорт',
     'contact_buses' => 'Автобусы',
-    'contact_trolleys' => 'Троллейбусы',
+    'contact_at_night' => 'ночью',
     'contact_stop' => 'Остановка',
     'contact_walk' => 'Пешком',
     'contact_minutes' => 'мин',
 
     'contact_parking' => 'Парковка',
-    'contact_parking_free' => 'Бесплатная парковка на закрытой территории',
-    'contact_parking_before' => 'До 20:00',
-    'contact_parking_club' => 'прямо у клуба',
-    'contact_parking_after' => 'После 20:00',
-    'contact_parking_street' => 'на улице под зданием',
+    'contact_parking_location' => 'Перед входом в клуб, за шлагбаумом',
+    'contact_parking_free_time' => 'Первые 2,5 часа бесплатно',
+    'contact_parking_paid' => 'Далее 1€ в час для гостей клуба',
 
     'contact_map_title' => 'Карта',
+
+    'map_open_in_maps' => 'Открыть в Картах',
     'contact_social_title' => 'Мы в соцсетях',
 
     'contact_cta_title' => 'Есть вопросы?',

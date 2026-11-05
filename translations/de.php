@@ -190,19 +190,19 @@ return [
     'contact_transport_title' => 'Anfahrt',
     'contact_public_transport' => 'Öffentliche Verkehrsmittel',
     'contact_buses' => 'Busse',
-    'contact_trolleys' => 'Oberleitungsbusse',
+    'contact_at_night' => 'nachts',
     'contact_stop' => 'Haltestelle',
     'contact_walk' => 'Zu Fuß',
     'contact_minutes' => 'Minuten',
 
     'contact_parking' => 'Parken',
-    'contact_parking_free' => 'Kostenlose Parkplätze im geschlossenen Bereich',
-    'contact_parking_before' => 'Bis 20:00 Uhr',
-    'contact_parking_club' => 'direkt am Club',
-    'contact_parking_after' => 'Nach 20:00 Uhr',
-    'contact_parking_street' => 'auf der Straße unter dem Gebäude',
+    'contact_parking_location' => 'Vor dem Clubeingang, hinter der Schranke',
+    'contact_parking_free_time' => 'Die ersten 2,5 Stunden kostenlos',
+    'contact_parking_paid' => 'Danach 1€ pro Stunde für Clubgäste',
 
     'contact_map_title' => 'Karte',
+
+    'map_open_in_maps' => 'In Karten öffnen',
     'contact_social_title' => 'Folgen Sie uns',
 
     'contact_cta_title' => 'Haben Sie Fragen?',

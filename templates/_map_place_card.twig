@@ -1,0 +1,26 @@
+{# Плашка клуба поверх карты. Своя, а не карточка Google: та после переезда
+   показывала старый адрес и не ставила маркер. Рейтинг обновлять вручную. #}
+{% set place_url = 'https://maps.google.com/?cid=6257299859297690561' %}
+{% set route_url = 'https://www.google.com/maps/dir/?api=1&destination=48.17195583857812,17.18750912217643' %}
+{% set rating = language == 'en' ? '4.8' : '4,8' %}
+{% set reviews = 88 %}
+<div class="map-place-card">
+    <div class="map-place-card__body">
+        <div class="map-place-card__name">Biliardovňa</div>
+        <div class="map-place-card__address">Ivanská cesta 26, 820 01 Bratislava</div>
+        <a class="map-place-card__rating" href="{{ place_url }}" target="_blank" rel="noopener">
+            <span>{{ rating }}</span>
+            <span class="map-place-card__star" aria-hidden="true">★</span>
+            <span class="map-place-card__count">({{ reviews }})</span>
+        </a>
+    </div>
+    <div class="map-place-card__actions">
+        <a class="map-place-card__open" href="{{ place_url }}" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+            {{ translations.map_open_in_maps|default('Otvoriť v Mapách') }}
+        </a>
+        <a class="map-place-card__route" href="{{ route_url }}" target="_blank" rel="noopener" aria-label="{{ translations.get_directions|default('Navigovať') }}" title="{{ translations.get_directions|default('Navigovať') }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.71 11.29l-9-9a.996.996 0 0 0-1.41 0l-9 9a.996.996 0 0 0 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9a.996.996 0 0 0 0-1.41zM14 14.5V12h-4v3H8v-4c0-.55.45-1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg>
+        </a>
+    </div>
+</div>

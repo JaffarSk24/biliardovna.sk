@@ -63,10 +63,9 @@
               </svg>
             </div>
                 <h3>{{ translations.contact_public_transport|default('Verejná doprava') }}</h3>
-                <p><strong>{{ translations.contact_buses|default('Autobusy') }}:</strong> 32, N29</p>
-                <p><strong>{{ translations.contact_trolleys|default('Trolejbusy') }}:</strong> 42, 45, 64</p>
-                <p><strong>{{ translations.contact_stop|default('Zastávka') }}:</strong> Pri Suchom mlyne</p>
-                <p>{{ translations.contact_walk|default('Pešo') }}: ~400m / 5 {{ translations.contact_minutes|default('minút') }}</p>
+                <p><strong>{{ translations.contact_stop|default('Zastávka') }}:</strong> Pri letisku</p>
+                <p><strong>{{ translations.contact_buses|default('Autobusy') }}:</strong> 61 (N61 {{ translations.contact_at_night|default('v noci') }}), 69</p>
+                <p>{{ translations.contact_walk|default('Pešo') }}: ~280 m / 4 {{ translations.contact_minutes|default('min') }}</p>
             </div>
 
             <div class="transport-card">
@@ -78,9 +77,9 @@
                   </svg>
                 </div>
                 <h3>{{ translations.contact_parking|default('Parkovanie') }}</h3>
-                <p>{{ translations.contact_parking_free|default('Bezplatné parkovanie na uzavretom areáli') }}</p>
-                <p>{{ translations.contact_parking_before|default('Do 20:00') }}: {{ translations.contact_parking_club|default('priamo pri klube') }}</p>
-                <p>{{ translations.contact_parking_after|default('Po 20:00') }}: {{ translations.contact_parking_street|default('na ulici pod budovou') }}</p>
+                <p>{{ translations.contact_parking_location|default('Pred vchodom do klubu, za závorou') }}</p>
+                <p>{{ translations.contact_parking_free_time|default('Prvé 2,5 hodiny zadarmo') }}</p>
+                <p>{{ translations.contact_parking_paid|default('Potom 1€ za hodinu pre hostí klubu') }}</p>
             </div>
         </div>
     </div>
@@ -94,6 +93,7 @@
             class="contact-map-iframe" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
         </iframe>
     </div>
+    {% include '_map_place_card.twig' %}
     <div class="map-info">
         <div class="container">
             <h3>{{ translations.visit_us|default('Navštívte nás') }}</h3>

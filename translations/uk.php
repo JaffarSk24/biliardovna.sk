@@ -190,19 +190,19 @@ return [
     'contact_transport_title' => 'Як дістатися',
     'contact_public_transport' => 'Громадський транспорт',
     'contact_buses' => 'Автобуси',
-    'contact_trolleys' => 'Тролейбуси',
+    'contact_at_night' => 'вночі',
     'contact_stop' => 'Зупинка',
     'contact_walk' => 'Пішки',
     'contact_minutes' => 'хв',
 
     'contact_parking' => 'Паркування',
-    'contact_parking_free' => 'Безкоштовна парковка на закритій території',
-    'contact_parking_before' => 'До 20:00',
-    'contact_parking_club' => 'поруч із клубом',
-    'contact_parking_after' => 'Після 20:00',
-    'contact_parking_street' => 'на вулиці під будівлею',
+    'contact_parking_location' => 'Перед входом до клубу, за шлагбаумом',
+    'contact_parking_free_time' => 'Перші 2,5 години безкоштовно',
+    'contact_parking_paid' => 'Далі 1€ на годину для гостей клубу',
 
     'contact_map_title' => 'Мапа',
+
+    'map_open_in_maps' => 'Відкрити в Картах',
     'contact_social_title' => 'Стежте за нами',
 
     'contact_cta_title' => 'Є питання?',

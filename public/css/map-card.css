@@ -1,0 +1,113 @@
+/* Плашка клуба в левом верхнем углу карты (главная и контакты) */
+.map-place-card {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    max-width: 290px;
+    padding: 10px 12px;
+    background: #fff;
+    color: #202124;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    font-family: Roboto, Arial, sans-serif;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.map-place-card__name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.map-place-card__address {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #5f6368;
+}
+
+.map-place-card__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #5f6368;
+    text-decoration: none;
+}
+
+.map-place-card__star {
+    color: #fbbc04;
+}
+
+.map-place-card__count {
+    color: #1a73e8;
+    text-decoration: underline;
+}
+
+.map-place-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.map-place-card__open {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: #1a73e8;
+    color: #fff;
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.map-place-card__open:hover {
+    background: #1765cc;
+    color: #fff;
+}
+
+.map-place-card__route {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #1a73e8;
+    border-radius: 50%;
+}
+
+.map-place-card__route:hover {
+    background: #e8f0fe;
+}
+
+/* На телефоне карта низкая: оставляем название, адрес и рейтинг,
+   кнопки убираем, маршрут есть в блоке ниже */
+@media (max-width: 767px) {
+    .map-place-card {
+        top: 8px;
+        left: 8px;
+        max-width: 62%;
+        padding: 6px 9px;
+    }
+
+    .map-place-card__name {
+        font-size: 13px;
+    }
+
+    .map-place-card__address,
+    .map-place-card__rating {
+        font-size: 11px;
+    }
+
+    .map-place-card__rating {
+        margin-top: 2px;
+    }
+
+    .map-place-card__actions {
+        display: none;
+    }
+}

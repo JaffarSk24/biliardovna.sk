@@ -190,19 +190,19 @@ return [
     'contact_transport_title' => 'Ako sa k nám dostať',
     'contact_public_transport' => 'Verejná doprava',
     'contact_buses' => 'Autobusy',
-    'contact_trolleys' => 'Trolejbusy',
+    'contact_at_night' => 'v noci',
     'contact_stop' => 'Zastávka',
     'contact_walk' => 'Pešo',
-    'contact_minutes' => 'minút',
+    'contact_minutes' => 'min',
 
     'contact_parking' => 'Parkovanie',
-    'contact_parking_free' => 'Bezplatné parkovanie na uzavretom areáli',
-    'contact_parking_before' => 'Do 20:00',
-    'contact_parking_club' => 'priamo pri klube',
-    'contact_parking_after' => 'Po 20:00',
-    'contact_parking_street' => 'na ulici pod budovou',
+    'contact_parking_location' => 'Pred vchodom do klubu, za závorou',
+    'contact_parking_free_time' => 'Prvé 2,5 hodiny zadarmo',
+    'contact_parking_paid' => 'Potom 1€ za hodinu pre hostí klubu',
 
     'contact_map_title' => 'Mapa',
+
+    'map_open_in_maps' => 'Otvoriť v Mapách',
     'contact_social_title' => 'Sledujte nás',
 
     'contact_cta_title' => 'Máte otázky?',

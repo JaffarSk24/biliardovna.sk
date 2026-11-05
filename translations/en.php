@@ -191,19 +191,19 @@ return [
     'contact_transport_title' => 'How to get here',
     'contact_public_transport' => 'Public transport',
     'contact_buses' => 'Buses',
-    'contact_trolleys' => 'Trolleybuses',
+    'contact_at_night' => 'at night',
     'contact_stop' => 'Stop',
     'contact_walk' => 'On foot',
     'contact_minutes' => 'min',
 
     'contact_parking' => 'Parking',
-    'contact_parking_free' => 'Free parking in a gated area',
-    'contact_parking_before' => 'Before 20:00',
-    'contact_parking_club' => 'right by the club',
-    'contact_parking_after' => 'After 20:00',
-    'contact_parking_street' => 'on the street below the building',
+    'contact_parking_location' => 'In front of the club entrance, behind the barrier',
+    'contact_parking_free_time' => 'First 2.5 hours free',
+    'contact_parking_paid' => 'Then 1€ per hour for club guests',
 
     'contact_map_title' => 'Map',
+
+    'map_open_in_maps' => 'Open in Maps',
     'contact_social_title' => 'Follow us',
 
     'contact_cta_title' => 'Any questions?',
