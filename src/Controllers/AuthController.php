@@ -54,6 +54,8 @@ class AuthController extends Controller
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
+            // New session id on login: prevents session fixation and restarts the cookie lifetime
+            session_regenerate_id(true);
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin_user_id'] = $user['id'];
             $_SESSION['admin_username'] = $user['username'];

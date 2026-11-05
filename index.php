@@ -5,13 +5,6 @@
  * Entry point
  */
 
-session_start();
-
-// Allow webhook access without session check
-if ($_SERVER['REQUEST_URI'] && strpos($_SERVER['REQUEST_URI'], '/webhook/telegram') !== false) {
-    $_SESSION['access_granted'] = true;
-}
-
 /*
 if (!isset($_SESSION['access_granted'])) {
     if (isset($_POST['access'])) {
@@ -87,14 +80,23 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-// Start session
+// Start session (the only place; controllers reuse it)
 if (session_status() === PHP_SESSION_NONE) {
     $config = require __DIR__ . '/config/app.php';
     session_start([
         'cookie_lifetime' => $config['session']['lifetime'],
         'cookie_secure' => $config['session']['secure'],
         'cookie_httponly' => $config['session']['httponly'],
+        'cookie_samesite' => 'Lax',
+        // keep server-side session data as long as the cookie lives
+        'gc_maxlifetime' => $config['session']['lifetime'],
+        'use_strict_mode' => true,
     ]);
+}
+
+// Allow webhook access without session check
+if (strpos($_SERVER['REQUEST_URI'] ?? '', '/webhook/telegram') !== false) {
+    $_SESSION['access_granted'] = true;
 }
 
 // Error handling
