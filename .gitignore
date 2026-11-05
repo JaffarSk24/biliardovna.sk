@@ -18,3 +18,7 @@ ftp_credentials.txt
 # Локальный архив истории работы (переписки, планы, отчёты).
 # Содержит FTP/DB-креды в транскриптах — на сервер и в репозиторий не выкладывать.
 _antigravity/
+
+# Session cookie dumps from manual testing
+cookies.txt
+live_cookies.txt

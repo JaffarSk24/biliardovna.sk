@@ -27,3 +27,9 @@ Options -Indexes
     Order allow,deny
     Deny from all
 </FilesMatch>
+
+# Service scripts and leftovers: not for the web (CLI use is unaffected)
+<FilesMatch "^(cookies\.txt|live_cookies\.txt|composer\.lock|PROJECT_SUMMARY\.pdf|fix_db\.php|ensure_schema\.php|router_test\.php|verify\.php|path\.php|index_legacy\.php|.+\.py)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
