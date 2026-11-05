@@ -79,8 +79,9 @@
             <div class="footer-section footer-hours">
                 <h3>{{ translations.footer_hours|default('Otváracie hodiny') }}</h3>
                 <ul>
-                    <li>{{ translations.footer_weekdays|default('Po - Pia') }}: 16:00 - 00:00</li>
-                    <li>{{ translations.footer_weekend|default('So - Ne') }}: 16:00 - 00:00</li>
+                    {% for g in opening_hours|default([]) %}
+                    <li>{{ translations['day_short_' ~ g.from]|default(g.from) }}{% if g.to != g.from %} - {{ translations['day_short_' ~ g.to]|default(g.to) }}{% endif %}: {{ g.open }} - {{ g.close }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

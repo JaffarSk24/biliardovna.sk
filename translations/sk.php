@@ -11,15 +11,19 @@ return [
     'menu_blog' => 'Novinky',
 
     // Buttons
-    'btn_book' => 'Rezervovať',
 
     // Footer
     'footer_about' => 'Prémiový biliardový klub v srdci Bratislavy',
     'footer_quick_links' => 'Rýchle odkazy',
     'footer_contact' => 'Kontakt',
     'footer_hours' => 'Otváracie hodiny',
-    'footer_weekdays' => 'Po - Pia',
-    'footer_weekend' => 'So - Ne',
+    'day_short_1' => 'Po',
+    'day_short_2' => 'Ut',
+    'day_short_3' => 'St',
+    'day_short_4' => 'Št',
+    'day_short_5' => 'Pi',
+    'day_short_6' => 'So',
+    'day_short_7' => 'Ne',
     'footer_rights' => 'Všetky práva vyhradené',
     'footer_privacy' => 'Ochrana osobných údajov',
     'footer_terms' => 'VOP',
@@ -30,31 +34,16 @@ return [
     'games_intro_title' => 'Profesionálne vybavenie pre vašu zábavu',
     'games_intro_text' => 'V našom klube nájdete profesionálne biliardové stoly, elektronické šípky a stolný futbal. Všetko vybavenie je pravidelne udržiavané a v perfektnom stave.',
 
-    'games_piramida_title' => 'Pyramída',
     'games_piramida_desc' => 'Európsky biliard, známy aj ako pyramída, je najpopulárnejšia forma biliardovej hry vo východnej Európe. Hrá sa s 15 bielymi guľami a jednou červenou guľou na veľkom stole s úzkymi vreckami.',
-    'games_piramida_feature1' => '4 profesionálne stoly 12ft',
-    'games_piramida_feature2' => 'Kvalitné kože a gule',
-    'games_piramida_feature3' => 'Vhodné pre začiatočníkov aj profesionálov',
     'games_piramida_feature4' => 'Možnosť prenájmu kože',
 
     'games_pool_desc' => 'Americký biliard (pool) je najrozšírenejšia forma biliardovej hry na svete. Hrá sa s 15 farebnými guľami a jednou bielou guľou. Ponúkame rôzne varianty hry: 8-ball, 9-ball, 10-ball.',
-    'games_pool_feature1' => '4 profesionálne stoly 9ft',
-    'games_pool_feature2' => 'Originálne gule Aramith',
-    'games_pool_feature3' => 'Rôzne herné varianty',
     'games_pool_feature4' => 'Turnaje a ligy',
 
-    'games_darts_title' => 'Šípky',
     'games_darts_desc' => 'Šípky sú ideálne na zábavu s priateľmi aj na súťažné turnaje.',
-    'games_darts_feature1' => '5 terčov',
-    'games_darts_feature2' => 'Viac ako 20 herných možností',
-    'games_darts_feature3' => 'Bezpečné kontrolované prostredie',
     'games_darts_feature4' => 'Šípky v cene prenájmu',
 
-    'games_foosball_title' => 'Stolný futbal',
     'games_foosball_desc' => 'Dynamická hra pre 2 alebo 4 hráčov. Profesionálne stoly s plynulým chodom a kvalitným spracovaním zaručia skvelú zábavu.',
-    'games_foosball_feature1' => '2 profesionálne stoly',
-    'games_foosball_feature2' => 'Teleskopické tyče',
-    'games_foosball_feature3' => 'Vhodné pre všetky vekové kategórie',
     'games_foosball_feature4' => 'Rýchla a zábavná hra',
 
     'games_rules_title' => 'Pravidlá a etiketa',
@@ -76,15 +65,6 @@ return [
     // Pricing page
     'pages_pricing_title' => 'Cenník',
     'pages_pricing_subtitle' => 'Transparentné ceny bez skrytých poplatkov',
-    'pricing_time' => 'Čas',
-    'pricing_monday' => 'Pondelok',
-    'pricing_tuesday' => 'Utorok',
-    'pricing_wednesday' => 'Streda',
-    'pricing_thursday' => 'Štvrtok',
-    'pricing_friday' => 'Piatok',
-    'pricing_saturday' => 'Sobota',
-    'pricing_sunday' => 'Nedeľa',
-    'pricing_holiday' => 'Sviatok',
     'pricing_note' => '* Ceny sú uvedené za jeden stôl na hodinu',
 
     // Deals page
@@ -185,7 +165,6 @@ return [
     'contact_address_title' => 'Adresa',
     'contact_phone_title' => 'Telefón',
     'contact_hours_title' => 'Otváracie hodiny',
-    'contact_hours_daily' => 'Denne',
 
     'contact_transport_title' => 'Ako sa k nám dostať',
     'contact_public_transport' => 'Verejná doprava',
@@ -217,7 +196,6 @@ return [
     'messenger_telegram' => 'Telegram',
     'messenger_whatsapp' => 'WhatsApp',
     'messenger_viber' => 'Viber',
-    'close' => 'Zatvoriť',
 
     // Blog page
     'blog.title' => 'Novinky a podujatia',
@@ -267,10 +245,6 @@ return [
     'duration_6' => '6 hodín',
     'duration_7' => '7 hodín',
     'duration_8' => '8 hodín',
-    'loading' => 'Načítava sa...',
-    'no_slots_available' => 'Žiadne voľné termíny',
-    'error_loading_slots' => 'Chyba pri načítaní',
-    'occupied' => 'Obsadené',
     'selection_hint' => 'Môžete vybrať niekoľko slotov za sebou',
     'select_consecutive' => 'Prosím, vyberte sloty za sebou',
     'select_table_time' => 'Prosím, vyberte stôl a čas',
@@ -503,6 +477,9 @@ return [
     'pricing_saturday' => 'Sobota',
     'pricing_sunday' => 'Nedeľa',
     'pricing_holiday' => 'Sviatky',
+    'pricing_days' => 'Dni',
+    'pricing_price' => 'Cena',
+    'pricing_from' => 'od',
 
     // Deals Section
     'deals_title' => 'Akcie',
@@ -519,7 +496,6 @@ return [
     'blog_title' => 'Novinky a podujatia',
     'blog_subtitle' => 'Sledujte naše novinky, turnaje a akcie',
     'blog_read_button' => 'Čítať ďalej',
-    'back_to_blog' => 'Späť na blog',
     'back_to_blog' => 'Späť na blog',
 
     // Privacy Policy

@@ -140,7 +140,6 @@
     width: 100%;
     border-collapse: collapse;
     background: var(--color-wood);
-    min-width: 800px;
 }
 
 .pricing-table thead {
@@ -196,6 +195,20 @@
     background: rgba(212, 175, 55, 0.1);
     font-weight: 600;
     color: var(--accent-color);
+}
+
+/* price list: one day group spans several tariff rows */
+.pricing-table td.day-col {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.pricing-table tbody tr.group-start td {
+    border-top: 1px solid var(--muted-border, rgba(255, 255, 255, 0.12));
+}
+
+.pricing-table td.price-col {
+    font-weight: 600;
 }
 
 .pricing-table th.holiday-col {

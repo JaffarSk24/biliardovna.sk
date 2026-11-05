@@ -11,15 +11,19 @@ return [
     'menu_blog' => 'Новини',
 
     // Buttons
-    'btn_book' => 'Забронювати',
 
     // Footer
     'footer_about' => 'Преміальний більярдний клуб у центрі Братислави',
     'footer_quick_links' => 'Швидкі посилання',
     'footer_contact' => 'Контакти',
     'footer_hours' => 'Години роботи',
-    'footer_weekdays' => 'Пн - Пт',
-    'footer_weekend' => 'Сб - Нд',
+    'day_short_1' => 'Пн',
+    'day_short_2' => 'Вт',
+    'day_short_3' => 'Ср',
+    'day_short_4' => 'Чт',
+    'day_short_5' => 'Пт',
+    'day_short_6' => 'Сб',
+    'day_short_7' => 'Нд',
     'footer_rights' => 'Всі права захищені',
     'footer_privacy' => 'Політика конфіденційності',
     'footer_terms' => 'Умови використання',
@@ -30,31 +34,16 @@ return [
     'games_intro_title' => 'Професійне обладнання для вашої розваги',
     'games_intro_text' => 'У нашому клубі ви знайдете професійні більярдні столи, електронні дартс та настільний футбол. Все обладнання регулярно обслуговується та знаходиться в ідеальному стані.',
 
-    'games_piramida_title' => 'Піраміда',
     'games_piramida_desc' => 'Європейський більярд, також відомий як піраміда, є найпопулярнішою формою більярдної гри у Східній Європі. Грається з 15 білими кулями та однією червоною кулею на великому столі з вузькими лузами.',
-    'games_piramida_feature1' => '4 професійні столи 12ft',
-    'games_piramida_feature2' => 'Якісні кії та кулі',
-    'games_piramida_feature3' => 'Підходить для початківців та професіоналів',
     'games_piramida_feature4' => 'Можливість оренди кія',
 
     'games_pool_desc' => 'Американський більярд (пул) є найпоширенішою формою більярдної гри у світі. Грається з 15 кольоровими кулями та однією білою кулею. Пропонуємо різні варіанти гри: 8-ball, 9-ball, 10-ball.',
-    'games_pool_feature1' => '4 професійні столи 9ft',
-    'games_pool_feature2' => 'Оригінальні кулі Aramith',
-    'games_pool_feature3' => 'Різні ігрові варіанти',
     'games_pool_feature4' => 'Турніри та ліги',
 
-    'games_darts_title' => 'Дартс',
     'games_darts_desc' => 'Дартс ідеально підходить для розваг з друзями або змагальних турнірів.',
-    'games_darts_feature1' => '5 мішеней',
-    'games_darts_feature2' => 'Понад 20 ігрових можливостей',
-    'games_darts_feature3' => 'Безпечне контрольоване середовище',
     'games_darts_feature4' => 'Дротики включені у вартість оренди',
 
-    'games_foosball_title' => 'Настільний футбол',
     'games_foosball_desc' => 'Динамічна гра для 2 або 4 гравців. Професійні столи з плавним ходом та якісним виконанням гарантують чудову розвагу.',
-    'games_foosball_feature1' => '2 професійні столи',
-    'games_foosball_feature2' => 'Телескопічні штанги',
-    'games_foosball_feature3' => 'Підходить для всіх вікових категорій',
     'games_foosball_feature4' => 'Швидка та весела гра',
 
     'games_rules_title' => 'Правила та етикет',
@@ -76,15 +65,6 @@ return [
     // Pricing page
     'pages_pricing_title' => 'Ціни',
     'pages_pricing_subtitle' => 'Прозорі ціни без прихованих платежів',
-    'pricing_time' => 'Час',
-    'pricing_monday' => 'Понеділок',
-    'pricing_tuesday' => 'Вівторок',
-    'pricing_wednesday' => 'Середа',
-    'pricing_thursday' => 'Четвер',
-    'pricing_friday' => 'П\'ятниця',
-    'pricing_saturday' => 'Субота',
-    'pricing_sunday' => 'Неділя',
-    'pricing_holiday' => 'Свято',
     'pricing_note' => '* Ціни вказані за один стіл на годину',
 
     // Deals page
@@ -185,7 +165,6 @@ return [
     'contact_phone_title' => 'Телефон',
     'contact_email_title' => 'Електронна пошта',
     'contact_hours_title' => 'Години роботи',
-    'contact_hours_daily' => 'Щодня',
 
     'contact_transport_title' => 'Як дістатися',
     'contact_public_transport' => 'Громадський транспорт',
@@ -217,7 +196,6 @@ return [
     'messenger_telegram' => 'Telegram',
     'messenger_whatsapp' => 'WhatsApp',
     'messenger_viber' => 'Viber',
-    'close' => 'Закрити',
 
     // Blog page
     'blog.title' => 'Новини та заходи',
@@ -267,10 +245,6 @@ return [
     'duration_6' => '6 годин',
     'duration_7' => '7 годин',
     'duration_8' => '8 годин',
-    'loading' => 'Завантаження...',
-    'no_slots_available' => 'Немає вільних слотів',
-    'error_loading_slots' => 'Помилка завантаження',
-    'occupied' => 'Зайнято',
     'selection_hint' => 'Можете вибрати кілька слотів підряд',
     'select_consecutive' => 'Будь ласка, вибирайте слоти підряд',
     'select_table_time' => 'Будь ласка, виберіть стіл та час',
@@ -503,6 +477,9 @@ return [
     'pricing_saturday' => 'Субота',
     'pricing_sunday' => 'Неділя',
     'pricing_holiday' => 'Святкові дні',
+    'pricing_days' => 'Дні',
+    'pricing_price' => 'Ціна',
+    'pricing_from' => 'з',
 
     // Deals Section
     'deals_title' => 'Акції',
@@ -519,7 +496,6 @@ return [
     'blog_title' => 'Новини та події',
     'blog_subtitle' => 'Слідкуйте за нашими новинами, турнірами та акціями',
     'blog_read_button' => 'Читати далі',
-    'back_to_blog' => 'Назад до блогу',
     'back_to_blog' => 'Назад до блогу',
 
     // Privacy Policy

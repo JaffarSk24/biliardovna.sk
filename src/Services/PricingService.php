@@ -69,9 +69,8 @@ class PricingService
         // Hardcoded block removed - using DB
         $isHoliday = $this->holidayModel->isHoliday($date);
 
-        // Generate slots from 16:00 to 23:00
-        $startHour = 16;
-        $endHour = 24;
+        // Hourly slots within the club's opening hours for this day
+        [$startHour, $endHour] = OpeningHours::forDate($date);
 
         for ($hour = $startHour; $hour < $endHour; $hour++) {
             $slotStart = new DateTime($date . ' ' . sprintf('%02d:00:00', $hour));

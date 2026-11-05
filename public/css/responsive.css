@@ -787,10 +787,6 @@
         margin-bottom: 15px;
     }
     
-    /* Pricing */
-    .pricing-table {
-        min-width: 700px;
-    }
     
     .pricing-table th,
     .pricing-table td {
@@ -1142,10 +1138,6 @@
         font-size: 0.85rem;
     }
     
-    /* Pricing */
-    .pricing-table {
-        min-width: 650px;
-    }
     
     .pricing-table th,
     .pricing-table td {
@@ -1635,10 +1627,6 @@
         min-height: 44px;
     }
     
-    /* Pricing */
-    .pricing-table {
-        min-width: 600px;
-    }
     
     .pricing-table th,
     .pricing-table td {

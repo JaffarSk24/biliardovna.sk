@@ -190,6 +190,7 @@ $router->get('/blog', function () use ($router, $language) {
     $twig->addGlobal('router', $router);
     $twig->addGlobal('language', $language);
     $twig->addGlobal('translations', $translations);
+    $twig->addGlobal('opening_hours', \App\Services\OpeningHours::groups());
 
     // Add url function
     $twig->addFunction(new \Twig\TwigFunction('url', function (string $path, ?string $lang = null) use ($router) {
@@ -220,6 +221,7 @@ $router->get('/blog/{slug}', function ($slug) use ($router, $language) {
     $twig->addGlobal('router', $router);
     $twig->addGlobal('language', $language);
     $twig->addGlobal('translations', $translations);
+    $twig->addGlobal('opening_hours', \App\Services\OpeningHours::groups());
 
     // Add url function
     $twig->addFunction(new \Twig\TwigFunction('url', function (string $path, ?string $lang = null) use ($router) {

@@ -11,15 +11,19 @@ return [
     'menu_blog' => 'Nachrichten',
 
     // Buttons
-    'btn_book' => 'Jetzt buchen',
 
     // Footer
     'footer_about' => 'Premium-Billardclub im Herzen von Bratislava',
     'footer_quick_links' => 'Schnelllinks',
     'footer_contact' => 'Kontakt',
     'footer_hours' => 'Öffnungszeiten',
-    'footer_weekdays' => 'Mo - Fr',
-    'footer_weekend' => 'Sa - So',
+    'day_short_1' => 'Mo',
+    'day_short_2' => 'Di',
+    'day_short_3' => 'Mi',
+    'day_short_4' => 'Do',
+    'day_short_5' => 'Fr',
+    'day_short_6' => 'Sa',
+    'day_short_7' => 'So',
     'footer_rights' => 'Alle Rechte vorbehalten',
     'footer_privacy' => 'Datenschutz',
     'footer_terms' => 'AGB',
@@ -30,31 +34,16 @@ return [
     'games_intro_title' => 'Professionelle Ausstattung für Ihre Unterhaltung',
     'games_intro_text' => 'In unserem Club finden Sie professionelle Billardtische, elektronische Darts und Tischfußball. Alle Geräte werden regelmäßig gewartet und sind in perfektem Zustand.',
 
-    'games_piramida_title' => 'Russische Pyramide',
     'games_piramida_desc' => 'Europäisches Billard, auch bekannt als Pyramide, ist die beliebteste Form des Billardspiels in Osteuropa. Gespielt wird mit 15 weißen Kugeln und einer roten Kugel auf einem großen Tisch mit engen Taschen.',
-    'games_piramida_feature1' => '4 professionelle 12ft Tische',
-    'games_piramida_feature2' => 'Hochwertige Queues und Kugeln',
-    'games_piramida_feature3' => 'Geeignet für Anfänger und Profis',
     'games_piramida_feature4' => 'Queue-Verleih verfügbar',
 
     'games_pool_desc' => 'Amerikanisches Billard (Pool) ist die weltweit verbreitetste Form des Billardspiels. Gespielt wird mit 15 farbigen Kugeln und einer weißen Kugel. Wir bieten verschiedene Spielvarianten: 8-Ball, 9-Ball, 10-Ball.',
-    'games_pool_feature1' => '4 professionelle 9ft Tische',
-    'games_pool_feature2' => 'Original Aramith Kugeln',
-    'games_pool_feature3' => 'Verschiedene Spielvarianten',
     'games_pool_feature4' => 'Turniere und Ligen',
 
-    'games_darts_title' => 'Darts',
     'games_darts_desc' => 'Darts ist perfekt für Spaß mit Freunden oder Wettkampfturniere.',
-    'games_darts_feature1' => '5 Dartscheiben',
-    'games_darts_feature2' => 'Mehr als 20 Spielmöglichkeiten',
-    'games_darts_feature3' => 'Sichere kontrollierte Umgebung',
     'games_darts_feature4' => 'Darts im Mietpreis enthalten',
 
-    'games_foosball_title' => 'Tischfußball',
     'games_foosball_desc' => 'Dynamisches Spiel für 2 oder 4 Spieler. Professionelle Tische mit flüssiger Bewegung und hochwertiger Verarbeitung garantieren großartige Unterhaltung.',
-    'games_foosball_feature1' => '2 professionelle Tische',
-    'games_foosball_feature2' => 'Teleskopstangen',
-    'games_foosball_feature3' => 'Geeignet für alle Altersgruppen',
     'games_foosball_feature4' => 'Schnelles und unterhaltsames Spiel',
 
     'games_rules_title' => 'Regeln und Etikette',
@@ -76,15 +65,6 @@ return [
     // Pricing page
     'pages_pricing_title' => 'Preise',
     'pages_pricing_subtitle' => 'Transparente Preise ohne versteckte Gebühren',
-    'pricing_time' => 'Zeit',
-    'pricing_monday' => 'Montag',
-    'pricing_tuesday' => 'Dienstag',
-    'pricing_wednesday' => 'Mittwoch',
-    'pricing_thursday' => 'Donnerstag',
-    'pricing_friday' => 'Freitag',
-    'pricing_saturday' => 'Samstag',
-    'pricing_sunday' => 'Sonntag',
-    'pricing_holiday' => 'Feiertag',
     'pricing_note' => '* Preise gelten pro Tisch pro Stunde',
 
     // Deals page
@@ -185,7 +165,6 @@ return [
     'contact_address_title' => 'Adresse',
     'contact_phone_title' => 'Telefon',
     'contact_hours_title' => 'Öffnungszeiten',
-    'contact_hours_daily' => 'Täglich',
 
     'contact_transport_title' => 'Anfahrt',
     'contact_public_transport' => 'Öffentliche Verkehrsmittel',
@@ -218,7 +197,6 @@ return [
     'messenger_telegram' => 'Telegram',
     'messenger_whatsapp' => 'WhatsApp',
     'messenger_viber' => 'Viber',
-    'close' => 'Schließen',
 
     // Blog page
     'blog.title' => 'Nachrichten und Veranstaltungen',
@@ -268,10 +246,6 @@ return [
     'duration_6' => '6 Stunden',
     'duration_7' => '7 Stunden',
     'duration_8' => '8 Stunden',
-    'loading' => 'Lädt...',
-    'no_slots_available' => 'Keine freien Termine',
-    'error_loading_slots' => 'Ladefehler',
-    'occupied' => 'Besetzt',
     'selection_hint' => 'Sie können mehrere aufeinanderfolgende Slots auswählen',
     'select_consecutive' => 'Bitte wählen Sie aufeinanderfolgende Slots',
     'select_table_time' => 'Bitte wählen Sie einen Tisch und eine Zeit',
@@ -504,6 +478,9 @@ return [
     'pricing_saturday' => 'Samstag',
     'pricing_sunday' => 'Sonntag',
     'pricing_holiday' => 'Feiertage',
+    'pricing_days' => 'Tage',
+    'pricing_price' => 'Preis',
+    'pricing_from' => 'ab',
 
     // Deals Section
     'deals_title' => 'Angebote',
@@ -520,7 +497,6 @@ return [
     'blog_title' => 'Neuigkeiten und Veranstaltungen',
     'blog_subtitle' => 'Folgen Sie unseren Neuigkeiten, Turnieren und Aktionen',
     'blog_read_button' => 'Weiterlesen',
-    'back_to_blog' => 'Zurück zum Blog',
     'back_to_blog' => 'Zurück zum Blog',
 
     // Privacy Policy

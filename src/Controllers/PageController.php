@@ -205,8 +205,83 @@ class PageController extends Controller
     public function pricing()
     {
         return $this->renderWithSeo('pricing.twig', 'pricing', [
-            'current_page' => 'pricing'
+            'current_page' => 'pricing',
+            'pricing_tables' => $this->buildPricingTables(),
         ]);
+    }
+
+    /**
+     * Price list per service built from the pricing table and opening hours.
+     * Each day gets bands of consecutive open hours with the same price;
+     * consecutive days with identical bands are merged (e.g. Monday - Thursday).
+     * Holidays use Saturday prices, as the booking price calculation does.
+     */
+    private function buildPricingTables(): array
+    {
+        $db = \App\Database\Database::getInstance();
+        $rows = $db->query(
+            "SELECT service_id, day_of_week, HOUR(start_time) AS h, price_per_hour
+             FROM pricing WHERE is_holiday_pricing = 0"
+        )->fetchAll(\PDO::FETCH_ASSOC);
+
+        $prices = [];
+        foreach ($rows as $r) {
+            $prices[(int)$r['service_id']][(int)$r['day_of_week']][(int)$r['h']] = (float)$r['price_per_hour'];
+        }
+
+        $week = \App\Services\OpeningHours::week();
+        $format = fn(float $p) => rtrim(rtrim(number_format($p, 2, '.', ''), '0'), '.');
+        $time = fn(int $h) => sprintf('%02d:00', $h % 24);
+
+        // bands of one day: consecutive hours with the same price
+        $bandsFor = function (array $byHour, int $open, int $close) use ($format, $time): array {
+            $bands = [];
+            for ($h = $open; $h < $close; $h++) {
+                if (!isset($byHour[$h])) {
+                    continue;
+                }
+                $i = count($bands) - 1;
+                if ($i >= 0 && $bands[$i]['price_value'] === $byHour[$h] && $bands[$i]['to_hour'] === $h) {
+                    $bands[$i]['to_hour'] = $h + 1;
+                    continue;
+                }
+                $bands[] = ['from_hour' => $h, 'to_hour' => $h + 1, 'price_value' => $byHour[$h]];
+            }
+            $first = $bands[0]['price_value'] ?? null;
+
+            return array_map(fn(array $b) => [
+                'from' => $time($b['from_hour']),
+                'to' => $time($b['to_hour']),
+                'price' => $format($b['price_value']),
+                // evening tariff: dearer than the first band of the same day
+                'prime' => $first !== null && $b['price_value'] > $first,
+            ], $bands);
+        };
+
+        $tables = [];
+        foreach ($prices as $serviceId => $byDay) {
+            $groups = [];
+            foreach ($week as $day => [$open, $close]) {
+                $bands = $bandsFor($byDay[$day] ?? [], $open, $close);
+                $i = count($groups) - 1;
+                if ($i >= 0 && $groups[$i]['to'] === $day - 1 && $groups[$i]['bands'] === $bands) {
+                    $groups[$i]['to'] = $day;
+                    continue;
+                }
+                $groups[] = ['from' => $day, 'to' => $day, 'holiday' => false, 'bands' => $bands];
+            }
+
+            // holiday hours follow its weekday, so only the start of each band is shown
+            [$satOpen, $satClose] = $week[6];
+            $groups[] = [
+                'holiday' => true,
+                'bands' => $bandsFor($byDay[6] ?? [], $satOpen, $satClose),
+            ];
+
+            $tables[$serviceId] = $groups;
+        }
+
+        return $tables;
     }
 
     public function deals()

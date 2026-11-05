@@ -42,6 +42,7 @@ abstract class Controller
         $this->twig->addGlobal('translations', $this->translationService->getUITranslations($this->language));
         $this->twig->addGlobal('translations', $this->translationService->getUITranslations($this->language));
         $this->twig->addGlobal('t', $this->translationService->getUITranslations($this->language));
+        $this->twig->addGlobal('opening_hours', \App\Services\OpeningHours::groups());
 
         // Inject Popup Settings
         $popupSettings = $this->getPopupSettings();

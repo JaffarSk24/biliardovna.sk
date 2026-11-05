@@ -1,0 +1,30 @@
+{# Тарифы одной игры: дни, время, цена. Данные строит PageController::buildPricingTables #}
+{% set day_keys = {1: 'pricing_monday', 2: 'pricing_tuesday', 3: 'pricing_wednesday', 4: 'pricing_thursday', 5: 'pricing_friday', 6: 'pricing_saturday', 7: 'pricing_sunday'} %}
+<thead>
+  <tr>
+    <th>{{ translations.pricing_days|default('Dni') }}</th>
+    <th>{{ translations.pricing_time|default('Čas') }}</th>
+    <th>{{ translations.pricing_price|default('Cena') }}</th>
+  </tr>
+</thead>
+<tbody>
+  {% for g in rows|default([]) %}
+    {% if g.holiday %}
+      {% set label = translations.pricing_holiday|default('Sviatky') %}
+    {% else %}
+      {% set label = translations[day_keys[g.from]]|default(g.from) %}
+      {% if g.to != g.from %}
+        {% set label = label ~ ' - ' ~ translations[day_keys[g.to]]|default(g.to) %}
+      {% endif %}
+    {% endif %}
+    {% for b in g.bands %}
+  <tr class="{{ loop.first ? 'group-start' : '' }}{{ b.prime ? ' prime-time' : '' }}">
+      {% if loop.first %}
+    <td class="time-col day-col" rowspan="{{ g.bands|length }}">{{ label }}</td>
+      {% endif %}
+    <td class="hours-col">{% if g.holiday %}{{ translations.pricing_from|default('od') }} {{ b.from }}{% else %}{{ b.from }} - {{ b.to }}{% endif %}</td>
+    <td class="{{ g.holiday ? 'holiday-price' : 'price-col' }}">{{ b.price }} €</td>
+  </tr>
+    {% endfor %}
+  {% endfor %}
+</tbody>

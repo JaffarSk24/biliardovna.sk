@@ -11,15 +11,19 @@ return [
     'menu_blog' => 'News & Events',
 
     // Buttons
-    'btn_book' => 'Book Now',
 
     // Footer
     'footer_about' => 'Premium billiard club in the heart of Bratislava',
     'footer_quick_links' => 'Quick Links',
     'footer_contact' => 'Contact',
     'footer_hours' => 'Opening Hours',
-    'footer_weekdays' => 'Mon - Fri',
-    'footer_weekend' => 'Sat - Sun',
+    'day_short_1' => 'Mon',
+    'day_short_2' => 'Tue',
+    'day_short_3' => 'Wed',
+    'day_short_4' => 'Thu',
+    'day_short_5' => 'Fri',
+    'day_short_6' => 'Sat',
+    'day_short_7' => 'Sun',
     'footer_rights' => 'All rights reserved',
     'footer_privacy' => 'Privacy Policy',
     'footer_terms' => 'Terms & Conditions',
@@ -30,31 +34,16 @@ return [
     'games_intro_title' => 'Professional equipment for your entertainment',
     'games_intro_text' => 'In our club you will find professional billiard tables, electronic darts and table football. All equipment is regularly maintained and in perfect condition.',
 
-    'games_piramida_title' => 'Pyramid',
     'games_piramida_desc' => 'European billiards, also known as pyramid, is the most popular form of billiard game in Eastern Europe. Played with 15 white balls and one red ball on a large table with narrow pockets.',
-    'games_piramida_feature1' => '4 professional 12ft tables',
-    'games_piramida_feature2' => 'Quality cues and balls',
-    'games_piramida_feature3' => 'Suitable for beginners and professionals',
     'games_piramida_feature4' => 'Cue rental available',
 
     'games_pool_desc' => 'American billiards (pool) is the most widespread form of billiard game in the world. Played with 15 colored balls and one white ball. We offer various game variants: 8-ball, 9-ball, 10-ball.',
-    'games_pool_feature1' => '4 professional 9ft tables',
-    'games_pool_feature2' => 'Original Aramith balls',
-    'games_pool_feature3' => 'Various game variants',
     'games_pool_feature4' => 'Tournaments and leagues',
 
-    'games_darts_title' => 'Darts',
     'games_darts_desc' => 'Darts is perfect for fun with friends or competitive tournaments.',
-    'games_darts_feature1' => '5 dartboards',
-    'games_darts_feature2' => 'More than 20 game options',
-    'games_darts_feature3' => 'Safe controlled environment',
     'games_darts_feature4' => 'Darts included in rental price',
 
-    'games_foosball_title' => 'Table Football',
     'games_foosball_desc' => 'Dynamic game for 2 or 4 players. Professional tables with smooth movement and quality craftsmanship guarantee great entertainment.',
-    'games_foosball_feature1' => '2 professional tables',
-    'games_foosball_feature2' => 'Telescopic rods',
-    'games_foosball_feature3' => 'Suitable for all age categories',
     'games_foosball_feature4' => 'Fast and fun game',
 
     'games_rules_title' => 'Rules and Etiquette',
@@ -76,15 +65,6 @@ return [
     // Pricing page
     'pages_pricing_title' => 'Pricing',
     'pages_pricing_subtitle' => 'Transparent prices with no hidden fees',
-    'pricing_time' => 'Time',
-    'pricing_monday' => 'Monday',
-    'pricing_tuesday' => 'Tuesday',
-    'pricing_wednesday' => 'Wednesday',
-    'pricing_thursday' => 'Thursday',
-    'pricing_friday' => 'Friday',
-    'pricing_saturday' => 'Saturday',
-    'pricing_sunday' => 'Sunday',
-    'pricing_holiday' => 'Holiday',
     'pricing_note' => '* Prices are per table per hour',
 
     // Deals page
@@ -186,7 +166,6 @@ return [
     'contact_phone_title' => 'Phone',
     'contact_email_title' => 'Email',
     'contact_hours_title' => 'Opening hours',
-    'contact_hours_daily' => 'Daily',
 
     'contact_transport_title' => 'How to get here',
     'contact_public_transport' => 'Public transport',
@@ -218,7 +197,6 @@ return [
     'messenger_telegram' => 'Telegram',
     'messenger_whatsapp' => 'WhatsApp',
     'messenger_viber' => 'Viber',
-    'close' => 'Close',
 
     // Blog page
     'blog.title' => 'News and Events',
@@ -268,10 +246,6 @@ return [
     'duration_6' => '6 hours',
     'duration_7' => '7 hours',
     'duration_8' => '8 hours',
-    'loading' => 'Loading...',
-    'no_slots_available' => 'No available slots',
-    'error_loading_slots' => 'Loading error',
-    'occupied' => 'Occupied',
     'selection_hint' => 'You can select multiple consecutive slots',
     'select_consecutive' => 'Please select consecutive slots',
     'select_table_time' => 'Please select a table and time',
@@ -504,6 +478,9 @@ return [
     'pricing_saturday' => 'Saturday',
     'pricing_sunday' => 'Sunday',
     'pricing_holiday' => 'Holidays',
+    'pricing_days' => 'Days',
+    'pricing_price' => 'Price',
+    'pricing_from' => 'from',
 
     // Deals Section
     'deals_title' => 'Deals',
@@ -520,7 +497,6 @@ return [
     'blog_title' => 'News and Events',
     'blog_subtitle' => 'Follow our news, tournaments and promotions',
     'blog_read_button' => 'Read more',
-    'back_to_blog' => 'Back to blog',
     'back_to_blog' => 'Back to blog',
 
     // Privacy Policy

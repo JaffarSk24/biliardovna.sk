@@ -44,7 +44,7 @@
                     <svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
                 </div>
                 <h3>{{ translations.contact_hours_title|default('Otváracie hodiny') }}</h3>
-                <p>{{ translations.contact_hours_daily|default('Denne') }}<br>16:00 - 00:00</p>
+                <p>{% for g in opening_hours|default([]) %}{{ translations['day_short_' ~ g.from]|default(g.from) }}{% if g.to != g.from %} - {{ translations['day_short_' ~ g.to]|default(g.to) }}{% endif %}: {{ g.open }} - {{ g.close }}{% if not loop.last %}<br>{% endif %}{% endfor %}</p>
             </div>
         </div>
     </div>

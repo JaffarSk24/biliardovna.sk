@@ -315,6 +315,15 @@ class BookingService
             if ($endDateTime <= $startDateTime) {
                 $errors[] = 'End time must be after start time';
             }
+
+            // Booking must fit into the club's opening hours for that day
+            [$openHour, $closeHour] = OpeningHours::forDate($data['booking_date']);
+            $dayStart = new DateTime($data['booking_date']);
+            $openAt = (clone $dayStart)->modify("+{$openHour} hours");
+            $closeAt = (clone $dayStart)->modify("+{$closeHour} hours");
+            if ($startDateTime < $openAt || $endDateTime > $closeAt) {
+                $errors[] = 'Booking is outside opening hours';
+            }
         }
 
         // Validate phone number
@@ -371,17 +380,15 @@ class BookingService
         $stmt->execute([$dayEnd, $dayStart, $serviceId]);
         $blockedSlots = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        // Define time slots (16:00 - 23:00, each slot is 1 hour)
-        $timeSlots = [
-            ['start' => '16:00', 'end' => '17:00'],
-            ['start' => '17:00', 'end' => '18:00'],
-            ['start' => '18:00', 'end' => '19:00'],
-            ['start' => '19:00', 'end' => '20:00'],
-            ['start' => '20:00', 'end' => '21:00'],
-            ['start' => '21:00', 'end' => '22:00'],
-            ['start' => '22:00', 'end' => '23:00'],
-            ['start' => '23:00', 'end' => '00:00']
-        ];
+        // Hourly slots within the club's opening hours for this day (last one may end at 00:00)
+        [$openHour, $closeHour] = OpeningHours::forDate($date);
+        $timeSlots = [];
+        for ($hour = $openHour; $hour < $closeHour; $hour++) {
+            $timeSlots[] = [
+                'start' => sprintf('%02d:00', $hour),
+                'end' => sprintf('%02d:00', ($hour + 1) % 24),
+            ];
+        }
 
         $result = [];
 

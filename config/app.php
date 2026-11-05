@@ -17,6 +17,17 @@ return [
         'advance_days' => (int)($_ENV['BOOKING_ADVANCE_DAYS'] ?? 30),
         'min_advance_hours' => (int)($_ENV['BOOKING_MIN_ADVANCE_HOURS'] ?? 2),
         'require_approval' => filter_var($_ENV['BOOKING_REQUIRE_APPROVAL'] ?? true, FILTER_VALIDATE_BOOLEAN),
+        // Часы работы по дням недели (1 = понедельник), '24:00' = до полуночи.
+        // Отсюда строятся слоты бронирования и часы на сайте (src/Services/OpeningHours.php).
+        'opening_hours' => [
+            1 => ['14:00', '22:00'],
+            2 => ['14:00', '22:00'],
+            3 => ['14:00', '22:00'],
+            4 => ['14:00', '22:00'],
+            5 => ['14:00', '24:00'],
+            6 => ['14:00', '24:00'],
+            7 => ['14:00', '22:00'],
+        ],
     ],
 
     'session' => [
