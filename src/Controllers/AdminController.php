@@ -52,9 +52,13 @@ class AdminController extends Controller
         $endDate = $_GET['end'] ?? date('Y-m-d');
         $startDate = $_GET['start'] ?? date('Y-m-d', strtotime('-30 days'));
 
-        // Validate formats briefly (simple check, fallback to defaults if weird)
-        if (!strtotime($startDate)) $startDate = date('Y-m-d', strtotime('-30 days'));
-        if (!strtotime($endDate)) $endDate = date('Y-m-d');
+        // Strict Y-m-d check: these values are interpolated into the SQL below
+        $isDate = function ($value): bool {
+            $d = is_string($value) ? \DateTime::createFromFormat('!Y-m-d', $value) : false;
+            return $d && $d->format('Y-m-d') === $value;
+        };
+        if (!$isDate($startDate)) $startDate = date('Y-m-d', strtotime('-30 days'));
+        if (!$isDate($endDate)) $endDate = date('Y-m-d');
 
         // Ensure End Date includes the full day (e.g. if using datetime, but here we use DATE(column) logic usually)
         // With simple string comparison '2023-10-10' matches '2023-10-10 00:00:00'.
