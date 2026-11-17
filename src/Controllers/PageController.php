@@ -129,10 +129,6 @@ class PageController extends Controller
                 'short_description' => $translations['service_piramida_short'] ?? 'Európska pyramída',
                 'full_description' => $translations['service_piramida_full'] ?? '',
                 'image' => '/public/images/piramide.webp',
-                'price_morning' => '8',
-                'price_afternoon' => '10',
-                'price_evening' => '12',
-                'price_holiday' => '15',
                 'tables_count' => 4
             ],
             [
@@ -141,10 +137,6 @@ class PageController extends Controller
                 'short_description' => $translations['service_pool_short'] ?? 'Americký pool',
                 'full_description' => $translations['service_pool_full'] ?? '',
                 'image' => '/public/images/pull.webp',
-                'price_morning' => '6',
-                'price_afternoon' => '8',
-                'price_evening' => '10',
-                'price_holiday' => '12',
                 'tables_count' => 4
             ],
             [
@@ -153,10 +145,6 @@ class PageController extends Controller
                 'short_description' => $translations['service_darts_short'] ?? 'Elektronické šípky',
                 'full_description' => $translations['service_darts_full'] ?? '',
                 'image' => '/public/images/darts.webp',
-                'price_morning' => '5',
-                'price_afternoon' => '6',
-                'price_evening' => '8',
-                'price_holiday' => '10',
                 'tables_count' => 6
             ],
             [
@@ -165,10 +153,6 @@ class PageController extends Controller
                 'short_description' => $translations['service_table-football_short'] ?? 'Stolný futbal',
                 'full_description' => $translations['service_table-football_full'] ?? '',
                 'image' => '/public/images/football.webp',
-                'price_morning' => '5',
-                'price_afternoon' => '6',
-                'price_evening' => '8',
-                'price_holiday' => '10',
                 'tables_count' => 2
             ]
         ];
@@ -179,10 +163,6 @@ class PageController extends Controller
             'short_description' => $translations['service_shuffleboard_short'] ?? 'Shuffleboard',
             'full_description' => $translations['service_shuffleboard_full'] ?? '',
             'image' => '/public/images/shuffleboard.webp',
-            'price_morning' => '5',
-            'price_afternoon' => '6',
-            'price_evening' => '8',
-            'price_holiday' => '10',
             'tables_count' => 1
         ];
 
@@ -190,6 +170,7 @@ class PageController extends Controller
 
         return $this->renderWithSeo('home.twig', 'home', [
             'services' => $services,
+            'price_summary' => $this->buildPriceSummary(),
             'events' => $events,
             'current_page' => 'home'
         ]);
@@ -216,7 +197,10 @@ class PageController extends Controller
      * consecutive days with identical bands are merged (e.g. Monday - Thursday).
      * Holidays use Saturday prices, as the booking price calculation does.
      */
-    private function buildPricingTables(): array
+    /**
+     * Hourly prices: [service_id][day_of_week][hour] => price. Holidays use Saturday rows.
+     */
+    private function loadPrices(): array
     {
         $db = \App\Database\Database::getInstance();
         $rows = $db->query(
@@ -229,6 +213,50 @@ class PageController extends Controller
             $prices[(int)$r['service_id']][(int)$r['day_of_week']][(int)$r['h']] = (float)$r['price_per_hour'];
         }
 
+        return $prices;
+    }
+
+    /**
+     * Price ranges for the service cards on the home page, within opening hours:
+     * Monday - Thursday, Friday - Sunday and holidays (Saturday prices), e.g. "8,00 - 10,00".
+     */
+    private function buildPriceSummary(): array
+    {
+        $week = \App\Services\OpeningHours::week();
+        $range = function (array $byDay, array $days) use ($week): ?string {
+            $values = [];
+            foreach ($days as $d) {
+                [$open, $close] = $week[$d];
+                for ($h = $open; $h < $close; $h++) {
+                    if (isset($byDay[$d][$h])) {
+                        $values[] = $byDay[$d][$h];
+                    }
+                }
+            }
+            if (!$values) {
+                return null;
+            }
+            $min = number_format(min($values), 2, ',', '');
+            $max = number_format(max($values), 2, ',', '');
+
+            return $min === $max ? $min : $min . ' - ' . $max;
+        };
+
+        $summary = [];
+        foreach ($this->loadPrices() as $serviceId => $byDay) {
+            $summary[$serviceId] = [
+                'weekdays' => $range($byDay, [1, 2, 3, 4]),
+                'weekend' => $range($byDay, [5, 6, 7]),
+                'holidays' => $range($byDay, [6]),
+            ];
+        }
+
+        return $summary;
+    }
+
+    private function buildPricingTables(): array
+    {
+        $prices = $this->loadPrices();
         $week = \App\Services\OpeningHours::week();
         $format = fn(float $p) => rtrim(rtrim(number_format($p, 2, '.', ''), '0'), '.');
         $time = fn(int $h) => sprintf('%02d:00', $h % 24);

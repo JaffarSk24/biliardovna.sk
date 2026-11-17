@@ -327,7 +327,6 @@ return [
     'hero_cta' => 'Забронювати стіл',
     'services_title' => 'Наші ігри',
     'hour' => 'година',
-    'holidays' => 'Свята та вихідні',
     'table_singular' => 'стол',
     'tables' => 'столи',
     'targets' => 'мішеней',

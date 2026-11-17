@@ -328,7 +328,6 @@ return [
     'hero_cta' => 'Tisch reservieren',
     'services_title' => 'Unsere Spiele',
     'hour' => 'Stunde',
-    'holidays' => 'Feiertage und Wochenenden',
     'table_singular' => 'Tisch',
     'tables' => 'Tische',
     'targets' => 'Dartscheiben',

@@ -327,7 +327,6 @@ return [
     'hero_cta' => 'Rezervovať stôl',
     'services_title' => 'Naše hry',
     'hour' => 'hodina',
-    'holidays' => 'Sviatky a víkendy',
     'table_singular' => 'stôl',
     'tables' => 'stoly',
     'targets' => 'terčov',

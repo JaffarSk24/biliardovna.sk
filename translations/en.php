@@ -328,7 +328,6 @@ return [
     'hero_cta' => 'Book a table',
     'services_title' => 'Our Games',
     'hour' => 'hour',
-    'holidays' => 'Holidays and weekends',
     'table_singular' => 'table',
     'tables' => 'tables',
     'targets' => 'dartboards',
