@@ -324,6 +324,11 @@ class BookingService
             if ($startDateTime < $openAt || $endDateTime > $closeAt) {
                 $errors[] = 'Booking is outside opening hours';
             }
+
+            // Days closed in the admin calendar
+            if ($this->isDateBlocked($data['booking_date'])) {
+                $errors[] = 'This day is closed for booking';
+            }
         }
 
         // Validate phone number
@@ -362,10 +367,26 @@ class BookingService
     /**
      * Get availability for all resources of a service on a specific date
      */
+    /**
+     * Day closed for booking in the admin calendar (calendar_blocked_dates)
+     */
+    public function isDateBlocked(string $date): bool
+    {
+        $stmt = \App\Database\Database::getInstance()->prepare("SELECT 1 FROM calendar_blocked_dates WHERE date = ? LIMIT 1");
+        $stmt->execute([$date]);
+
+        return (bool)$stmt->fetchColumn();
+    }
+
     public function getResourcesAvailability(int $serviceId, string $date): array
     {
         // Get all resources for this service
         $resources = $this->resourceModel->getByService($serviceId);
+
+        // A closed day has no free slots at all
+        if ($this->isDateBlocked($date)) {
+            return ['resources' => []];
+        }
 
         // Fetch blocked slots for this day/service
         $db = \App\Database\Database::getInstance();

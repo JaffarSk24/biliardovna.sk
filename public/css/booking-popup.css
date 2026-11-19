@@ -607,3 +607,12 @@
     display:none !important;
   }
 }
+/* Notice under the date field (closed day, deal restriction) */
+.popup-date-notice {
+    display: none;
+    margin: 8px 0 0;
+    color: var(--error-color, #f44336);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    text-align: center;
+}

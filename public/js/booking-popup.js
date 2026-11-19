@@ -190,6 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function resetForm() {
         form.reset();
+        showDateNotice('');
+        updateDateBounds();
         if (resourcesSection) resourcesSection.style.display = 'none';
         if (detailsSection) detailsSection.style.display = 'none';
         if (resourcesGrid) resourcesGrid.innerHTML = '';
@@ -226,50 +228,86 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && popup.classList.contains('active')) closePopup(); });
 
     // Date bounds and change
-    
-    // Fetch blocked dates once
+
+    // Local YYYY-MM-DD: toISOString() is UTC and gives the previous day after midnight
+    const toLocalISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
     let blockedDates = [];
     let holidayDates = [];
+
+    // The earliest bookable day skips closed days: the iOS picker pre-selects a day
+    // as soon as it opens, and it must land on an open one
+    function updateDateBounds() {
+        if (!dateInput) return;
+        const day = new Date();
+        const max = new Date(); max.setDate(max.getDate() + 14);
+        while (day < max && (blockedDates.includes(toLocalISO(day)) || !isDateAllowed(toLocalISO(day)))) {
+            day.setDate(day.getDate() + 1);
+        }
+        dateInput.setAttribute('min', toLocalISO(day));
+        dateInput.setAttribute('max', toLocalISO(max));
+    }
+
+    // Notice under the date field instead of alert(): an alert closes the iOS picker
+    let dateNotice = null;
+    function showDateNotice(text) {
+        if (!dateInput) return;
+        if (!dateNotice) {
+            dateNotice = document.createElement('p');
+            dateNotice.className = 'popup-date-notice';
+            dateNotice.setAttribute('role', 'alert');
+            dateInput.insertAdjacentElement('afterend', dateNotice);
+        }
+        dateNotice.textContent = text || '';
+        dateNotice.style.display = text ? 'block' : 'none';
+    }
+
+    function hideSlots() {
+        selectedSlots = [];
+        updateSlotCountHidden();
+        if (resourcesGrid) resourcesGrid.innerHTML = '';
+        if (resourcesSection) resourcesSection.style.display = 'none';
+        if (detailsSection) detailsSection.style.display = 'none';
+        if (actionsContainer) actionsContainer.style.display = 'none';
+        if (submitBtn) submitBtn.style.display = 'none';
+    }
+
+    // Fetch blocked dates once
     fetch('/api/blocked-dates')
         .then(r => r.json())
         .then(data => {
             if (data.dates) blockedDates = data.dates;
             if (data.holidays) holidayDates = data.holidays;
+            updateDateBounds();
         })
         .catch(err => console.error('Error fetching blocked dates:', err));
 
     if (dateInput) {
-        const today = new Date();
-        const maxDate = new Date(); maxDate.setDate(today.getDate() + 14);
-        dateInput.setAttribute('min', today.toISOString().split('T')[0]);
-        dateInput.setAttribute('max', maxDate.toISOString().split('T')[0]);
+        updateDateBounds();
 
         dateInput.addEventListener('change', function() {
           const date = this.value;
+          showDateNotice('');
 
-          // Check Calendar Blocked Dates
-          if (blockedDates.includes(date)) {
-              alert(tr('date_blocked', 'This day is closed for booking'));
-              this.value = '';
-              resetForm();
-              return;
-          }
-
-          if (!isDateAllowed(date)) {
-            alert(tr('deal_weekdays_only', 'Эта акция действует только в будние дни'));
-            // hard reset UI so no slots remain visible
-            this.value = '';
-            selectedSlots = [];
-            updateSlotCountHidden();
-            if (resourcesGrid) resourcesGrid.innerHTML = '';
-            if (resourcesSection) resourcesSection.style.display = 'none';
-            if (detailsSection) detailsSection.style.display = 'none';
-            if (actionsContainer) actionsContainer.style.display = 'none';
-            if (submitBtn) submitBtn.style.display = 'none';
+          if (!date) {
+            hideSlots();
             return;
           }
 
-          if (currentServiceId && date) {
+          // The value stays as it is: clearing it while the iOS picker is open throws the picker back
+          if (blockedDates.includes(date)) {
+            showDateNotice(tr('date_blocked', 'This day is closed for booking'));
+            hideSlots();
+            return;
+          }
+
+          if (!isDateAllowed(date)) {
+            showDateNotice(tr('deal_weekdays_only', 'Эта акция действует только в будние дни'));
+            hideSlots();
+            return;
+          }
+
+          if (currentServiceId) {
             selectedSlots = [];
             updateSlotCountHidden();
             updateVisibilityForSlots();
@@ -614,6 +652,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (params.timeRestriction) window.dealTimeRestriction = params.timeRestriction;
         if (params.dateRestriction) window.dealDateRestriction = params.dateRestriction;
         window.dealSlotsRestriction = params.slotsRestriction || null;
+        updateDateBounds();
 
         updateVisibilityForSlots();
     });
