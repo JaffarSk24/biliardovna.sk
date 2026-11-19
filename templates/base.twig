@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="/public/css/base.css">
     <link rel="stylesheet" href="/public/css/style.css?v=3">
     <link rel="stylesheet" href="/public/css/utilities.css">
-    <link rel="stylesheet" href="/public/css/booking-popup.css?v=2">
+    <link rel="stylesheet" href="/public/css/booking-popup.css?v=3">
 
     {# Страничные стили (дети могут добавить свои через {{ parent() }}) #}
     {% block styles %}{% endblock %}
@@ -131,6 +131,7 @@
             'booking_error': {{ 'booking_error'|trans|json_encode|raw }},
             'loading_error': {{ 'loading_error'|trans|json_encode|raw }},
             'no_tables': {{ 'no_tables'|trans|json_encode|raw }},
+            'pick_date': {{ 'pick_date'|trans|json_encode|raw }},
             'no_slots': {{ 'no_slots'|trans|json_encode|raw }}
         };
     </script>
@@ -138,7 +139,7 @@
     <script src="/public/js/app.js"></script>
     <script src="/public/js/booking.js"></script>
     <script src="/public/js/events.js"></script>
-    <script src="/public/js/booking-popup.js?v=6"></script>
+    <script src="/public/js/booking-popup.js?v=7"></script>
 
     {% block scripts %}{% endblock %}
 </body>

@@ -304,6 +304,7 @@ return [
     'date_blocked' => 'Tento deň je uzavretý pre rezervácie',
     'no_slots_available' => 'Žiadne voľné termíny',
     'no_tables' => 'Na tento deň nie sú voľné stoly',
+    'pick_date' => 'Vyberte dátum',
     'no_slots' => 'Žiadne voľné časy',
     'loading_error' => 'Chyba pri načítaní, skúste to znova',
     'ok' => 'OK',

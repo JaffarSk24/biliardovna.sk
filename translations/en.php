@@ -305,6 +305,7 @@ return [
     'date_blocked' => 'This day is closed for booking',
     'no_slots_available' => 'No available slots',
     'no_tables' => 'No tables available for this day',
+    'pick_date' => 'Choose a date',
     'no_slots' => 'No free times',
     'loading_error' => 'Loading failed, please try again',
     'ok' => 'OK',

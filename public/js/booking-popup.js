@@ -246,6 +246,130 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         dateInput.setAttribute('min', toLocalISO(day));
         dateInput.setAttribute('max', toLocalISO(max));
+        if (typeof renderCalendar === 'function') renderCalendar();
+    }
+
+    // Own calendar instead of the system one: the phone pickers cannot grey out single
+    // closed days (iOS greys out nothing, not even past days), so here past, closed and
+    // too distant days are drawn disabled and cannot be tapped, the same on every device.
+    // The native input stays hidden and keeps the value, so the rest of the code is unchanged.
+    let calTrigger = null, calPanel = null, calText = null;
+    let calYear = 0, calMonth = 0;
+    const calLang = document.documentElement.lang || 'sk';
+    const calLocale = { sk: 'sk-SK', ru: 'ru-RU', en: 'en-GB', uk: 'uk-UA', de: 'de-DE' }[calLang] || calLang;
+    const capFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+    const parseISO = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+
+    function isDayOpen(iso) {
+        if (iso < toLocalISO(new Date())) return false;
+        const max = dateInput.getAttribute('max');
+        if (max && iso > max) return false;
+        return !blockedDates.includes(iso) && isDateAllowed(iso);
+    }
+
+    function syncCalendarText() {
+        if (!calText) return;
+        const v = dateInput.value;
+        calTrigger.classList.toggle('is-placeholder', !v);
+        calText.textContent = v
+            ? capFirst(parseISO(v).toLocaleDateString(calLocale, { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' }))
+            : tr('pick_date', 'Vyberte dátum');
+    }
+
+    function renderCalendar() {
+        if (!calPanel || calPanel.hidden) return;
+        const today = new Date();
+        const maxAttr = dateInput.getAttribute('max');
+        const maxDate = maxAttr ? parseISO(maxAttr) : null;
+        const first = new Date(calYear, calMonth, 1);
+        const canPrev = first > new Date(today.getFullYear(), today.getMonth(), 1);
+        const canNext = !maxDate || new Date(calYear, calMonth + 1, 1) <= maxDate;
+        const monthLabel = (y, m) => capFirst(new Date(y, m, 1).toLocaleDateString(calLocale, { month: 'long', year: 'numeric' }));
+
+        let html = `<div class="bp-cal-head">
+            <button type="button" class="bp-cal-nav" data-dir="-1" ${canPrev ? '' : 'disabled'} aria-label="${monthLabel(calYear, calMonth - 1)}">&#8249;</button>
+            <div class="bp-cal-title">${monthLabel(calYear, calMonth)}</div>
+            <button type="button" class="bp-cal-nav" data-dir="1" ${canNext ? '' : 'disabled'} aria-label="${monthLabel(calYear, calMonth + 1)}">&#8250;</button>
+          </div><div class="bp-cal-grid">`;
+        for (let i = 0; i < 7; i++) {
+            const wd = new Date(2024, 0, 1 + i).toLocaleDateString(calLocale, { weekday: 'short' }); // 1.1.2024 is a Monday
+            html += `<div class="bp-cal-wd">${capFirst(wd.replace('.', ''))}</div>`;
+        }
+        for (let i = 0; i < (first.getDay() + 6) % 7; i++) html += '<div></div>';
+        const days = new Date(calYear, calMonth + 1, 0).getDate();
+        const todayISO = toLocalISO(today);
+        for (let d = 1; d <= days; d++) {
+            const iso = toLocalISO(new Date(calYear, calMonth, d));
+            const open = isDayOpen(iso);
+            const cls = ['bp-cal-day'];
+            if (iso === todayISO) cls.push('is-today');
+            if (iso === dateInput.value) cls.push('is-selected');
+            if (!open && iso >= todayISO && blockedDates.includes(iso)) cls.push('is-closed');
+            const label = parseISO(iso).toLocaleDateString(calLocale, { weekday: 'long', day: 'numeric', month: 'long' });
+            html += `<button type="button" class="${cls.join(' ')}" data-date="${iso}" ${open ? '' : 'disabled'} aria-label="${label}">${d}</button>`;
+        }
+        calPanel.innerHTML = html + '</div>';
+    }
+
+    function openCalendar() {
+        // first open day, or the chosen one
+        let start = dateInput.value ? parseISO(dateInput.value) : parseISO(dateInput.getAttribute('min') || toLocalISO(new Date()));
+        calYear = start.getFullYear(); calMonth = start.getMonth();
+        calPanel.hidden = false;
+        calTrigger.setAttribute('aria-expanded', 'true');
+        renderCalendar();
+    }
+
+    function closeCalendar() {
+        if (!calPanel) return;
+        calPanel.hidden = true;
+        calTrigger.setAttribute('aria-expanded', 'false');
+    }
+
+    if (dateInput) {
+        dateInput.classList.add('bp-native-date');
+        dateInput.tabIndex = -1;
+        calTrigger = document.createElement('button');
+        calTrigger.type = 'button';
+        calTrigger.className = 'bp-date-trigger';
+        calTrigger.setAttribute('aria-expanded', 'false');
+        calTrigger.innerHTML = '<span class="bp-date-text"></span><svg class="bp-date-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+        calText = calTrigger.querySelector('.bp-date-text');
+        calPanel = document.createElement('div');
+        calPanel.className = 'bp-cal';
+        calPanel.hidden = true;
+        dateInput.insertAdjacentElement('afterend', calTrigger);
+        calTrigger.insertAdjacentElement('afterend', calPanel);
+        const label = document.querySelector('label[for="popup-date"]');
+        if (label) label.addEventListener('click', (e) => { e.preventDefault(); calTrigger.click(); });
+
+        calTrigger.addEventListener('click', () => {
+            if (!calPanel.hidden) { closeCalendar(); return; }
+            // page-level checks listen to clicks on the original field (deals: service first)
+            if (!dateInput.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))) return;
+            openCalendar();
+        });
+
+        calPanel.addEventListener('click', (e) => {
+            const nav = e.target.closest('.bp-cal-nav');
+            if (nav && !nav.disabled) {
+                calMonth += Number(nav.dataset.dir);
+                if (calMonth < 0) { calMonth = 11; calYear--; }
+                if (calMonth > 11) { calMonth = 0; calYear++; }
+                renderCalendar();
+                return;
+            }
+            const day = e.target.closest('.bp-cal-day');
+            if (!day || day.disabled) return;
+            dateInput.value = day.dataset.date;
+            closeCalendar();
+            syncCalendarText();
+            dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+
+        dateInput.addEventListener('change', syncCalendarText);
+        form.addEventListener('reset', () => setTimeout(() => { closeCalendar(); syncCalendarText(); }, 0));
+        syncCalendarText();
     }
 
     // Notice under the date field instead of alert(): an alert closes the iOS picker
@@ -256,18 +380,10 @@ document.addEventListener('DOMContentLoaded', function() {
             dateNotice = document.createElement('p');
             dateNotice.className = 'popup-date-notice';
             dateNotice.setAttribute('role', 'alert');
-            dateInput.insertAdjacentElement('afterend', dateNotice);
+            (calPanel || dateInput).insertAdjacentElement('afterend', dateNotice);
         }
         dateNotice.textContent = text || '';
         dateNotice.style.display = text ? 'block' : 'none';
-    }
-
-    // Once the picker is closed a closed day is dropped from the field (the notice stays):
-    // iOS draws its empty "DD MM YYYY" placeholder over a value that is out of range.
-    // Clearing earlier, while the picker is open, throws the iOS picker back to today.
-    function dropRejectedDate() {
-        const v = dateInput ? dateInput.value : '';
-        if (v && (blockedDates.includes(v) || !isDateAllowed(v))) dateInput.value = '';
     }
 
     function hideSlots() {
@@ -292,7 +408,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (dateInput) {
         updateDateBounds();
-        dateInput.addEventListener('blur', dropRejectedDate);
 
         dateInput.addEventListener('change', function() {
           const date = this.value;
@@ -324,11 +439,6 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
 
-        dateInput.addEventListener('click', function(e) {
-            if (e.target === this) {
-                try { if (this.showPicker) this.showPicker(); } catch { this.focus(); }
-            }
-        });
     }
 
     function loadResourcesAndSlots(serviceId, date) {

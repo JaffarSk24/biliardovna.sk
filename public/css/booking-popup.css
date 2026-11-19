@@ -616,3 +616,140 @@
     line-height: 1.4;
     text-align: center;
 }
+
+/* Own date calendar: the native field only keeps the value */
+#bookingPopup input.bp-native-date {
+    display: none !important;
+}
+
+.bp-date-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 44px;
+    background: var(--color-wood);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-color);
+    font: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+}
+
+.bp-date-trigger:hover,
+.bp-date-trigger:focus-visible,
+.bp-date-trigger[aria-expanded="true"] {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.bp-date-trigger.is-placeholder .bp-date-text {
+    color: var(--color-muted);
+}
+
+.bp-date-icon {
+    position: absolute;
+    right: 14px;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: var(--accent-color);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+}
+
+.bp-cal {
+    margin-top: 8px;
+    padding: 12px;
+    background: var(--color-wood);
+    border: 1px solid var(--accent-color);
+    border-radius: var(--radius-sm);
+}
+
+.bp-cal[hidden] {
+    display: none;
+}
+
+.bp-cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.bp-cal-title {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.bp-cal-nav {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--accent-color);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.bp-cal-nav:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+.bp-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.bp-cal-wd {
+    padding: 4px 0;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+}
+
+.bp-cal-day {
+    aspect-ratio: 1;
+    min-height: 36px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    color: var(--text-color);
+    font: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.bp-cal-day:not(:disabled):hover {
+    border-color: var(--accent-color);
+}
+
+.bp-cal-day.is-today {
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.bp-cal-day.is-selected {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--color-espresso);
+    font-weight: 700;
+}
+
+.bp-cal-day:disabled {
+    color: var(--text-color);
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
+.bp-cal-day.is-closed {
+    text-decoration: line-through;
+}

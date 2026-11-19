@@ -305,6 +305,7 @@ return [
     'date_blocked' => 'Dieser Tag ist für Buchungen geschlossen',
     'no_slots_available' => 'Keine freien Slots',
     'no_tables' => 'Für diesen Tag sind keine Tische frei',
+    'pick_date' => 'Datum wählen',
     'no_slots' => 'Keine freien Zeiten',
     'loading_error' => 'Laden fehlgeschlagen, bitte erneut versuchen',
     'ok' => 'OK',

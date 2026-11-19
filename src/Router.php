@@ -24,8 +24,16 @@ class Router
         // 1. Check URL prefix
         $urlLang = (!empty($segments[0]) && in_array($segments[0], $supported) && $segments[0] !== $default) ? $segments[0] : null;
 
+        // Page scripts call /api/... without the language prefix: such a call must neither
+        // be redirected (an extra round trip before every slot list) nor reset the visitor's
+        // language cookie to the default one
+        $isApi = ($segments[0] ?? '') === 'api';
+
         if ($urlLang) {
             $this->language = $urlLang;
+        } elseif ($isApi) {
+            $this->language = $default;
+            return;
         } else {
             $this->language = $default;
 
