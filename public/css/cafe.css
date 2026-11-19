@@ -460,3 +460,9 @@
     padding-top: 100px !important;
   }
 }
+/* intro without the room photo: the text takes the full width */
+.cafe-intro-content--text {
+    grid-template-columns: 1fr;
+    max-width: 860px;
+    margin: 0 auto;
+}

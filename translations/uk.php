@@ -105,55 +105,54 @@ return [
     'pages_cafe_subtitle' => 'Насолоджуйтесь частуванням під час гри',
 
     'cafe_welcome_title' => 'Ласкаво просимо до нашого кафе',
-    'cafe_welcome_text' => 'Під час гри ви можете насолодитися широким вибором напоїв та десертів. Наше кафе пропонує якісне еспресо, свіжі соки, пиво та різноманітні закуски.',
+    'cafe_welcome_text' => 'Під час гри можна взяти пиво, безалкогольні напої та солоні закуски. Меню та ціни нижче.',
     // Updated Info Block
     'cafe_info_title' => 'Важливе повідомлення',
-    'cafe_info_text' => 'Послуги кафе та кімнати для куріння доступні лише для гравців з активним бронюванням!',
+    'cafe_info_text' => 'Послуги кафе доступні лише для гравців з активним бронюванням!',
 
     'cafe_menu_title' => 'Наше меню',
 
     // PIVO
     'cafe_beer' => 'Пиво',
-    'menu_pilsner' => 'Pilsner Urquell 12° 330 мл',
-    'menu_stella' => 'Stella Artois 330 мл',
-    'menu_corona' => 'Corona Extra 355 мл',
-    'menu_stella_nealko' => 'Безалкогольне Stella Artois 330 мл',
 
     // VINO
     'cafe_wine' => 'Вино',
-    'menu_prosecco_bottle' => 'Prosecco 750 мл',
-    'menu_frizz_bottle' => 'I AM FRIZZ 750 мл',
-    'menu_cabernet' => 'Cabernet Sauvignon 150 мл',
-    'menu_cabernet_rose' => 'Cabernet Sauvignon Rose 150 мл',
-    'menu_chardonnay' => 'Chardonnay 150 мл',
 
     // NEALKO NAPOJE
     'cafe_soft_drinks' => 'Безалкогольні напої',
-    'menu_cappy' => 'Cappy 250 мл',
-    'menu_redbull' => 'Red Bull',
-    'menu_kofola' => 'Kofola 250 мл',
-    'menu_coke' => 'Coca Cola 330 мл',
-    'menu_royal_cola' => 'Royal Crown Cola',
-    'menu_coke_zero' => 'Coca Cola Zero 200 мл',
-    'menu_tonic' => 'Schweppes Tonic 250 мл',
-    'menu_romer_still' => 'Römerquelle Негазована 330 мл',
-    'menu_romer_sparkling' => 'Römerquelle Газована 330 мл',
-    'menu_birell_pomelo' => 'Birell Radler Pomelo 500мл',
 
     // KAVA
     'cafe_coffee' => 'Кава',
-    'menu_lungo' => 'Lungo 180 мл',
-    'menu_americano_xl' => 'Americano XL 400мл',
-    'menu_americano_craft' => 'Americano Craft XL 400 мл',
 
     // SLANE SNACKY
     'cafe_snacks' => 'Солоні закуски',
-    'menu_sticks_salt' => 'Солоні палички 160г',
-    'menu_sticks_cheese' => 'Палички з сиром 160г',
-    'menu_peanuts' => 'Арахіс смажений солоний 100г',
+    // cafe menu item names by cafe_items.id (Slovak name from the database otherwise)
+    'cafe_item_1' => 'Pilsner Urquell 12° 330 мл',
+    'cafe_item_2' => 'Stella Artois 330 мл',
+    'cafe_item_3' => 'Corona Extra 330 мл',
+    'cafe_item_4' => 'Stella Artois 0,0 % 330 мл',
+    'cafe_item_5' => 'Birell Помело та грейпфрут 500 мл',
+    'cafe_item_26' => 'Birell Сицилійський лимон 500 мл',
+    'cafe_item_11' => 'Cappy Апельсин 100 % 250 мл',
+    'cafe_item_12' => 'Red Bull 250 мл',
+    'cafe_item_13' => 'Kofola Original 250 мл',
+    'cafe_item_14' => 'Coca-Cola 330 мл',
+    'cafe_item_16' => 'Coca-Cola Zero 330 мл',
+    'cafe_item_17' => 'Schweppes Tonic 250 мл',
+    'cafe_item_19' => 'Römerquelle негазована 330 мл',
+    'cafe_item_18' => 'Römerquelle газована 330 мл',
+    'cafe_item_27' => 'Начос з гуакамоле 120 г + 60 г',
+    'cafe_item_28' => 'Начос з гуакамоле XL 180 г + 100 г',
+    'cafe_item_29' => 'Начос із сирним соусом 120 г + 60 мл',
+    'cafe_item_25' => 'Арахіс смажений солоний 100 г',
+    'cafe_item_30' => 'Lay’s Maxx Cheese & Onion 120 г',
+    'cafe_item_31' => 'Lay’s Barbecue Ribs 130 г',
+    'cafe_item_32' => 'Lay’s Fromage 130 г',
+    'cafe_item_33' => 'Lay’s солоні 130 г',
+    'cafe_item_34' => 'Maretti Томат 70 г',
+    'cafe_item_35' => 'Maretti Піца 70 г',
 
     // Gallery & CTA
-    'cafe_gallery_title' => 'Галерея',
     'cafe_cta_title' => 'Забронюйте стіл і насолоджуйтесь частуванням',
     'cafe_cta_text' => 'Нагадуємо: кафе відкрито тільки для відвідувачів, що грають.',
 

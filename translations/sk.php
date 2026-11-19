@@ -105,56 +105,30 @@ return [
     'pages_cafe_subtitle' => 'Vychutnajte si občerstvenie počas hry',
 
     'cafe_welcome_title' => 'Vitajte v našej kaviarni',
-    'cafe_welcome_text' => 'Počas hry si môžete vychutnať širokú ponuku nápojov a dezertov. Naša kaviareň ponúka kvalitné espresso, čerstvé džúsy, pivo a rôzne občerstvenie.',
+    'cafe_welcome_text' => 'Počas hry si môžete vychutnať pivo, nealkoholické nápoje a slané občerstvenie. Ponuku a ceny nájdete v menu nižšie.',
 
     // Updated Info Block (formerly Discount)
     'cafe_info_title' => 'Dôležité upozornenie',
-    'cafe_info_text' => 'Služby kaviarne a fajčiarskej miestnosti sú dostupné len pre hráčov s aktívnou rezerváciou!',
+    'cafe_info_text' => 'Služby kaviarne sú dostupné len pre hráčov s aktívnou rezerváciou!',
 
     'cafe_menu_title' => 'Naše menu',
 
     // PIVO
     'cafe_beer' => 'Pivo',
-    'menu_pilsner' => 'Pilsner Urquell 12° 330 ml',
-    'menu_stella' => 'Stella Artois 330 ml',
-    'menu_corona' => 'Corona Extra 355 ml',
-    'menu_stella_nealko' => 'Nealko Stella Artois 330 ml',
 
     // VINO
     'cafe_wine' => 'Víno',
-    'menu_prosecco_bottle' => 'Prosecco 750 ml',
-    'menu_frizz_bottle' => 'I AM FRIZZ 750 ml',
-    'menu_cabernet' => 'Cab. Sauvignon 150 ml',
-    'menu_cabernet_rose' => 'Cab. Sauvignon Rose 150 ml',
-    'menu_chardonnay' => 'Chardonnay 150 ml',
 
     // NEALKO NAPOJE
     'cafe_soft_drinks' => 'Nealko nápoje',
-    'menu_cappy' => 'Cappy 250 ml',
-    'menu_redbull' => 'Red Bull',
-    'menu_kofola' => 'Kofola 250 ml',
-    'menu_coke' => 'Coca Cola 330 ml',
-    'menu_royal_cola' => 'Royal Crown Cola',
-    'menu_coke_zero' => 'Coca Cola Zero 200 ml',
-    'menu_tonic' => 'Schweppes Tonic 250 ml',
-    'menu_romer_still' => 'Römerquelle jemná 330 ml',
-    'menu_romer_sparkling' => 'Römerquelle neper. 330 ml',
-    'menu_birell_pomelo' => 'Birell Radler Grep 500ml',
 
     // KAVA
     'cafe_coffee' => 'Káva',
-    'menu_lungo' => 'Lungo 180 ml',
-    'menu_americano_xl' => 'Americano XL 400ml',
-    'menu_americano_craft' => 'Americano Craft XL 400 ml',
 
     // SLANE SNACKY
     'cafe_snacks' => 'Slané snacky',
-    'menu_sticks_salt' => 'Tyčinky solené 160g',
-    'menu_sticks_cheese' => 'Tyčinky so syrom 160g',
-    'menu_peanuts' => 'Arašidy praž. sol. 100g',
 
     // Gallery & CTA
-    'cafe_gallery_title' => 'Galéria',
     'cafe_cta_title' => 'Rezervujte si stôl a vychutnajte si občerstvenie',
     'cafe_cta_text' => 'Pripomíname, že kaviareň je otvorená len pre hrajúcich zákazníkov.',
 

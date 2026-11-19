@@ -329,8 +329,50 @@ class PageController extends Controller
     public function cafe()
     {
         return $this->renderWithSeo('cafe.twig', 'cafe', [
-            'current_page' => 'cafe'
+            'current_page' => 'cafe',
+            'cafe_menu' => $this->loadCafeMenu(),
         ]);
+    }
+
+    /**
+     * Cafe menu from cafe_items, the same list the admin POS sells from, so the
+     * prices on the page always match the till. A name is translated when the
+     * language has a 'cafe_item_<id>' key, otherwise the Slovak name is shown.
+     */
+    private function loadCafeMenu(): array
+    {
+        $order = ['beer', 'soft_drinks', 'wine', 'coffee', 'snacks', 'food'];
+        $titles = [
+            'beer' => 'cafe_beer', 'soft_drinks' => 'cafe_soft_drinks', 'wine' => 'cafe_wine',
+            'coffee' => 'cafe_coffee', 'snacks' => 'cafe_snacks', 'food' => 'cafe_food',
+        ];
+        try {
+            $rows = \App\Database\Database::getInstance()
+                ->query("SELECT id, name, price, category FROM cafe_items WHERE is_active = 1 ORDER BY id")
+                ->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Throwable $e) {
+            error_log('Cafe menu: ' . $e->getMessage());
+            return [];
+        }
+
+        $groups = [];
+        foreach ($rows as $row) {
+            $key = 'cafe_item_' . $row['id'];
+            $name = $this->trans($key);
+            $groups[$row['category']][] = [
+                'name' => $name !== $key ? $name : $row['name'],
+                'price' => number_format((float)$row['price'], 2, '.', ''),
+            ];
+        }
+
+        $menu = [];
+        foreach (array_unique(array_merge($order, array_keys($groups))) as $cat) {
+            if (empty($groups[$cat])) continue;
+            $titleKey = $titles[$cat] ?? ('cafe_' . $cat);
+            $title = $this->trans($titleKey);
+            $menu[] = ['title' => $title !== $titleKey ? $title : ucfirst(str_replace('_', ' ', $cat)), 'items' => $groups[$cat]];
+        }
+        return $menu;
     }
 
     public function contact()

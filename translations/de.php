@@ -105,56 +105,42 @@ return [
     'pages_cafe_subtitle' => 'Genießen Sie Erfrischungen während des Spiels',
 
     'cafe_welcome_title' => 'Willkommen in unserem Café',
-    'cafe_welcome_text' => 'Genießen Sie während des Spiels eine große Auswahl an Getränken und Snacks. Unser Café bietet hochwertigen Espresso, frische Säfte, Bier und verschiedene Snacks.',
+    'cafe_welcome_text' => 'Während des Spiels können Sie Bier, alkoholfreie Getränke und salzige Snacks genießen. Menü und Preise finden Sie unten.',
 
     // Updated Info Block
     'cafe_info_title' => 'Wichtiger Hinweis',
-    'cafe_info_text' => 'Die Nutzung des Cafés und des Raucherraums ist nur für Spieler mit aktiver Reservierung möglich!',
+    'cafe_info_text' => 'Die Nutzung des Cafés ist nur für Spieler mit aktiver Reservierung möglich!',
 
     'cafe_menu_title' => 'Unsere Speisekarte',
 
     // PIVO
     'cafe_beer' => 'Bier',
-    'menu_pilsner' => 'Pilsner Urquell 12° 330 ml',
-    'menu_stella' => 'Stella Artois 330 ml',
-    'menu_corona' => 'Corona Extra 355 ml',
-    'menu_stella_nealko' => 'Alkoholfreies Stella Artois 330 ml',
 
     // VINO
     'cafe_wine' => 'Wein',
-    'menu_prosecco_bottle' => 'Prosecco 750 ml',
-    'menu_frizz_bottle' => 'I AM FRIZZ 750 ml',
-    'menu_cabernet' => 'Cabernet Sauvignon 150 ml',
-    'menu_cabernet_rose' => 'Cabernet Sauvignon Rose 150 ml',
-    'menu_chardonnay' => 'Chardonnay 150 ml',
 
     // NEALKO NAPOJE
     'cafe_soft_drinks' => 'Alkoholfreie Getränke',
-    'menu_cappy' => 'Cappy 250 ml',
-    'menu_redbull' => 'Red Bull',
-    'menu_kofola' => 'Kofola 250 ml',
-    'menu_coke' => 'Coca Cola 330 ml',
-    'menu_royal_cola' => 'Royal Crown Cola',
-    'menu_coke_zero' => 'Coca Cola Zero 200 ml',
-    'menu_tonic' => 'Schweppes Tonic 250 ml',
-    'menu_romer_still' => 'Römerquelle Still 330 ml',
-    'menu_romer_sparkling' => 'Römerquelle Prickelnd 330 ml',
-    'menu_birell_pomelo' => 'Birell Radler Pomelo 500ml',
 
     // KAVA
     'cafe_coffee' => 'Kaffee',
-    'menu_lungo' => 'Lungo 180 ml',
-    'menu_americano_xl' => 'Americano XL 400ml',
-    'menu_americano_craft' => 'Americano Craft XL 400 ml',
 
     // SLANE SNACKY
     'cafe_snacks' => 'Salzige Snacks',
-    'menu_sticks_salt' => 'Salzstangen 160g',
-    'menu_sticks_cheese' => 'Käsestangen 160g',
-    'menu_peanuts' => 'Geröstete gesalzene Erdnüsse 100g',
+    // cafe menu item names by cafe_items.id (Slovak name from the database otherwise)
+    'cafe_item_5' => 'Birell Pomelo & Grapefruit 500 ml',
+    'cafe_item_26' => 'Birell Sizilianische Zitrone 500 ml',
+    'cafe_item_11' => 'Cappy Orange 100 % 250 ml',
+    'cafe_item_19' => 'Römerquelle still 330 ml',
+    'cafe_item_18' => 'Römerquelle prickelnd 330 ml',
+    'cafe_item_27' => 'Nachos mit Guacamole 120 g + 60 g',
+    'cafe_item_28' => 'Nachos mit Guacamole XL 180 g + 100 g',
+    'cafe_item_29' => 'Nachos mit Käsedip 120 g + 60 ml',
+    'cafe_item_25' => 'Geröstete gesalzene Erdnüsse 100 g',
+    'cafe_item_33' => 'Lay’s Gesalzen 130 g',
+    'cafe_item_34' => 'Maretti Tomate 70 g',
 
     // Gallery & CTA
-    'cafe_gallery_title' => 'Galerie',
     'cafe_cta_title' => 'Reservieren Sie einen Tisch und genießen Sie Snacks',
     'cafe_cta_text' => 'Hinweis: Das Café ist nur für spielende Gäste geöffnet.',
 
