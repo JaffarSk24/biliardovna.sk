@@ -304,6 +304,11 @@ return [
     // Booking form translations
     'date_blocked' => 'Этот день закрыт для бронирования',
     'no_slots_available' => 'Нет свободных слотов',
+    'no_tables' => 'На этот день нет свободных столов',
+    'no_slots' => 'Нет свободного времени',
+    'loading_error' => 'Ошибка загрузки, попробуйте ещё раз',
+    'ok' => 'OK',
+    'img_multi_slots_alt' => 'Выбор нескольких слотов',
     'occupied' => 'Занято',
     'base_price' => 'Базовая цена',
     'time_multiplier' => 'Временной множитель',

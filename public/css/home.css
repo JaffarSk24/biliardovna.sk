@@ -307,6 +307,13 @@
     border-bottom: none;
 }
 
+/* the price never breaks after "€/": the day names wrap instead */
+.pricing-row span:last-child {
+    white-space: nowrap;
+    text-align: right;
+    margin-left: 8px;
+}
+
 .pricing-row.highlight {
     color: var(--accent-color);
     font-weight: 600;

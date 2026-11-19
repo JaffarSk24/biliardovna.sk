@@ -304,6 +304,11 @@ return [
     // Booking form translations
     'date_blocked' => 'Dieser Tag ist für Buchungen geschlossen',
     'no_slots_available' => 'Keine freien Slots',
+    'no_tables' => 'Für diesen Tag sind keine Tische frei',
+    'no_slots' => 'Keine freien Zeiten',
+    'loading_error' => 'Laden fehlgeschlagen, bitte erneut versuchen',
+    'ok' => 'OK',
+    'img_multi_slots_alt' => 'Auswahl mehrerer Zeiten',
     'occupied' => 'Besetzt',
     'base_price' => 'Grundpreis',
     'time_multiplier' => 'Zeitmultiplikator',

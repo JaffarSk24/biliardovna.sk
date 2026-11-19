@@ -262,6 +262,14 @@ document.addEventListener('DOMContentLoaded', function() {
         dateNotice.style.display = text ? 'block' : 'none';
     }
 
+    // Once the picker is closed a closed day is dropped from the field (the notice stays):
+    // iOS draws its empty "DD MM YYYY" placeholder over a value that is out of range.
+    // Clearing earlier, while the picker is open, throws the iOS picker back to today.
+    function dropRejectedDate() {
+        const v = dateInput ? dateInput.value : '';
+        if (v && (blockedDates.includes(v) || !isDateAllowed(v))) dateInput.value = '';
+    }
+
     function hideSlots() {
         selectedSlots = [];
         updateSlotCountHidden();
@@ -284,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (dateInput) {
         updateDateBounds();
+        dateInput.addEventListener('blur', dropRejectedDate);
 
         dateInput.addEventListener('change', function() {
           const date = this.value;

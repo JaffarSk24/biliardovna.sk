@@ -303,6 +303,11 @@ return [
     // Booking form translations
     'date_blocked' => 'Цей день закритий для бронювання',
     'no_slots_available' => 'Немає вільних слотів',
+    'no_tables' => 'На цей день немає вільних столів',
+    'no_slots' => 'Немає вільного часу',
+    'loading_error' => 'Помилка завантаження, спробуйте ще раз',
+    'ok' => 'OK',
+    'img_multi_slots_alt' => 'Вибір кількох слотів',
     'occupied' => 'Зайнято',
     'base_price' => 'Базова ціна',
     'time_multiplier' => 'Часовий множник',

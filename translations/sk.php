@@ -303,6 +303,11 @@ return [
     // Booking form translations
     'date_blocked' => 'Tento deň je uzavretý pre rezervácie',
     'no_slots_available' => 'Žiadne voľné termíny',
+    'no_tables' => 'Na tento deň nie sú voľné stoly',
+    'no_slots' => 'Žiadne voľné časy',
+    'loading_error' => 'Chyba pri načítaní, skúste to znova',
+    'ok' => 'OK',
+    'img_multi_slots_alt' => 'Výber viacerých časov',
     'occupied' => 'Obsadené',
     'base_price' => 'Základná cena',
     'time_multiplier' => 'Časový multiplikátor',
