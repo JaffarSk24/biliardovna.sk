@@ -105,7 +105,7 @@ return [
     'pages_cafe_subtitle' => 'Genießen Sie Erfrischungen während des Spiels',
 
     'cafe_welcome_title' => 'Willkommen in unserem Café',
-    'cafe_welcome_text' => 'Während des Spiels können Sie Bier, alkoholfreie Getränke und salzige Snacks genießen. Menü und Preise finden Sie unten.',
+    'cafe_welcome_text' => 'Während des Spiels können Sie Bier, Wein, alkoholfreie Getränke und Snacks genießen. Menü und Preise finden Sie unten.',
 
     // Updated Info Block
     'cafe_info_title' => 'Wichtiger Hinweis',
@@ -126,7 +126,7 @@ return [
     'cafe_coffee' => 'Kaffee',
 
     // SLANE SNACKY
-    'cafe_snacks' => 'Salzige Snacks',
+    'cafe_snacks' => 'Snacks',
     // cafe menu item names by cafe_items.id (Slovak name from the database otherwise)
     'cafe_item_5' => 'Birell Pomelo & Grapefruit 500 ml',
     'cafe_item_26' => 'Birell Sizilianische Zitrone 500 ml',
@@ -139,6 +139,10 @@ return [
     'cafe_item_25' => 'Geröstete gesalzene Erdnüsse 100 g',
     'cafe_item_33' => 'Lay’s Gesalzen 130 g',
     'cafe_item_34' => 'Maretti Tomate 70 g',
+    'cafe_item_24' => 'Käsestangen',
+    'cafe_item_43' => 'Pistazien 60 g',
+    'cafe_item_44' => 'Karamell-Popcorn 140 g',
+    'cafe_item_45' => 'Popcorn Salzkaramell 140 g',
 
     // Gallery & CTA
     'cafe_cta_title' => 'Reservieren Sie einen Tisch und genießen Sie Snacks',

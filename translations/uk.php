@@ -105,7 +105,7 @@ return [
     'pages_cafe_subtitle' => 'Насолоджуйтесь частуванням під час гри',
 
     'cafe_welcome_title' => 'Ласкаво просимо до нашого кафе',
-    'cafe_welcome_text' => 'Під час гри можна взяти пиво, безалкогольні напої та солоні закуски. Меню та ціни нижче.',
+    'cafe_welcome_text' => 'Під час гри можна взяти пиво, вино, безалкогольні напої та закуски. Меню та ціни нижче.',
     // Updated Info Block
     'cafe_info_title' => 'Важливе повідомлення',
     'cafe_info_text' => 'Послуги кафе доступні лише для гравців з активним бронюванням!',
@@ -125,7 +125,7 @@ return [
     'cafe_coffee' => 'Кава',
 
     // SLANE SNACKY
-    'cafe_snacks' => 'Солоні закуски',
+    'cafe_snacks' => 'Закуски',
     // cafe menu item names by cafe_items.id (Slovak name from the database otherwise)
     'cafe_item_1' => 'Pilsner Urquell 12° 330 мл',
     'cafe_item_2' => 'Stella Artois 330 мл',
@@ -151,6 +151,17 @@ return [
     'cafe_item_33' => 'Lay’s солоні 130 г',
     'cafe_item_34' => 'Maretti Томат 70 г',
     'cafe_item_35' => 'Maretti Піца 70 г',
+    'cafe_item_24' => 'Сирні палички',
+    'cafe_item_36' => 'Chardonnay 100 мл',
+    'cafe_item_37' => 'Cabernet 100 мл',
+    'cafe_item_38' => 'Mionetto Prosecco 100 мл',
+    'cafe_item_39' => 'Chardonnay 750 мл',
+    'cafe_item_40' => 'Cabernet 750 мл',
+    'cafe_item_41' => 'Mionetto Prosecco 750 мл',
+    'cafe_item_42' => 'Lay’s Cheese 60 г',
+    'cafe_item_43' => 'Фісташки 60 г',
+    'cafe_item_44' => 'Попкорн карамельний 140 г',
+    'cafe_item_45' => 'Попкорн солона карамель 140 г',
 
     // Gallery & CTA
     'cafe_cta_title' => 'Забронюйте стіл і насолоджуйтесь частуванням',

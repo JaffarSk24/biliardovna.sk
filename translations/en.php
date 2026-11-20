@@ -105,7 +105,7 @@ return [
     'pages_cafe_subtitle' => 'Enjoy refreshments during the game',
 
     'cafe_welcome_title' => 'Welcome to our cafe',
-    'cafe_welcome_text' => 'During the game you can enjoy beer, soft drinks and salty snacks. See the menu and prices below.',
+    'cafe_welcome_text' => 'During the game you can enjoy beer, wine, soft drinks and snacks. See the menu and prices below.',
 
     // Updated Info Block
     'cafe_info_title' => 'Important Notice',
@@ -126,7 +126,7 @@ return [
     'cafe_coffee' => 'Coffee',
 
     // SLANE SNACKY
-    'cafe_snacks' => 'Savory Snacks',
+    'cafe_snacks' => 'Snacks',
     // cafe menu item names by cafe_items.id (Slovak name from the database otherwise)
     'cafe_item_5' => 'Birell Pomelo & Grapefruit 500 ml',
     'cafe_item_26' => 'Birell Sicilian Lemon 500 ml',
@@ -139,6 +139,10 @@ return [
     'cafe_item_25' => 'Roasted salted peanuts 100 g',
     'cafe_item_33' => 'Lay’s Salted 130 g',
     'cafe_item_34' => 'Maretti Tomato 70 g',
+    'cafe_item_24' => 'Cheese sticks',
+    'cafe_item_43' => 'Pistachios 60 g',
+    'cafe_item_44' => 'Caramel popcorn 140 g',
+    'cafe_item_45' => 'Salted caramel popcorn 140 g',
 
     // Gallery & CTA
     'cafe_cta_title' => 'Book a table and enjoy refreshments',

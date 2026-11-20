@@ -105,7 +105,7 @@ return [
     'pages_cafe_subtitle' => 'Vychutnajte si občerstvenie počas hry',
 
     'cafe_welcome_title' => 'Vitajte v našej kaviarni',
-    'cafe_welcome_text' => 'Počas hry si môžete vychutnať pivo, nealkoholické nápoje a slané občerstvenie. Ponuku a ceny nájdete v menu nižšie.',
+    'cafe_welcome_text' => 'Počas hry si môžete vychutnať pivo, víno, nealkoholické nápoje a snacky. Ponuku a ceny nájdete v menu nižšie.',
 
     // Updated Info Block (formerly Discount)
     'cafe_info_title' => 'Dôležité upozornenie',
@@ -126,7 +126,7 @@ return [
     'cafe_coffee' => 'Káva',
 
     // SLANE SNACKY
-    'cafe_snacks' => 'Slané snacky',
+    'cafe_snacks' => 'Snacky',
 
     // Gallery & CTA
     'cafe_cta_title' => 'Rezervujte si stôl a vychutnajte si občerstvenie',
