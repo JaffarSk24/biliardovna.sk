@@ -27,6 +27,25 @@ class AdminController extends Controller
         $this->notificationService = new NotificationService();
     }
 
+    /**
+     * First day counted in admin statistics (config admin.stats_start_date).
+     * Older bookings stay in the database but are hidden from the dashboard, reports and booking history.
+     */
+    private function statsStartDate(): string
+    {
+        static $date = null;
+        if ($date === null) {
+            $config = require __DIR__ . '/../../config/app.php';
+            $date = $config['admin']['stats_start_date'] ?? '1970-01-01';
+        }
+        return $date;
+    }
+
+    private function clampToStatsStart(string $date): string
+    {
+        return $date < $this->statsStartDate() ? $this->statsStartDate() : $date;
+    }
+
     private function checkAuth(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -59,6 +78,7 @@ class AdminController extends Controller
         };
         if (!$isDate($startDate)) $startDate = date('Y-m-d', strtotime('-30 days'));
         if (!$isDate($endDate)) $endDate = date('Y-m-d');
+        $startDate = $this->clampToStatsStart($startDate);
 
         // Ensure End Date includes the full day (e.g. if using datetime, but here we use DATE(column) logic usually)
         // With simple string comparison '2023-10-10' matches '2023-10-10 00:00:00'.
@@ -115,7 +135,8 @@ class AdminController extends Controller
             'pending_bookings' => [], // Pending no longer used — bookings auto-confirmed
             'page_title' => 'Admin Dashboard',
             'start_date' => $startDate,
-            'end_date' => $endDate
+            'end_date' => $endDate,
+            'stats_start_date' => $this->statsStartDate()
         ]);
     }
 
@@ -134,7 +155,11 @@ class AdminController extends Controller
         $services = $this->serviceModel->getWithTranslations('en');
 
         // 2. Fetch ALL bookings
-        $allBookings = $this->bookingModel->getAllDesc();
+        $statsStart = $this->statsStartDate();
+        $allBookings = array_values(array_filter(
+            $this->bookingModel->getAllDesc(),
+            fn($b) => ($b['booking_date'] ?? '') >= $statsStart
+        ));
         $allBookings = $this->formatBookings($allBookings);
 
         // 3. Initialize Tabs Structure
@@ -628,7 +653,9 @@ class AdminController extends Controller
     public function reports(): void
     {
         $this->render('admin/reports.twig', [
-            'page_title' => 'Reports'
+            'page_title' => 'Reports',
+            'stats_start_date' => $this->statsStartDate(),
+            'default_start' => $this->clampToStatsStart(date('Y-m-01'))
         ]);
     }
 
@@ -640,6 +667,7 @@ class AdminController extends Controller
         $type = $_GET['type'] ?? 'bookings';
         $start = $_GET['start'] ?? date('Y-m-01');
         $end = $_GET['end'] ?? date('Y-m-d');
+        $start = $this->clampToStatsStart((string)$start);
         $granularity = $_GET['granularity'] ?? 'total'; // total, day, week, month
 
         // Paging Params
@@ -701,6 +729,7 @@ class AdminController extends Controller
         $type = $_GET['type'] ?? 'bookings';
         $start = $_GET['start'] ?? date('Y-m-01');
         $end = $_GET['end'] ?? date('Y-m-d');
+        $start = $this->clampToStatsStart((string)$start);
         $granularity = $_GET['granularity'] ?? 'total';
 
         $reportData = $this->getReportData($type, $start, $end, $granularity);

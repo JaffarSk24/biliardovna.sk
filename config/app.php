@@ -30,6 +30,12 @@ return [
         ],
     ],
 
+    'admin' => [
+        // Статистика в админке (дашборд, отчёты, история броней) считается только с этой даты.
+        // 21.11.2026 клуб открылся под новым юр. лицом; более старые брони остаются в базе, но в админке не видны.
+        'stats_start_date' => '2026-11-21',
+    ],
+
     'session' => [
         'lifetime' => (int)($_ENV['SESSION_LIFETIME'] ?? 2592000), // 30 days
         'secure' => filter_var($_ENV['SESSION_SECURE'] ?? true, FILTER_VALIDATE_BOOLEAN),

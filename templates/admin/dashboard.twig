@@ -5,11 +5,11 @@
     <h3 style="margin: 0; color: var(--color-gold); font-size: 1.1rem;">Statistics Period</h3>
     <form method="GET" action="/admin" style="display: flex; gap: 10px; align-items: center;">
         <div class="form-group" style="margin: 0;">
-            <input type="date" name="start" value="{{ start_date }}" required style="padding: 8px; width: 140px;">
+            <input type="date" name="start" value="{{ start_date }}" min="{{ stats_start_date }}" required style="padding: 8px; width: 140px;">
         </div>
         <span style="color: var(--color-muted);">-</span>
         <div class="form-group" style="margin: 0;">
-            <input type="date" name="end" value="{{ end_date }}" required style="padding: 8px; width: 140px;">
+            <input type="date" name="end" value="{{ end_date }}" min="{{ stats_start_date }}" required style="padding: 8px; width: 140px;">
         </div>
         <button type="submit" class="btn btn-primary" style="padding: 8px 20px;">Filter</button>
     </form>
