@@ -89,11 +89,11 @@
         <div class="footer-bottom">
             <div class="footer-legal">
                 {% set credits = {
-                    'sk': { label: 'Tvorba webu:', url: 'https://whiteeagles.sk/sk/' },
-                    'ru': { label: 'Разработка сайта:', url: 'https://whiteeagles.sk/ru/' },
-                    'uk': { label: 'Розробка сайту:', url: 'https://whiteeagles.sk/ru/' },
-                    'en': { label: 'Website by', url: 'https://whiteeagles.sk/en/' },
-                    'de': { label: 'Website erstellt von', url: 'https://whiteeagles.sk/en/' }
+                    'sk': { label: 'Tvorba webu:', url: 'https://whiteeagles.sk/sk/service/tvorba-web-stranok/' },
+                    'ru': { label: 'Разработка сайта:', url: 'https://whiteeagles.sk/ru/service/sozdanie-sajtov/' },
+                    'uk': { label: 'Розробка сайту:', url: 'https://whiteeagles.sk/ru/service/sozdanie-sajtov/' },
+                    'en': { label: 'Website by', url: 'https://whiteeagles.sk/en/service/webdev/' },
+                    'de': { label: 'Website erstellt von', url: 'https://whiteeagles.sk/en/service/webdev/' }
                 } %}
                 {% set credit = credits[language] ?? credits['sk'] %}
                 <p>&copy; {{ "now"|date("Y") }} Dagny s.r.o. {{ translations.footer_rights|default('Všetky práva vyhradené') }}.</p>
