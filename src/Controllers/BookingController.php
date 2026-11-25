@@ -219,6 +219,13 @@ class BookingController extends Controller
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
+        $sessionLanguage = $_SESSION['language'] ?? null;
+
+        // Дальше идут запросы к reCAPTCHA, Telegram и почте, а в сессию эта бронь ничего не пишет.
+        // Отпускаем файл сессии сразу, чтобы другие запросы того же посетителя не ждали его.
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
 
         $token = trim($input['recaptcha_token'] ?? '');
         $action = $input['recaptcha_action'] ?? 'booking_submit';
@@ -239,7 +246,7 @@ class BookingController extends Controller
             'customer_phone' => $input['phone'] ?? '',
             'customer_email' => $input['email'] ?? '',
             'notes' => $input['notes'] ?? '',
-            'language' => $input['language'] ?? $_SESSION['language'] ?? 'sk',
+            'language' => $input['language'] ?? $sessionLanguage ?? 'sk',
             'coupon_code' => $input['coupon_code'] ?? null,
             'discount_percent' => isset($input['discount_percent']) ? (float)$input['discount_percent'] : null,
             'discount_amount' => isset($input['discount_amount']) ? (float)$input['discount_amount'] : null,

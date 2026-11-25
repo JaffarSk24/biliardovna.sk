@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . '/guard.php';
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Dotenv\Dotenv;

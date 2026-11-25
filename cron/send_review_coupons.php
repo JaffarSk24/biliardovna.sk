@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . '/guard.php';
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Dotenv\Dotenv;
@@ -28,7 +30,7 @@ $db = new PDO(
     "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8mb4",
     $_ENV['DB_USER'],
     $_ENV['DB_PASSWORD'],
-    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]
 );
 
 // Find bookings where review was clicked and coupon not sent yet
@@ -116,7 +118,8 @@ function sendCouponEmail($booking, $couponCode): bool
     $db = new PDO(
         "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8mb4",
         $_ENV['DB_USER'],
-        $_ENV['DB_PASSWORD']
+        $_ENV['DB_PASSWORD'],
+        [PDO::ATTR_TIMEOUT => 5]
     );
     $stmt = $db->prepare("SELECT discount_percent, valid_until FROM coupons WHERE code = ?");
     $stmt->execute([$couponCode]);

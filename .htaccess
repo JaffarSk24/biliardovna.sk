@@ -1,6 +1,10 @@
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Service folders are not for the web: code, templates, migrations, maintenance scripts, libraries.
+    # Even a HEAD request runs a PHP file, so scripts inside them must not be reachable by URL.
+    RewriteRule ^(?:src|config|templates|translations|repo|migrations|scripts|vendor|logs|cache|tests)(?:/|$) - [F,L]
     
     # Remove trailing slash
     RewriteCond %{REQUEST_FILENAME} !-d

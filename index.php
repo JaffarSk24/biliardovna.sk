@@ -80,8 +80,15 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
+// Сессия нужна только админке и форме брони, а также тому, у кого она уже есть (cookie).
+// Публичные страницы, API и вебхук Telegram работают без неё: иначе каждый бот и каждый
+// запрос заводил новый файл сессии на 30 дней, а файл сессии держит блокировку до конца запроса.
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$needsSession = preg_match('#^(?:/[a-z]{2})?/(?:admin|booking/)#', $requestPath)
+    || isset($_COOKIE[session_name()]);
+
 // Start session (the only place; controllers reuse it)
-if (session_status() === PHP_SESSION_NONE) {
+if ($needsSession && session_status() === PHP_SESSION_NONE) {
     $config = require __DIR__ . '/config/app.php';
     session_start([
         'cookie_lifetime' => $config['session']['lifetime'],
@@ -92,11 +99,6 @@ if (session_status() === PHP_SESSION_NONE) {
         'gc_maxlifetime' => $config['session']['lifetime'],
         'use_strict_mode' => true,
     ]);
-}
-
-// Allow webhook access without session check
-if (strpos($_SERVER['REQUEST_URI'] ?? '', '/webhook/telegram') !== false) {
-    $_SESSION['access_granted'] = true;
 }
 
 // Error handling
@@ -476,6 +478,34 @@ $router->post('/webhook/telegram', function () {
     }
 
     $update = json_decode(file_get_contents('php://input'), true);
+
+    // Повторно присланное обновление (Telegram повторяет его, если ответ задержался) пропускаем
+    if (isset($update['update_id'])) {
+        try {
+            $db = \App\Database\Database::getInstance();
+            $ins = $db->prepare("INSERT IGNORE INTO telegram_updates (update_id) VALUES (?)");
+            $ins->execute([(int)$update['update_id']]);
+            if ($ins->rowCount() === 0) {
+                echo json_encode(['ok' => true]);
+                return;
+            }
+            if (mt_rand(1, 100) === 1) {
+                $db->exec("DELETE FROM telegram_updates WHERE received_at < NOW() - INTERVAL 7 DAY");
+            }
+        } catch (\Throwable $e) {
+            file_put_contents($logFile, "Dedupe error: " . $e->getMessage() . "\n", FILE_APPEND);
+        }
+    }
+
+    // Сразу отвечаем Telegram, что обновление принято, и только потом выполняем работу:
+    // иначе при медленных Telegram, почте или базе он присылает то же нажатие снова и снова,
+    // и одна работа занимает несколько процессов сайта одновременно.
+    ignore_user_abort(true);
+    set_time_limit(120);
+    echo json_encode(['ok' => true]);
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    }
 
     if (isset($update['callback_query'])) {
         $callbackQuery = $update['callback_query'];
@@ -880,7 +910,6 @@ $router->post('/webhook/telegram', function () {
         }
     }
 
-    echo json_encode(['ok' => true]);
 });
 
 // Dispatch request
