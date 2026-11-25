@@ -538,6 +538,8 @@ $router->post('/webhook/telegram', function () {
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                 $resEdit = curl_exec($ch);
                 curl_close($ch);
                 file_put_contents(__DIR__ . '/telegram_debug.log', "EDIT RESPONSE: " . $resEdit . "\n", FILE_APPEND);
@@ -552,6 +554,8 @@ $router->post('/webhook/telegram', function () {
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                 $resAnswer = curl_exec($ch);
                 curl_close($ch);
                 file_put_contents(__DIR__ . '/telegram_debug.log', "ANSWER RESPONSE: " . $resAnswer . "\n", FILE_APPEND);
@@ -578,6 +582,8 @@ $router->post('/webhook/telegram', function () {
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($editData));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                 curl_exec($ch);
                 curl_close($ch);
 
@@ -591,6 +597,8 @@ $router->post('/webhook/telegram', function () {
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                 curl_exec($ch);
                 curl_close($ch);
             }
@@ -609,6 +617,8 @@ $router->post('/webhook/telegram', function () {
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($answerData));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             curl_exec($ch);
             curl_close($ch);
         }
@@ -635,6 +645,8 @@ $router->post('/webhook/telegram', function () {
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             curl_exec($ch);
             curl_close($ch);
         } elseif ($text === '%') {
@@ -649,6 +661,8 @@ $router->post('/webhook/telegram', function () {
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             curl_exec($ch);
             curl_close($ch);
         } elseif (isset($message['reply_to_message']) && $message['reply_to_message']['text'] === 'Zadajte promo kód:') {
@@ -684,6 +698,8 @@ $router->post('/webhook/telegram', function () {
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                 curl_exec($ch);
                 curl_close($ch);
             } catch (\Throwable $e) {
@@ -699,6 +715,8 @@ $router->post('/webhook/telegram', function () {
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                 curl_exec($ch);
                 curl_close($ch);
             }
@@ -836,6 +854,8 @@ $router->post('/webhook/telegram', function () {
                     curl_setopt($ch, CURLOPT_POST, 1);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                     curl_exec($ch);
                     curl_close($ch);
                 } else {
@@ -849,6 +869,8 @@ $router->post('/webhook/telegram', function () {
                     curl_setopt($ch, CURLOPT_POST, 1);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                     curl_exec($ch);
                     curl_close($ch);
                 }
