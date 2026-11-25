@@ -22,6 +22,9 @@ class Database
                 $config['charset']
             );
 
+            // ответ базы на запрос ждём не дольше 30 секунд (по умолчанию сутки), иначе зависшее соединение держит процесс сайта
+            ini_set('mysqlnd.net_read_timeout', '30');
+
             try {
                 self::$instance = new PDO(
                     $dsn,
