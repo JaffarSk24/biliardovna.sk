@@ -476,6 +476,7 @@ return [
     'pricing_days' => 'Days',
     'pricing_price' => 'Price',
     'pricing_from' => 'from',
+    'pricing_holiday_hours' => 'during opening hours',
 
     // Deals Section
     'deals_title' => 'Deals',

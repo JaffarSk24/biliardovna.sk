@@ -459,6 +459,7 @@ return [
     'pricing_days' => 'Dni',
     'pricing_price' => 'Cena',
     'pricing_from' => 'od',
+    'pricing_holiday_hours' => 'počas otváracích hodín',
 
     // Deals Section
     'deals_title' => 'Akcie',

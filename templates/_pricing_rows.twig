@@ -22,7 +22,7 @@
       {% if loop.first %}
     <td class="time-col day-col" rowspan="{{ g.bands|length }}">{{ label }}</td>
       {% endif %}
-    <td class="hours-col">{% if g.holiday %}{{ translations.pricing_from|default('od') }} {{ b.from }}{% else %}{{ b.from }} - {{ b.to }}{% endif %}</td>
+    <td class="hours-col">{% if g.holiday and loop.first %}{{ translations.pricing_holiday_hours|default('počas otváracích hodín') }}{% elseif g.holiday %}{{ translations.pricing_from|default('od') }} {{ b.from }}{% else %}{{ b.from }} - {{ b.to }}{% endif %}</td>
     <td class="{{ g.holiday ? 'holiday-price' : 'price-col' }}">{{ b.price }} €</td>
   </tr>
     {% endfor %}

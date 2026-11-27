@@ -496,6 +496,7 @@ return [
     'pricing_days' => 'Дни',
     'pricing_price' => 'Цена',
     'pricing_from' => 'с',
+    'pricing_holiday_hours' => 'в часы работы',
 
     // Deals Section
     'deals_title' => 'Акции',
